@@ -1,19 +1,20 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import express from 'express';
-import helmet from 'helmet';
-import config from '../config';
-import routes from '../api';
+import { Request, Response } from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import config from "../config";
+import routes from "../api";
 
 export default ({ app }: { app: express.Application }): void => {
   /**
    * Health Check endpoints
    */
-
-  app.get('/healthcheck', (req, res) => {
+  //http://localhost:3000/healthcheck
+  app.get("/healthcheck", (req: Request, res: Response) => {
     const healthcheck = {
       uptime: process.uptime(),
-      message: 'OK',
+      message: "⚙️ API v1 working!",
       timestamp: Date.now(),
     };
     try {
@@ -24,7 +25,7 @@ export default ({ app }: { app: express.Application }): void => {
   });
 
   // It shows the real origin IP in the heroku or Cloudwatch logs
-  app.enable('trust proxy');
+  app.enable("trust proxy");
 
   // Middleware that helps secure app by setting headers
   app.use(helmet());
