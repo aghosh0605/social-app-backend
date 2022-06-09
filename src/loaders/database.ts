@@ -16,8 +16,10 @@ async function initializeClient(): Promise<Db> {
 
 export default async (): Promise<Db> => {
   if (!db) {
-    Logger.warn("🟨 New Instance of Mongo Database is called!");
     db = await initializeClient();
+    Logger.warn(
+      `🟨 New Instance of Mongo Database ${db.databaseName} is called!`
+    );
   }
 
   return db;
