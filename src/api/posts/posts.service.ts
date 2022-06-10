@@ -1,12 +1,13 @@
 import { Db } from "mongodb";
-import db from "../../loaders/database";
+import { DBInstance } from "./../../loaders/database";
 import { yupPostsSchema, postsSchema } from "../../schema/postsSchema";
 
 export const postsService = async (): Promise<postsSchema[]> => {
-  const data: Db = await db();
+  const data: Db = await DBInstance.getDatabase();
   const postsData: Array<postsSchema> = await data
     .collection("posts")
     .find()
+    .limit(10)
     .toArray();
   return postsData;
 };

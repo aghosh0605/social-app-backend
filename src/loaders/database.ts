@@ -1,26 +1,41 @@
-import { Db, MongoClient } from "mongodb";
-import config from "../config";
-import Logger from "./../loaders/logger";
+import { Db, MongoClient, MongoError } from "mongodb";
 
-let db: Db;
+export class DBInstance {
+  private static instance: DBInstance;
+  private database: Db;
 
-async function initializeClient(): Promise<Db> {
-  const client = await MongoClient.connect(config.databaseURL, {
+  //Connection Configutation
+  private opts: object = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    ignoreUndefined: true,
-  });
+  };
 
-  return client.db();
-}
+  //Database Credentials
+  private URL: string = process.env.MONGODB_URI || "mongodb://localhost:27017/";
+  private dbName: string = process.env.DB_NAME || "test";
+  private dbClient: MongoClient = new MongoClient(this.URL, this.opts);
 
-export default async (): Promise<Db> => {
-  if (!db) {
-    db = await initializeClient();
-    Logger.warn(
-      `🟨 New Instance of Mongo Database ${db.databaseName} is called!`
-    );
+  private async initialize(): Promise<Db> {
+    try {
+      const connClient: MongoClient = await this.dbClient.connect();
+      console.log(`✅ Connected to MongoDB: ${this.dbName}`);
+      DBInstance.instance.database = connClient.db(this.dbName);
+      return DBInstance.instance.database;
+    } catch (err) {
+      console.error("❌ Could not connect to MongoDB\n%o", err);
+      throw MongoError;
+    }
   }
 
-  return db;
-};
+  //Singleton Function Implement
+  public static getDatabase = async (): Promise<Db> => {
+    if (!DBInstance.instance) {
+      DBInstance.instance = new DBInstance();
+      console.log("🔶 New Instance was Created!!");
+    }
+    if (!DBInstance.instance.database) {
+      await DBInstance.instance.initialize();
+    }
+    return DBInstance.instance.database;
+  };
+}
