@@ -21,6 +21,8 @@
 
 Install dependencies
 
+## Please try to stay with Yarn 
+
 ```
 $ yarn
 # or
