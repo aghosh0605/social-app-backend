@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import Logger from "../../loaders/logger";
+import { responseSchema } from "./../../schema/responseSchema";
 import { postService } from "./post.service";
 import { getService } from "./get.service";
 import { deleteService } from "./delete.service";
@@ -23,8 +24,8 @@ chipsRoute.post(
   "/create",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const resData = await postService(req.body);
-      res.status(200).json(resData);
+      const resData: responseSchema = await postService(req.body);
+      res.status(resData.status).json(resData.message);
       next();
     } catch (error) {
       Logger.error(error);
@@ -37,7 +38,7 @@ chipsRoute.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const resData = await deleteService(req);
-      res.status(200).json(resData);
+      res.status(resData.status).json(resData.message);
       next();
     } catch (error) {
       Logger.error(error);
