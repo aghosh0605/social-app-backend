@@ -1,14 +1,16 @@
 import { NextFunction, Request, Response, Router } from "express";
 import Logger from "../../loaders/logger";
-import { postsService, postCreateService, postDeleteService } from "./posts.service";
-const postsRoute = Router();
+import { postService } from "./post.service";
+import { getService } from "./get.service";
+import { deleteService } from "./delete.service";
+const chipsRoute = Router();
 
 //http://localhost:3000/api/posts
-postsRoute.get(
+chipsRoute.get(
   "/",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const resData = await postsService();
+      const resData = await getService();
       res.status(200).json(resData);
       next();
     } catch (error) {
@@ -17,30 +19,30 @@ postsRoute.get(
   }
 );
 
-postsRoute.post(
+chipsRoute.post(
   "/create",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const resData = await postCreateService(req.body);
+      const resData = await postService(req.body);
       res.status(200).json(resData);
       next();
     } catch (error) {
       Logger.error(error);
     }
   }
-)
+);
 
-postsRoute.delete(
+chipsRoute.delete(
   "/:id/delete",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resData = await postDeleteService(req);
+      const resData = await deleteService(req);
       res.status(200).json(resData);
       next();
     } catch (error) {
       Logger.error(error);
     }
   }
-)
+);
 
-export default postsRoute;
+export default chipsRoute;

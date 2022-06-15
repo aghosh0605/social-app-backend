@@ -1,11 +1,11 @@
 import { Router } from "express";
-import postsRoute from "./posts/routes";
+import chipsRoute from "./chips/routes";
 
 export default (): Router => {
   const app = Router();
 
   //TODO: add routes here...
-  app.use("/posts", postsRoute);
+  app.use("/chips", chipsRoute);
 
   return app;
 };
