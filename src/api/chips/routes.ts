@@ -24,11 +24,28 @@ chipsRoute.post(
   "/create",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const resData: responseSchema = await postService(req.body);
-      res.status(resData.status).json(resData.message);
+      await postService(req.body);
+      res.status(200).json({ success: true, message: "Created" });
       next();
-    } catch (error) {
-      Logger.error(error);
+    } catch (err) {
+      Logger.error(err);
+      if (err.name === "ValidationError") {
+        let message: string = "";
+        err.errors?.forEach((e: string) => {
+          message += `${e}. `;
+        }); // => [ 'Invalid Country Code!', 'Mobile Number is not valid!' ]
+        console.error(`ValidationError: ${message}`);
+        res.status(400).json({
+          success: false,
+          message: message,
+        });
+      } else {
+        console.error("Unknown Error Occurred!", err);
+        res.status(500).json({
+          success: false,
+          message: "❌ Unknown Error Occurred!!",
+        });
+      }
     }
   }
 );
@@ -37,7 +54,7 @@ chipsRoute.delete(
   "/:id/delete",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resData = await deleteService(req);
+      const resData = await deleteService(req.params);
       res.status(resData.status).json(resData.message);
       next();
     } catch (error) {

@@ -15,6 +15,11 @@ export const newChipsValidation = yup.object({
     .trim()
     .min(1, "Minimum one character required")
     .max(100, "Maximum 100 characters allowed"),
+  pictureUrl: yup
+    .string()
+    .trim()
+    .min(1, "Minimum one character required")
+    .max(500, "Maximum 500 characters allowed"),
 });
 
 export type postSchema = yup.InferType<typeof newChipsValidation>;
