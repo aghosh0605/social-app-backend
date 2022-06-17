@@ -2,6 +2,7 @@ import { Db } from "mongodb";
 import db from "../../loaders/database";
 import { newChipsValidation, postSchema } from "../../schema/chips/postSchema";
 import { inpdbSchema } from "../../schema/chips/dbSchema";
+
 export const postService = async (chipsData: postSchema): Promise<void> => {
   await newChipsValidation
     .validate(chipsData, { abortEarly: false })

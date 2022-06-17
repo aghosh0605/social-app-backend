@@ -39,7 +39,7 @@ chipsRoute.post(
           message: message,
         });
       } else {
-        console.error("Unknown Error Occurred!", err);
+        Logger.error("Unknown Error Occurred!", err);
         res.status(500).json({
           success: false,
           message: "❌ Unknown Error Occurred!!",
@@ -53,7 +53,7 @@ chipsRoute.delete(
   "/:id/delete",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const resData = await deleteService(req.params);
+      const resData: responseSchema = await deleteService(req.params);
       res.status(resData.status).json(resData.message);
       next();
     } catch (error) {

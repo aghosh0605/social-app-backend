@@ -1,0 +1,27 @@
+# Todo of Piechips-backend
+
+Below are the TODOs of piechips
+
+### Todo
+
+- [ ] Work on the POST API Improve
+- [ ] Work on the POST Schema Improve
+  - [ ] Extend the POST Schema for DBSchema
+
+### In Progress
+
+- [ ] TODO Develop
+
+### Done ✓
+
+- [x] Project Initialize
+- [x] Project Structure Creation
+- [x] MongoDB Database Connection
+- [x] ExpressJS Routes Structure Define
+- [x] Healthcheck Route Define
+- [x] API of Posts
+  - [x] GET
+  - [x] POST
+  - [x] DELETE
+- [x] Basic Database Schema Define
+- [x] Heroku Host for Devs
