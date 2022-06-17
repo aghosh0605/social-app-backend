@@ -33,8 +33,7 @@ chipsRoute.post(
         let message: string = "";
         err.errors?.forEach((e: string) => {
           message += `${e}. `;
-        }); // => [ 'Invalid Country Code!', 'Mobile Number is not valid!' ]
-        console.error(`ValidationError: ${message}`);
+        }); // => [ Array of Validation Errors ]
         res.status(400).json({
           success: false,
           message: message,

@@ -10,14 +10,14 @@ export default ({ app }: { app: express.Application }): void => {
    * Health Check endpoints
    */
   //http://localhost:3000/healthcheck
-  app.get("/healthcheck", (req: Request, res: Response) => {
+  app.get("/", (req: Request, res: Response) => {
     const healthcheck = {
       uptime: process.uptime(),
       message: "⚙️ API v1 working!",
       timestamp: Date.now(),
     };
     try {
-      return res.json(healthcheck);
+      return res.status(200).json(healthcheck);
     } catch (e) {
       return res.status(503).send();
     }
