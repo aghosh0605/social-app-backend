@@ -4,6 +4,7 @@ import { responseSchema } from "./../../schema/responseSchema";
 import { postService } from "./post.service";
 import { getService } from "./get.service";
 import { deleteService } from "./delete.service";
+import { commentPostService, commentDeleteService } from "./comments.service";
 const chipsRoute = Router();
 
 //http://localhost:3000/api/posts
@@ -61,5 +62,31 @@ chipsRoute.delete(
     }
   }
 );
+
+chipsRoute.put(
+  "/comment/:id/update",
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const resData = await commentPostService(req);
+      res.status(200).json(resData);
+      next();
+    } catch (error) {
+      Logger.error(error);
+    }
+  }
+)
+
+chipsRoute.delete(
+  "/comment/:id/delete",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const resData = await commentDeleteService(req);
+      res.status(200).json(resData);
+      next();
+    } catch (error) {
+      Logger.error(error);
+    }
+  }
+)
 
 export default chipsRoute;
