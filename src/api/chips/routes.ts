@@ -5,7 +5,16 @@ import { postService } from "./post.service";
 import { getService } from "./get.service";
 import { deleteService } from "./delete.service";
 import { commentPostService, commentDeleteService } from "./comments.service";
+import {postUploadService} from "./postupload.service";
+
+import multer from "multer";
+
 const chipsRoute = Router();
+const upload = multer({dest: './public/uploads/'});
+
+interface MulterRequest extends Request {
+  file: any;
+}
 
 //http://localhost:3000/api/posts
 chipsRoute.get(
@@ -88,5 +97,16 @@ chipsRoute.delete(
     }
   }
 )
+
+chipsRoute.post("/image", upload.single("image"), async(req: MulterRequest, res: Response, next: NextFunction) => {
+  const file = req.file
+  try {
+    const resData = await postUploadService(file)
+    res.status(200).json({"message": "Uploaded"})
+    next()
+  } catch (error) {
+    Logger.error(error)
+  }
+})
 
 export default chipsRoute;

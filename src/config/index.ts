@@ -19,6 +19,14 @@ export default {
   jwtSecret: process.env.JWT_SECRET,
 
   /**
+   * AWS S3 Bucket Credentials
+   */
+   awsBucketName: process.env.AWS_BUCKET_NAME,
+   awsBucketRegion: process.env.AWS_BUCKET_REGION,
+   awsAccessKey: process.env.AWS_ACCESS_KEY,
+   awsSecretKey: process.env.AWS_SECRET_KEY,
+
+  /**
    * Used by Winston logger
    */
   logs: {
