@@ -1,5 +1,5 @@
-import { ObjectID } from "mongodb";
-export interface inpdbSchema {
+import { ObjectID } from 'mongodb';
+export interface dbSchema {
   caption: string;
   comments: {
     commentsCount: number;
@@ -14,10 +14,10 @@ export interface inpdbSchema {
     };
   };
   tags: Array<string>;
-  pictureUrl?: string;
+  pictureUrl?: Array<string>;
   circle: string;
 }
 
-export interface dbSchema extends inpdbSchema {
+export interface dbSchemaID extends dbSchema {
   readonly _id: ObjectID;
 }

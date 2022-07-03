@@ -1,24 +1,17 @@
-import { NextFunction, Request, Response, Router } from "express";
-import Logger from "../../loaders/logger";
-import { responseSchema } from "./../../schema/responseSchema";
-import { postService } from "./post.service";
-import { getService } from "./get.service";
-import { deleteService } from "./delete.service";
-import { commentPostService, commentDeleteService } from "./comments.service";
-import {postUploadService} from "./postupload.service";
-
-import multer from "multer";
+import { NextFunction, Request, Response, Router } from 'express';
+import Logger from '../../loaders/logger';
+import { responseSchema } from './../../schema/responseSchema';
+import { postService } from './post.service';
+import { getService } from './get.service';
+import { deleteService } from './delete.service';
+import { commentPostService, commentDeleteService } from './comments.service';
+import { uploadS3 } from '../../utils/awsS3';
 
 const chipsRoute = Router();
-const upload = multer({dest: './public/uploads/'});
-
-interface MulterRequest extends Request {
-  file: any;
-}
 
 //http://localhost:3000/api/posts
 chipsRoute.get(
-  "/",
+  '/',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const resData = await getService();
@@ -31,16 +24,16 @@ chipsRoute.get(
 );
 
 chipsRoute.post(
-  "/create",
+  '/create',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await postService(req.body);
-      res.status(200).json({ success: true, message: "Created" });
+      res.status(200).json({ success: true, message: 'Created' });
       next();
     } catch (err) {
       Logger.error(err);
-      if (err.name === "ValidationError") {
-        let message: string = "";
+      if (err.name === 'ValidationError') {
+        let message: string = '';
         err.errors?.forEach((e: string) => {
           message += `${e}. `;
         }); // => [ Array of Validation Errors ]
@@ -49,10 +42,10 @@ chipsRoute.post(
           message: message,
         });
       } else {
-        Logger.error("Unknown Error Occurred!", err);
+        Logger.error('Unknown Error Occurred!', err);
         res.status(500).json({
           success: false,
-          message: "❌ Unknown Error Occurred!!",
+          message: '❌ Unknown Error Occurred!!',
         });
       }
     }
@@ -60,7 +53,7 @@ chipsRoute.post(
 );
 
 chipsRoute.delete(
-  "/:id/delete",
+  '/:id/delete',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const resData: responseSchema = await deleteService(req.params);
@@ -73,7 +66,7 @@ chipsRoute.delete(
 );
 
 chipsRoute.put(
-  "/comment/:id/update",
+  '/comment/:id/update',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const resData = await commentPostService(req);
@@ -83,10 +76,10 @@ chipsRoute.put(
       Logger.error(error);
     }
   }
-)
+);
 
 chipsRoute.delete(
-  "/comment/:id/delete",
+  '/comment/:id/delete',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const resData = await commentDeleteService(req);
@@ -96,17 +89,22 @@ chipsRoute.delete(
       Logger.error(error);
     }
   }
-)
+);
 
-chipsRoute.post("/image", upload.single("image"), async(req: MulterRequest, res: Response, next: NextFunction) => {
-  const file = req.file
-  try {
-    const resData = await postUploadService(file)
-    res.status(200).json({"message": "Uploaded"})
-    next()
-  } catch (error) {
-    Logger.error(error)
+chipsRoute.post(
+  '/images',
+  uploadS3.array('images', 5), //Max file Upload is 5 files
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.status(200).send({
+        success: true,
+        result: `Images Uploaded`,
+      });
+      next();
+    } catch (error) {
+      Logger.error(error);
+    }
   }
-})
+);
 
 export default chipsRoute;
