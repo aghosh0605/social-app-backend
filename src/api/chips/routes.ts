@@ -5,7 +5,7 @@ import { postService } from './post.service';
 import { getService } from './get.service';
 import { deleteService } from './delete.service';
 import { commentPostService, commentDeleteService } from './comments.service';
-import { uploadS3 } from '../../utils/awsS3';
+import { uploadS3 } from './images.service';
 
 const chipsRoute = Router();
 
@@ -91,19 +91,29 @@ chipsRoute.delete(
   }
 );
 
+const upload = uploadS3.array('images', 5); //Max file Upload is 5 files
+
 chipsRoute.post(
   '/images',
-  uploadS3.array('images', 5), //Max file Upload is 5 files
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      res.status(200).send({
-        success: true,
-        result: `Images Uploaded`,
-      });
-      next();
-    } catch (error) {
-      Logger.error(error);
-    }
+  (req: Request, res: Response, next: NextFunction) => {
+    upload(req, res, (err) => {
+      console.log(req.files);
+      if (err.message) {
+        // An unknown error occurred when uploading.
+        Logger.error(err);
+        res.status(415).json({
+          success: false,
+          message: err.message,
+        });
+      } else {
+        // Everything went fine.
+        res.status(200).send({
+          success: true,
+          result: `Images Uploaded`,
+        });
+        next();
+      }
+    });
   }
 );
 
