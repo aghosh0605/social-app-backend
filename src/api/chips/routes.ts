@@ -98,7 +98,7 @@ chipsRoute.post(
   (req: Request, res: Response, next: NextFunction) => {
     upload(req, res, (err) => {
       console.log(req.files);
-      if (err.message) {
+      if (err) {
         // An unknown error occurred when uploading.
         Logger.error(err);
         res.status(415).json({
