@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const newChipsValidation = yup.object({
+export const yupChipsValidation = yup.object({
   caption: yup
     .string()
     .required()
@@ -21,4 +21,4 @@ export const newChipsValidation = yup.object({
     .max(100, 'Maximum 100 characters allowed'),
 });
 
-export type postSchema = yup.InferType<typeof newChipsValidation>;
+export type postSchema = yup.InferType<typeof yupChipsValidation>;

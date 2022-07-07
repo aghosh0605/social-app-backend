@@ -1,15 +1,17 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../loaders/logger';
-import { responseSchema } from './../../schema/responseSchema';
-import { postService } from './post.service';
-import { getService } from './get.service';
-import { deleteService } from './delete.service';
-import { commentPostService, commentDeleteService } from './comments.service';
-import { uploadS3 } from './images.service';
+import { responseSchema } from '../../models/responseSchema';
+import { postService } from '../../services/chips/post.service';
+import { getService } from '../../services/chips/get.service';
+import { deleteService } from '../../services/chips/delete.service';
+import {
+  commentPostService,
+  commentDeleteService,
+} from '../../services/chips/comments.service';
 
 const chipsRoute = Router();
 
-//http://localhost:3000/api/posts
+// http://localhost:3000/api/posts
 chipsRoute.get(
   '/',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -26,29 +28,13 @@ chipsRoute.get(
 chipsRoute.post(
   '/create',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      await postService(req.body);
-      res.status(200).json({ success: true, message: 'Created' });
-      next();
-    } catch (err) {
-      Logger.error(err);
-      if (err.name === 'ValidationError') {
-        let message: string = '';
-        err.errors?.forEach((e: string) => {
-          message += `${e}. `;
-        }); // => [ Array of Validation Errors ]
-        res.status(400).json({
-          success: false,
-          message: message,
-        });
-      } else {
-        Logger.error('Unknown Error Occurred!', err);
-        res.status(500).json({
-          success: false,
-          message: '❌ Unknown Error Occurred!!',
-        });
-      }
+    const result = await postService(req, res);
+    if (!result) {
+      res.status(500).json({ success: false, message: 'Something is wrong' });
+      return;
     }
+    res.status(200).json({ success: true, message: 'Posted Successfully' });
+    next();
   }
 );
 
@@ -88,32 +74,6 @@ chipsRoute.delete(
     } catch (error) {
       Logger.error(error);
     }
-  }
-);
-
-const upload = uploadS3.array('images', 5); //Max file Upload is 5 files
-
-chipsRoute.post(
-  '/images',
-  (req: Request, res: Response, next: NextFunction) => {
-    upload(req, res, (err) => {
-      console.log(req.files);
-      if (err) {
-        // An unknown error occurred when uploading.
-        Logger.error(err);
-        res.status(415).json({
-          success: false,
-          message: err.message,
-        });
-      } else {
-        // Everything went fine.
-        res.status(200).send({
-          success: true,
-          result: `Images Uploaded`,
-        });
-        next();
-      }
-    });
   }
 );
 

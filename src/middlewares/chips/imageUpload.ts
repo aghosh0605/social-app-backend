@@ -1,23 +1,23 @@
 import { FileFilterCallback } from 'multer';
 import path from 'path';
 const multer = require('multer');
-import { multerS3Config } from '../../utils/awsS3';
+import { multerS3Config } from '../../utils/multerS3';
 
 const checkFileType = (
   file: Express.Multer.File,
   cb: FileFilterCallback
 ): void => {
-  const filetypes = /jpeg|jpg|png|gif|mp4|mkv|mov|mpeg|wmv/;
+  const filetypes = /jpeg|jpg|png|gif|mp4|mkv|mov|mpeg|wmv/; //Allowed File Types
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
   const acceptedTypes = file.mimetype.split('/');
   const typeCheck =
-    acceptedTypes[0] === 'image' || acceptedTypes[0] === 'video';
+    acceptedTypes[0] === 'image' || acceptedTypes[0] === 'video'; //Allowed Content Types
   if (mimetype && extname && typeCheck) {
     cb(null, true);
   } else {
     cb(null, false);
-    cb(new Error('Only images and videos formats allowed!'));
+    cb(new Error('Only images and videos formats allowed!')); //Error if not validates
   }
 };
 export const uploadS3 = multer({
@@ -27,7 +27,7 @@ export const uploadS3 = multer({
     file: Express.Multer.File,
     cb: FileFilterCallback
   ) => {
-    checkFileType(file, cb);
+    checkFileType(file, cb); //Validating file type
   },
   limits: {
     fileSize: 1024 * 1024 * 5, // we are allowing only 5 MB files
