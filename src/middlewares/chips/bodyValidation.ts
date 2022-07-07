@@ -1,10 +1,12 @@
 import { yupChipsValidation, postSchema } from '../../models/chips/postSchema';
 import { dbSchema } from '../../models/chips/dbSchema';
 
-export const newChipsValidation = async (
-  chipsData: postSchema
+export const bodyValidator = async (
+  chipsData: postSchema,
+  picsUrls: Array<Object>
 ): Promise<dbSchema> => {
   let inpData: dbSchema;
+  //console.log(chipsData);
   await yupChipsValidation
     .validate(chipsData, { abortEarly: false })
     .then((value) => {
@@ -13,8 +15,8 @@ export const newChipsValidation = async (
         comments: {},
         likes: [],
         tags: value.tags.split(','),
-        pictureUrl: [],
-        circle: ['Public'],
+        pictureUrl: picsUrls,
+        circle: value.circle.split(','),
       };
     });
   return inpData;

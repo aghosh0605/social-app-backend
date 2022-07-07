@@ -17,7 +17,7 @@ const checkFileType = (
     cb(null, true);
   } else {
     cb(null, false);
-    cb(new Error('Only images and videos formats allowed!')); //Error if not validates
+    cb(new Error('🚫 Only images and videos formats allowed!')); //Error if not validates
   }
 };
 export const uploadS3 = multer({

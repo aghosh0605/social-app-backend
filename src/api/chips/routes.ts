@@ -28,13 +28,31 @@ chipsRoute.get(
 chipsRoute.post(
   '/create',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const result = await postService(req, res);
-    if (!result) {
-      res.status(500).json({ success: false, message: 'Something is wrong' });
-      return;
+    try {
+      const result: responseSchema = await postService(req, res);
+      res
+        .status(result.status)
+        .json({ success: result.success, message: result.message });
+      next();
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        let message: string = '';
+        err.errors?.forEach((e: string) => {
+          message += `${e}. `;
+        }); // => [ Array of Validation Errors ]
+        Logger.error(message);
+        res.status(400).json({
+          success: false,
+          message: message,
+        });
+      } else {
+        Logger.error('Unknown Error Occurred!: \n', err);
+        res.status(500).json({
+          success: false,
+          message: '❌ Unknown Error Occurred!!',
+        });
+      }
     }
-    res.status(200).json({ success: true, message: 'Posted Successfully' });
-    next();
   }
 );
 
