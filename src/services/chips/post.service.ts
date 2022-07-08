@@ -32,7 +32,7 @@ export const postService = async (req, res) => {
       message: `❗ ${catchError}`,
     };
   }
-  const finalData: dbSchema = await bodyValidator(req.body, picData);
+  const finalData: dbSchema = await bodyValidator(req.body, picData, req.files);
   const data: Db = await db();
   await data.collection('posts').insertOne(finalData);
   return { status: 200, success: true, message: '✅ Uploaded Successfully' };

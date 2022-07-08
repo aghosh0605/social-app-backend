@@ -1,15 +1,6 @@
-const { S3Client } = require('@aws-sdk/client-s3');
 const multerS3 = require('multer-s3');
-
+import { s3Initalize } from './s3Client';
 import config from '../config/index';
-
-const s3Initalize = new S3Client({
-  region: config.awsBucketRegion,
-  credentials: {
-    accessKeyId: config.awsAccessKey,
-    secretAccessKey: config.awsSecretKey,
-  },
-});
 
 export const multerS3Config = multerS3({
   s3: s3Initalize,
