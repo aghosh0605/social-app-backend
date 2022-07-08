@@ -4,14 +4,10 @@ Below are the TODOs of piechips
 
 ### Todo
 
-- [ ] POST API Picture Upload Add
-- [ ] Authentication API
-
 ### In Progress
 
-- [ ] Work on the POST API Improve
-- [ ] Work on the POST Schema Improve
-  - [ ] Extend the POST Schema for DBSchema
+- [ ] Authentication API
+- [ ] comments API
 
 ### Done ✓
 
@@ -27,3 +23,7 @@ Below are the TODOs of piechips
 - [x] Basic Database Schema Define
 - [x] Heroku Host for Devs
 - [x] TODO Develop
+- [x] Work on the POST API Improve
+- [x] Work on the POST Schema Improve
+  - [x] Extend the POST Schema for DBSchema
+- [x] POST API Picture Upload Add

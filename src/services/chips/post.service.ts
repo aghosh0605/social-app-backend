@@ -19,7 +19,7 @@ export const postService = async (req, res) => {
       for (let i = 0; i < req.files.length; i++) {
         data[i] = {
           filename: req.files[i].location,
-          resType: req.files[i].mimetype,
+          fileType: req.files[i].mimetype,
         };
       }
       resolve(data);
