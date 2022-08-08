@@ -7,6 +7,7 @@ export interface dbSchema {
   category: string;
   about: string;
   private: boolean;
+  posts: Array<object>;
 }
 
 export interface dbSchemaID extends dbSchema {
