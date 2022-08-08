@@ -1,15 +1,19 @@
-import { NextFunction, Request, Response, Router } from "express";
-import Logger from "../../loaders/logger";
-import validateQuery from "../../middlewares/validate-query";
+import { NextFunction, Request, Response, Router } from 'express';
+import Logger from '../../loaders/logger';
+import validateQuery from '../../middlewares/authentication/validate-query';
 import {
   LoginRequest,
   LoginRequestSchema,
   SignupRequest,
   SignupRequestSchema,
-} from "../../models/auth/auth.schema";
-import { LoginUser, SignupUser } from "../../services/auth/auth.services";
+} from '../../models/auth/auth.schema';
+import { LoginUser, SignupUser } from '../../services/auth/auth.services';
 
 const authRoutes = Router();
+
+// export type RequestType = {
+//   [prop: string]: any;
+// } & Request;
 
 const handleLogin = async (
   req: Request,
@@ -18,13 +22,17 @@ const handleLogin = async (
 ): Promise<void> => {
   try {
     const { username, password } = req.body as LoginRequest;
-    const authToken = await LoginUser(username, password);
+    const userToken = await LoginUser(username, password);
     res.status(200).json({
       success: true,
-      token: authToken,
+      token: userToken,
     });
+    next();
   } catch (err) {
-    Logger.error(err);
+    Logger.error(err.errorStack || err);
+    res
+      .status(err.statusCode || 500)
+      .json({ status: false, message: err.message || 'Unknown Error Occured' });
   }
 };
 
@@ -40,20 +48,24 @@ const handleSignup = async (
       success: true,
       status: `${username} Successfully Signed Up`,
     });
+    next();
   } catch (err) {
-    Logger.error(err);
+    Logger.error(err.errorStack || err);
+    res
+      .status(err.statusCode || 500)
+      .json({ status: false, message: err.message || 'Unknown Error Occured' });
   }
 };
 
 authRoutes.post(
-  "/login",
-  validateQuery("body", LoginRequestSchema),
+  '/login',
+  validateQuery('body', LoginRequestSchema),
   handleLogin
 );
 
 authRoutes.post(
-  "/signup",
-  validateQuery("body", SignupRequestSchema),
+  '/signup',
+  validateQuery('body', SignupRequestSchema),
   handleSignup
 );
 
