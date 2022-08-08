@@ -5,10 +5,19 @@ import Logger from "../../loaders/logger";
 import checkFileSize from "../../middlewares/storage/fileSizeVerification";
 
 export const postService = async (req, res) => {
-  const fileInfo: any = await checkFileSize(req, res, "profileUrl");
+  //   const profileInfo: any = await checkFileSize(req, res, "profileUrl");
 
-  if (!fileInfo.verified) {
-    return { status: 500, success: false, message: "file size exceeded" };
+  //   if (!profileInfo.verified) {
+  //     return { status: 500, success: false, message: profileInfo.message };
+  //   }
+
+  const imagesInfo: any = await checkFileSize(req, res, [
+    { name: "profileUrl" },
+    { name: "bannerUrl" },
+  ]);
+
+  if (!imagesInfo.status) {
+    return { status: 500, success: false, message: imagesInfo.message };
   }
 
   const newCircleData: dbSchema = { ...req.body, posts: [] };
