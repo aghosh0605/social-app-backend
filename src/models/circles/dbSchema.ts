@@ -6,7 +6,7 @@ export interface dbSchema {
   name: string;
   category: string;
   about: string;
-  status: string;
+  private: boolean;
 }
 
 export interface dbSchemaID extends dbSchema {
