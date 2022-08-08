@@ -1,8 +1,8 @@
-import db from '../../loaders/database';
+import db from '../../../loaders/database';
 import { Db } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import config from '../../config/index';
+import config from '../../../config/index';
 
 export const LoginUser = async (username: string, password: string) => {
   const data: Db = await db();

@@ -1,9 +1,9 @@
 import { Db } from 'mongodb';
-import db from '../../loaders/database';
-import { bodyValidator } from '../../middlewares/chips/bodyValidation';
-import { dbSchema } from '../../models/chips/dbSchema';
-import { uploadS3 } from '../../middlewares/chips/filesValidate';
-import Logger from '../../loaders/logger';
+import db from '../../../loaders/database';
+import { bodyValidator } from '../../../middlewares/chips/bodyValidation';
+import { dbSchema } from '../../../models/chips/dbSchema';
+import { uploadS3 } from '../../../middlewares/chips/filesValidate';
+import Logger from '../../../loaders/logger';
 
 export const postService = async (req, res) => {
   let catchError;

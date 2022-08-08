@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../loaders/logger';
 import { responseSchema } from '../../models/responseSchema';
-import { postService } from '../../services/chips/post.service';
-import { getService } from '../../services/chips/get.service';
-import { deleteService } from '../../services/chips/delete.service';
+import { postService } from './controllers/post.service';
+import { getService } from './controllers/get.service';
+import { deleteService } from './controllers/delete.service';
 import {
   commentPostService,
   commentDeleteService,
-} from '../../services/chips/comments.service';
+} from './controllers/comments.service';
 
 const chipsRoute = Router();
 
