@@ -20,6 +20,7 @@ chipsRoute.get(
       res.status(200).json(resData);
       next();
     } catch (error) {
+      res.status(500).send('Unknown Error');
       Logger.error(error);
     }
   }
@@ -64,6 +65,7 @@ chipsRoute.delete(
       res.status(resData.status).json(resData.message);
       next();
     } catch (error) {
+      res.status(500).json(error);
       Logger.error(error);
     }
   }
@@ -77,6 +79,7 @@ chipsRoute.put(
       res.status(200).json(resData);
       next();
     } catch (error) {
+      res.status(500).json(error);
       Logger.error(error);
     }
   }
@@ -90,6 +93,7 @@ chipsRoute.delete(
       res.status(200).json(resData);
       next();
     } catch (error) {
+      res.status(500).json(error);
       Logger.error(error);
     }
   }

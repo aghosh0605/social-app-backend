@@ -20,4 +20,12 @@ export default ({ app }: { app: express.Application }): void => {
 
   // Load API routes
   app.use(config.api.prefix, routes());
+
+  //when we use next(err) it will go to error handling middleware and it will catch error and send response.
+  app.use((err, req, res, next) => {
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || 'Unknown error occurred',
+    });
+  });
 };
