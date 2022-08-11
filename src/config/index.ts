@@ -25,6 +25,7 @@ export default {
   awsBucketRegion: process.env.AWS_BUCKET_REGION_PIECHIPS,
   awsAccessKey: process.env.AWS_ACCESS_KEY_PIECHIPS,
   awsSecretKey: process.env.AWS_SECRET_KEY_PIECHIPS,
+  awsBucketBaseURL: process.env.AWS_BUCKET_BASEURL,
 
   /**
    * Used by Winston logger

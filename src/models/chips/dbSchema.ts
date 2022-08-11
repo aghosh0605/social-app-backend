@@ -11,7 +11,7 @@ export interface dbSchema {
   };
   likes: Array<Object>;
   tags: Array<string>;
-  pictureUrl: Array<object>;
+  picURL: Array<object>;
   circle: Array<string>;
 }
 

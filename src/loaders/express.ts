@@ -34,7 +34,7 @@ export default ({ app }: { app: express.Application }): void => {
     limits: { fileSize: 5 * 1024 * 1024 },
     abortOnLimit: true,
     responseOnLimit: 'File Size Limit exceeded',
-    debug: true,
+    // debug: true,
     parseNested: true,
     // useTempFiles: true,
     // tempFileDir: os.tmpdir(),
