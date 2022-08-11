@@ -29,7 +29,7 @@ const validateQuery =
       error.errors.forEach((e: string) => {
         message += `${e}. `;
       });
-      next(message);
+      next({ statusCode: 400, message: message });
     }
   };
 

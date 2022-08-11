@@ -1,11 +1,12 @@
 import cors from 'cors';
-import os from 'os';
 import express from 'express';
 import helmet from 'helmet';
+import os from 'os';
 import fileUpload from 'express-fileupload';
 import config from '../config';
 import routes from '../api';
 import rateLimit from 'express-rate-limit';
+import { nextError } from '../models/errorSchema';
 
 export default ({ app }: { app: express.Application }): void => {
   // It shows the real origin IP in the heroku or Cloudwatch logs
@@ -47,10 +48,10 @@ export default ({ app }: { app: express.Application }): void => {
   app.use(config.api.prefix, routes());
 
   //when we use next(err) it will go to error handling middleware and it will catch error and send response.
-  app.use((err, req, res, next) => {
+  app.use((err: nextError, req, res, next) => {
     res.status(err.statusCode || 500).json({
       status: false,
-      message: err.message || 'Unknown error occurred',
+      message: err.message || '❌ Unknown Error Occurred !! ',
     });
   });
 };

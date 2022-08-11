@@ -12,7 +12,7 @@ export const LoginUser = async (username: string, password: string) => {
   if (!userExists) {
     throw {
       statusCode: 400,
-      message: 'Please check your email or password',
+      message: 'Please create an account and try again',
     };
   } else {
     const valid = await bcrypt.compare(password, userExists?.password);
@@ -46,7 +46,7 @@ export const SignupUser = async (username: string, password: string) => {
   if (userExist) {
     throw {
       statusCode: 400,
-      message: 'User already exists',
+      message: 'User already exists. Kindly use Login',
     };
   } else {
     bcrypt.genSalt(10, (err: Error | undefined, salt: string) => {
@@ -63,7 +63,7 @@ export const SignupUser = async (username: string, password: string) => {
             } else {
               throw {
                 statusCode: 500,
-                message: 'Unknown error Occured',
+                message: 'Generation of password hash failed !!',
                 errorStack: err,
               };
             }
@@ -72,7 +72,7 @@ export const SignupUser = async (username: string, password: string) => {
       } else {
         throw {
           statusCode: 500,
-          message: 'Unknown error Occured',
+          message: 'Salt Generation Failed !!',
           errorStack: err,
         };
       }
