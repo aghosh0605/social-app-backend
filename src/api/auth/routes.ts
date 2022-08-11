@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../loaders/logger';
-import validateQuery from '../../middlewares/yupValidator';
+import yupValidator from '../../middlewares/yupValidator';
 import {
   LoginRequest,
   LoginRequestSchema,
@@ -61,13 +61,13 @@ const handleSignup = async (
 
 authRoutes.post(
   '/login',
-  validateQuery('body', LoginRequestSchema),
+  yupValidator('body', LoginRequestSchema),
   handleLogin
 );
 
 authRoutes.post(
   '/signup',
-  validateQuery('body', SignupRequestSchema),
+  yupValidator('body', SignupRequestSchema),
   handleSignup
 );
 

@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 import db from '../../../loaders/database';
-import { postSchema } from '../../../models/chips/postSchema';
+import { dbSchemaID } from '../../../models/chips/dbSchema';
 
-export const getService = async (): Promise<postSchema[]> => {
+export const getService = async (): Promise<dbSchemaID[]> => {
   const data: Db = await db();
   return await data.collection('posts').find().toArray();
 };

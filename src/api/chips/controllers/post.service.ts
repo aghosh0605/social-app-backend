@@ -2,7 +2,6 @@ import { UploadedFile } from 'express-fileupload';
 import { Db } from 'mongodb';
 import db from '../../../loaders/database';
 import { dbSchema } from '../../../models/chips/dbSchema';
-import { yupChipsValidation } from '../../../models/chips/postSchema';
 import { s3Upload } from '../../../utils/s3Client';
 
 export const postService = async (req, res): Promise<void> => {
@@ -15,12 +14,9 @@ export const postService = async (req, res): Promise<void> => {
       });
     } else {
       files.images.name = 'postsIamges/' + files.images.name;
-      s3Upload(files.images);
+      s3Upload(files.images as UploadedFile);
     }
   }
-  const validatedBody = await yupChipsValidation.validate(req.body, {
-    abortEarly: false,
-  });
   const data: Db = await db();
-  await data.collection('posts').insertOne(validatedBody);
+  await data.collection('posts').insertOne(req.body);
 };

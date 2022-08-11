@@ -3,6 +3,7 @@ import { Db } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import config from '../../../config/index';
+import { throwSchema } from '../../../models/errorSchema';
 
 export const LoginUser = async (username: string, password: string) => {
   const data: Db = await db();
@@ -13,7 +14,7 @@ export const LoginUser = async (username: string, password: string) => {
     throw {
       statusCode: 400,
       message: 'Please create an account and try again',
-    };
+    } as throwSchema;
   } else {
     const valid = await bcrypt.compare(password, userExists?.password);
     if (valid) {
@@ -33,7 +34,7 @@ export const LoginUser = async (username: string, password: string) => {
       throw {
         statusCode: 400,
         message: 'Please check your email or password',
-      };
+      } as throwSchema;
     }
   }
 };
@@ -47,7 +48,7 @@ export const SignupUser = async (username: string, password: string) => {
     throw {
       statusCode: 400,
       message: 'User already exists. Kindly use Login',
-    };
+    } as throwSchema;
   } else {
     bcrypt.genSalt(10, (err: Error | undefined, salt: string) => {
       if (!err) {
@@ -65,7 +66,7 @@ export const SignupUser = async (username: string, password: string) => {
                 statusCode: 500,
                 message: 'Generation of password hash failed !!',
                 errorStack: err,
-              };
+              } as throwSchema;
             }
           }
         );
@@ -74,7 +75,7 @@ export const SignupUser = async (username: string, password: string) => {
           statusCode: 500,
           message: 'Salt Generation Failed !!',
           errorStack: err,
-        };
+        } as throwSchema;
       }
     });
   }

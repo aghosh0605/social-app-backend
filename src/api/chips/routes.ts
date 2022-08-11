@@ -8,6 +8,9 @@ import {
   commentPostService,
   commentDeleteService,
 } from './controllers/comments.service';
+import { dbSchemaID } from '../../models/chips/dbSchema';
+import yupValidator from '../../middlewares/yupValidator';
+import { yupPostSchema } from '../../models/chips/postSchema';
 
 const chipsRoute = Router();
 
@@ -17,12 +20,15 @@ const getChips = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const resData = await getService();
-    res.status(200).json(resData);
+    const resData: dbSchemaID[] = await getService();
+    res.status(200).json({ status: true, message: resData });
     next();
-  } catch (error) {
-    res.status(500).send('Unknown Error');
-    Logger.error(error);
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || '❌ Unknown Error Occurred!!',
+    });
   }
 };
 
@@ -38,23 +44,11 @@ const createChips = async (
       .json({ success: true, message: '✅ Uploaded Successfully' });
     next();
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      let message: string = '';
-      err.errors?.forEach((e: string) => {
-        message += `${e}. `;
-      }); // => [ Array of Validation Errors ]
-      Logger.error(message);
-      res.status(400).json({
-        success: false,
-        message: message,
-      });
-    } else {
-      Logger.error('Unknown Error Occurred!: \n', err);
-      res.status(err.statusCode || 500).json({
-        success: false,
-        message: err.message || '❌ Unknown Error Occurred!!',
-      });
-    }
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || '❌ Unknown Error Occurred!!',
+    });
   }
 };
 
@@ -103,7 +97,11 @@ chipsRoute.get('/', getChips);
 
 chipsRoute.post('/create', createChips);
 
-chipsRoute.delete('/:id/delete', deleteChips);
+chipsRoute.delete(
+  '/:id/delete',
+  yupValidator('body', yupPostSchema),
+  deleteChips
+);
 
 chipsRoute.put('/comment/:id/update', makeComment);
 
