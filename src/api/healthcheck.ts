@@ -34,7 +34,7 @@ healthCheckRoute.get('/', (req: Request, res: Response, next: NextFunction) => {
       userInfo: os.userInfo(),
       serverUptime: formatTime(process.uptime()),
       osUptime: formatTime(os.uptime()),
-      reqIP: req.ip,
+      reqIP: req.ip, //reqIP==your public ip states that trust-proxy is correct in express server
     };
     res.status(200).json({ status: true, message: healthcheckData });
     next();
