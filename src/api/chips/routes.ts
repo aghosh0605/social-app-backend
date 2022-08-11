@@ -30,10 +30,10 @@ chipsRoute.post(
   '/create',
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const result: responseSchema = await postService(req, res);
+      await postService(req, res);
       res
-        .status(result.status)
-        .json({ success: result.success, message: result.message });
+        .status(200)
+        .json({ success: true, message: '✅ Uploaded Successfully' });
       next();
     } catch (err) {
       if (err.name === 'ValidationError') {
@@ -48,9 +48,9 @@ chipsRoute.post(
         });
       } else {
         Logger.error('Unknown Error Occurred!: \n', err);
-        res.status(500).json({
+        res.status(err.statusCode || 500).json({
           success: false,
-          message: '❌ Unknown Error Occurred!!',
+          message: err.message || '❌ Unknown Error Occurred!!',
         });
       }
     }

@@ -1,39 +1,26 @@
+import { UploadedFile } from 'express-fileupload';
 import { Db } from 'mongodb';
 import db from '../../../loaders/database';
-import { bodyValidator } from '../../../middlewares/chips/bodyValidation';
 import { dbSchema } from '../../../models/chips/dbSchema';
-import { uploadS3 } from '../../../middlewares/chips/filesValidate';
-import Logger from '../../../loaders/logger';
+import { yupChipsValidation } from '../../../models/chips/postSchema';
+import { s3Upload } from '../../../utils/s3Client';
 
-export const postService = async (req, res) => {
-  let catchError;
-  const picData: Array<Object> = await new Promise((resolve) => {
-    uploadS3.array('images', 5)(req, res, (err) => {
-      if (err) {
-        catchError = err.message;
-        Logger.error(err.message);
-        resolve(undefined);
-        return;
-      }
-      let data: Array<Object> = [];
-      for (let i = 0; i < req.files.length; i++) {
-        data[i] = {
-          filename: req.files[i].location,
-          fileType: req.files[i].mimetype,
-        };
-      }
-      resolve(data);
-    });
-  });
-  if (!picData) {
-    return {
-      status: 404,
-      success: false,
-      message: `❗ ${catchError}`,
-    };
+export const postService = async (req, res): Promise<void> => {
+  const files = Object.assign({}, req.files);
+  if (Object.keys(files).length > 0) {
+    if (files.images > 1) {
+      files.images.forEach((element: UploadedFile) => {
+        element.name = 'postsIamges/' + element.name;
+        s3Upload(element);
+      });
+    } else {
+      files.images.name = 'postsIamges/' + files.images.name;
+      s3Upload(files.images);
+    }
   }
-  const finalData: dbSchema = await bodyValidator(req.body, picData, req.files);
+  const validatedBody = await yupChipsValidation.validate(req.body, {
+    abortEarly: false,
+  });
   const data: Db = await db();
-  await data.collection('posts').insertOne(finalData);
-  return { status: 200, success: true, message: '✅ Uploaded Successfully' };
+  await data.collection('posts').insertOne(validatedBody);
 };

@@ -9,7 +9,7 @@ export default (): Router => {
   //TODO: add routes here...
   app.use('/auth', authRoutes);
   app.use('/', healthCheckRoute);
-  app.use('/posts', validateJWT, chipsRoute);
+  app.use('/posts', chipsRoute);
 
   return app;
 };
