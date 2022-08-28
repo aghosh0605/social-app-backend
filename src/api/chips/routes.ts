@@ -1,102 +1,110 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../loaders/logger';
 import { responseSchema } from '../../models/responseSchema';
-import { postService } from '../../services/chips/post.service';
-import { getService } from '../../services/chips/get.service';
-import { deleteService } from '../../services/chips/delete.service';
+import { postService } from './controllers/post.service';
+import { getService } from './controllers/get.service';
+import { deleteService } from './controllers/delete.service';
 import {
   commentPostService,
   commentDeleteService,
-} from '../../services/chips/comments.service';
+} from './controllers/comments.service';
+import { dbSchemaID } from '../../models/chips/dbSchema';
+import yupValidator from '../../middlewares/yupValidator';
+import { yupPostSchema } from '../../models/chips/postSchema';
 
 const chipsRoute = Router();
 
-// http://localhost:3000/api/posts
-chipsRoute.get(
-  '/',
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const resData = await getService();
-      res.status(200).json(resData);
-      next();
-    } catch (error) {
-      res.status(500).send('Unknown Error');
-      Logger.error(error);
-    }
+const getChips = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const resData: dbSchemaID[] = await getService();
+    res.status(200).json({ status: true, message: resData });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || '❌ Unknown Error Occurred!!',
+    });
   }
-);
+};
 
-chipsRoute.post(
-  '/create',
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const result: responseSchema = await postService(req, res);
-      res
-        .status(result.status)
-        .json({ success: result.success, message: result.message });
-      next();
-    } catch (err) {
-      if (err.name === 'ValidationError') {
-        let message: string = '';
-        err.errors?.forEach((e: string) => {
-          message += `${e}. `;
-        }); // => [ Array of Validation Errors ]
-        Logger.error(message);
-        res.status(400).json({
-          success: false,
-          message: message,
-        });
-      } else {
-        Logger.error('Unknown Error Occurred!: \n', err);
-        res.status(500).json({
-          success: false,
-          message: '❌ Unknown Error Occurred!!',
-        });
-      }
-    }
+const createChips = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    await postService(req, res);
+    res
+      .status(200)
+      .json({ success: true, message: '✅ Uploaded Successfully' });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || '❌ Unknown Error Occurred!!',
+    });
   }
-);
+};
+
+const deleteChips = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const resData: responseSchema = await deleteService(req.params);
+    res.status(resData.status).json(resData.message);
+    next();
+  } catch (error) {
+    res.status(500).json(error);
+    Logger.error(error);
+  }
+};
+
+const makeComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const resData = await commentPostService(req);
+    res.status(200).json(resData);
+    next();
+  } catch (error) {
+    res.status(500).json(error);
+    Logger.error(error);
+  }
+};
+
+const deleteComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const resData = await commentDeleteService(req);
+    res.status(200).json(resData);
+    next();
+  } catch (error) {
+    res.status(500).json(error);
+    Logger.error(error);
+  }
+};
+
+chipsRoute.get('/', getChips);
+
+chipsRoute.post('/create', createChips);
 
 chipsRoute.delete(
   '/:id/delete',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const resData: responseSchema = await deleteService(req.params);
-      res.status(resData.status).json(resData.message);
-      next();
-    } catch (error) {
-      res.status(500).json(error);
-      Logger.error(error);
-    }
-  }
+  yupValidator('body', yupPostSchema),
+  deleteChips
 );
 
-chipsRoute.put(
-  '/comment/:id/update',
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const resData = await commentPostService(req);
-      res.status(200).json(resData);
-      next();
-    } catch (error) {
-      res.status(500).json(error);
-      Logger.error(error);
-    }
-  }
-);
+chipsRoute.put('/comment/:id/update', makeComment);
 
-chipsRoute.delete(
-  '/comment/:id/delete',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const resData = await commentDeleteService(req);
-      res.status(200).json(resData);
-      next();
-    } catch (error) {
-      res.status(500).json(error);
-      Logger.error(error);
-    }
-  }
-);
+chipsRoute.delete('/comment/:id/delete', deleteComment);
 
 export default chipsRoute;

@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 type RequestLocations = 'query' | 'body' | 'params' | 'headers';
 
-const validateQuery =
+const yupValidator =
   (location: RequestLocations, schema: yup.ObjectSchema<any>) =>
   async (req: Request, res: Response, next: NextFunction) => {
     let _location: any;
@@ -29,8 +29,8 @@ const validateQuery =
       error.errors.forEach((e: string) => {
         message += `${e}. `;
       });
-      next(message);
+      next({ statusCode: 400, message: message });
     }
   };
 
-export default validateQuery;
+export default yupValidator;

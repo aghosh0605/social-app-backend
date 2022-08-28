@@ -1,7 +1,7 @@
 import { Db, DeleteWriteOpResultObject, ObjectID } from 'mongodb';
-import db from '../../loaders/database';
-import { responseSchema } from '../../models/responseSchema';
-import Logger from '../../loaders/logger';
+import db from '../../../loaders/database';
+import { responseSchema } from '../../../models/responseSchema';
+import Logger from '../../../loaders/logger';
 
 export const deleteService = async (id): Promise<responseSchema> => {
   const data: Db = await db();

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../loaders/logger';
-import validateQuery from '../../middlewares/authentication/validate-query';
+import yupValidator from '../../middlewares/yupValidator';
 import {
   LoginRequest,
   LoginRequestSchema,
   SignupRequest,
   SignupRequestSchema,
 } from '../../models/auth/auth.schema';
-import { LoginUser, SignupUser } from '../../services/auth/auth.services';
+import { LoginUser, SignupUser } from './controllers/auth.services';
 
 const authRoutes = Router();
 
@@ -30,9 +30,10 @@ const handleLogin = async (
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
-    res
-      .status(err.statusCode || 500)
-      .json({ status: false, message: err.message || 'Unknown Error Occured' });
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || '❌ Unknown Error Occurred !! ',
+    });
   }
 };
 
@@ -46,26 +47,27 @@ const handleSignup = async (
     await SignupUser(username, password);
     res.status(201).json({
       success: true,
-      status: `${username} Successfully Signed Up`,
+      status: `✅ ${username} Successfully Signed Up`,
     });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
-    res
-      .status(err.statusCode || 500)
-      .json({ status: false, message: err.message || 'Unknown Error Occured' });
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || '❌ Unknown Error Occurred !! ',
+    });
   }
 };
 
 authRoutes.post(
   '/login',
-  validateQuery('body', LoginRequestSchema),
+  yupValidator('body', LoginRequestSchema),
   handleLogin
 );
 
 authRoutes.post(
   '/signup',
-  validateQuery('body', SignupRequestSchema),
+  yupValidator('body', SignupRequestSchema),
   handleSignup
 );
 
