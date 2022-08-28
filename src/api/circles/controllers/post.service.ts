@@ -35,7 +35,7 @@ export const postService = async (req, res): Promise<void> => {
         ContentType: element.data.mimetype,
         imageType: element.imageType,
       });
-      // await s3Upload(element.data);
+      await s3Upload(element.data);
     });
   }
 
@@ -49,7 +49,5 @@ export const postService = async (req, res): Promise<void> => {
     posts: [],
   };
 
-  console.log(inData);
-
-  // await data.collection("circles").insertOne(inData);
+  await data.collection("circles").insertOne(inData);
 };
