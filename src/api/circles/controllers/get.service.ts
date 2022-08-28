@@ -1,5 +1,5 @@
 import { Db } from "mongodb";
-import db from "../../loaders/database";
+import db from "../../../loaders/database";
 
 export const getService = async () => {
   const data: Db = await db();

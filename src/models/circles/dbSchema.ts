@@ -1,8 +1,7 @@
 import { ObjectID } from "mongodb";
 
 export interface dbSchema {
-  profileUrl: Array<object>;
-  bannerUrl: Array<object>;
+  imagesData: Array<object>;
   name: string;
   category: string;
   about: string;
