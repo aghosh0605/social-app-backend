@@ -1,6 +1,6 @@
-import { Db, MongoClient } from "mongodb";
-import config from "../config";
-import Logger from "./../loaders/logger";
+import { Db, MongoClient } from 'mongodb';
+import config from '../config';
+import Logger from './../loaders/logger';
 
 let db: Db;
 
@@ -18,7 +18,7 @@ export default async (): Promise<Db> => {
   if (!db) {
     db = await initializeClient();
     Logger.warn(
-      `🟨 New Instance of Mongo Database ${db.databaseName} is called!`
+      `✋ New Instance of Mongo Database ${db.databaseName} is called!`
     );
   }
 

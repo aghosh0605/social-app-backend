@@ -10,6 +10,9 @@
     <img src="https://img.shields.io/badge/version-0.1.0-orange" alt="version 0.1.0"/>
 </p>
 
+## TODO 
+To know what was done till now and what is left till now along with running progress.[Click Here](./todo.md#section)
+
 ## Built With 🚀
 
 - [Node.js](https://nodejs.org/)
