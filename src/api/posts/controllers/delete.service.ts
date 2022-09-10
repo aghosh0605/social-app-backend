@@ -1,4 +1,4 @@
-import { DeleteWriteOpResultObject, ObjectID, Collection } from 'mongodb';
+import { Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { responseSchema } from '../../../models/responseSchema';
 import Logger from '../../../loaders/logger';
@@ -7,19 +7,19 @@ export const deleteService = async (id): Promise<responseSchema> => {
   const postsCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('posts');
-  const resData: DeleteWriteOpResultObject = await postsCollection.deleteOne({
-    _id: new ObjectID(id),
+  const resData: DeleteResult = await postsCollection.deleteOne({
+    _id: new Object(id),
   });
 
-  if (!resData.result.n) {
-    return { status: 404, success: false, message: 'Not Found' };
-  }
-  if (resData.deletedCount) {
-    return { status: 200, success: true, message: 'Deleted' };
-  }
+  // if (!resData.) {
+  //   return { status: 404, success: false, message: 'Not Found' };
+  // }
+  // if (resData.deletedCount) {
+  //   return { status: 200, success: true, message: 'Deleted' };
+  // }
 
-  Logger.warn(
-    `Found Results\n: ${resData.result} \n Deleted Results: ${resData.deletedCount}\n`
-  );
+  // Logger.warn(
+  //   `Found Results\n: ${resData.result} \n Deleted Results: ${resData.deletedCount}\n`
+  // );
   return { status: 204, success: false, message: 'No Content' };
 };

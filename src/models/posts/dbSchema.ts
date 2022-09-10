@@ -1,5 +1,3 @@
-import { ObjectID } from 'mongodb';
-
 export interface dbSchema {
   caption: string;
   comments: {
@@ -16,5 +14,5 @@ export interface dbSchema {
 }
 
 export interface dbSchemaID extends dbSchema {
-  readonly _id: ObjectID;
+  readonly _id: Object;
 }

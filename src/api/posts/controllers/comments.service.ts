@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { ObjectID, Collection } from 'mongodb';
+import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 
 export const commentPostService = async (req: Request) => {
@@ -8,7 +8,7 @@ export const commentPostService = async (req: Request) => {
   ).getCollection('posts');
   const commentData = await postsCollection.updateOne(
     {
-      _id: new ObjectID(req.params.id),
+      _id: new Object(req.params.id),
     },
     {
       $set: {
@@ -27,7 +27,7 @@ export const commentDeleteService = async (req: Request) => {
   ).getCollection('posts');
   const commentData = await postsCollection.updateOne(
     {
-      _id: new ObjectID(req.params.id),
+      _id: new Object(req.params.id),
     },
     {
       $set: {
