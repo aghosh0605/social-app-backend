@@ -5,10 +5,9 @@ import {
   PutObjectCommand,
   PutObjectCommandOutput,
   PutObjectCommandInput,
-  MetadataEntry,
 } from '@aws-sdk/client-s3';
 import { UploadedFile } from 'express-fileupload';
-
+import Logger from '../loaders/logger';
 import config from '../config/index';
 
 const s3Initalize: S3Client = new S3Client({

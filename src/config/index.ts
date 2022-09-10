@@ -11,7 +11,8 @@ export default {
   /**
    * Database the app should connect to
    */
-  databaseURL: process.env.MONGODB_URI,
+  dbURL: process.env.MONGODB_URI,
+  dbName: process.env.MONGO_DB_NAME,
 
   /**
    * The secret sauce to validate JWT

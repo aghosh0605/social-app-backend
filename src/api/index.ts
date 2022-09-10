@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import chipsRoute from './chips/routes';
+import chipsRoute from './posts/routes';
 import healthCheckRoute from './healthcheck';
 import authRoutes from './auth/routes';
 import validateJWT from '../middlewares/authentication/verify-jwt';

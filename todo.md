@@ -6,8 +6,10 @@ Below are the TODOs of piechips
 
 ### In Progress
 
-- [ ] Authentication API
-- [ ] comments API
+- [ ] OTP Verification Login
+- [ ] Like API
+- [ ] Circle API
+- [ ] OAuth Login
 
 ### Done ✓
 
@@ -27,3 +29,5 @@ Below are the TODOs of piechips
 - [x] Work on the POST Schema Improve
   - [x] Extend the POST Schema for DBSchema
 - [x] POST API Picture Upload Add
+- [x] Authentication API
+- [x] Comments API

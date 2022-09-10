@@ -1,10 +1,12 @@
 import { Request } from 'express';
-import { Db, ObjectID } from 'mongodb';
-import db from '../../../loaders/database';
+import { ObjectID, Collection } from 'mongodb';
+import { DBInstance } from '../../../loaders/database';
 
 export const commentPostService = async (req: Request) => {
-  const data: Db = await db();
-  const commentData = await data.collection('posts').updateOne(
+  const postsCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('posts');
+  const commentData = await postsCollection.updateOne(
     {
       _id: new ObjectID(req.params.id),
     },
@@ -20,8 +22,10 @@ export const commentPostService = async (req: Request) => {
 };
 
 export const commentDeleteService = async (req: Request) => {
-  const data: Db = await db();
-  const commentData = await data.collection('posts').updateOne(
+  const postsCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('posts');
+  const commentData = await postsCollection.updateOne(
     {
       _id: new ObjectID(req.params.id),
     },

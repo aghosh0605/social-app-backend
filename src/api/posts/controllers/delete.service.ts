@@ -1,15 +1,15 @@
-import { Db, DeleteWriteOpResultObject, ObjectID } from 'mongodb';
-import db from '../../../loaders/database';
+import { DeleteWriteOpResultObject, ObjectID, Collection } from 'mongodb';
+import { DBInstance } from '../../../loaders/database';
 import { responseSchema } from '../../../models/responseSchema';
 import Logger from '../../../loaders/logger';
 
 export const deleteService = async (id): Promise<responseSchema> => {
-  const data: Db = await db();
-  const resData: DeleteWriteOpResultObject = await data
-    .collection('posts')
-    .deleteOne({
-      _id: new ObjectID(id),
-    });
+  const postsCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('posts');
+  const resData: DeleteWriteOpResultObject = await postsCollection.deleteOne({
+    _id: new ObjectID(id),
+  });
 
   if (!resData.result.n) {
     return { status: 404, success: false, message: 'Not Found' };

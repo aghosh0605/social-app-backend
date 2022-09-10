@@ -1,13 +1,15 @@
-import db from '../../../loaders/database';
-import { Db } from 'mongodb';
+import { Collection } from 'mongodb';
+import { DBInstance } from '../../../loaders/database';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import config from '../../../config/index';
 import { throwSchema } from '../../../models/errorSchema';
 
 export const LoginUser = async (username: string, password: string) => {
-  const data: Db = await db();
-  const userExists = await data.collection('users').findOne({
+  const usersCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('users');
+  const userExists = await usersCollection.findOne({
     username: username,
   });
   if (!userExists) {
@@ -40,10 +42,10 @@ export const LoginUser = async (username: string, password: string) => {
 };
 
 export const SignupUser = async (username: string, password: string) => {
-  const data: Db = await db();
-  const userExist = await data
-    .collection('users')
-    .findOne({ username: username });
+  const usersCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('users');
+  const userExist = await usersCollection.findOne({ username: username });
   if (userExist) {
     throw {
       statusCode: 400,
@@ -57,7 +59,7 @@ export const SignupUser = async (username: string, password: string) => {
           salt,
           async (err: Error | undefined, hash: string) => {
             if (!err) {
-              await data.collection('users').insertOne({
+              await usersCollection.insertOne({
                 username: username,
                 password: hash,
               });

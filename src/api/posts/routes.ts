@@ -8,9 +8,9 @@ import {
   commentPostService,
   commentDeleteService,
 } from './controllers/comments.service';
-import { dbSchemaID } from '../../models/chips/dbSchema';
+import { dbSchemaID } from '../../models/posts/dbSchema';
 import yupValidator from '../../middlewares/yupValidator';
-import { yupPostSchema } from '../../models/chips/postSchema';
+import { yupPostSchema } from '../../models/posts/postSchema';
 
 const chipsRoute = Router();
 

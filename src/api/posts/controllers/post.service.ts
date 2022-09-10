@@ -1,7 +1,7 @@
 import { UploadedFile } from 'express-fileupload';
-import { Db } from 'mongodb';
-import db from '../../../loaders/database';
-import { dbSchema } from '../../../models/chips/dbSchema';
+import { Collection } from 'mongodb';
+import { DBInstance } from '../../../loaders/database';
+import { dbSchema } from '../../../models/posts/dbSchema';
 import { s3Upload } from '../../../utils/s3Client';
 import config from '../../../config';
 
@@ -17,7 +17,7 @@ export const postService = async (req, res): Promise<void> => {
           path: config.awsBucketBaseURL + element.name,
           ContentType: element.mimetype,
         });
-        await s3Upload(element);
+        await s3Upload(element as UploadedFile);
       });
     } else {
       files.images.name = 'postsIamges/' + files.images.name;
@@ -29,7 +29,9 @@ export const postService = async (req, res): Promise<void> => {
     }
   }
 
-  const data: Db = await db();
+  const postsCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('posts');
   const inData: dbSchema = {
     caption: req.body.caption,
     comments: {},
@@ -39,5 +41,5 @@ export const postService = async (req, res): Promise<void> => {
     circle: req.body.circle.split(','),
   };
 
-  await data.collection('posts').insertOne(inData);
+  await postsCollection.insertOne(inData);
 };
