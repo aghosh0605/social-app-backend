@@ -1,11 +1,13 @@
 import { UploadedFile } from 'express-fileupload';
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { dbSchema } from '../../../models/posts/dbSchema';
+import { postSchema } from '../../../models/postSchema';
 import { s3Upload } from '../../../utils/s3Client';
 import config from '../../../config';
+import { NextFunction, Request, Response, Router } from 'express';
+import Logger from '../../../loaders/logger';
 
-export const postService = async (req, res): Promise<void> => {
+const postService = async (req, res): Promise<void> => {
   const files = Object.assign({}, req.files);
   const picURL: Array<Object> = [];
 
@@ -32,14 +34,32 @@ export const postService = async (req, res): Promise<void> => {
   const postsCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('posts');
-  const inData: dbSchema = {
-    caption: req.body.caption,
-    comments: {},
-    likes: [],
-    tags: req.body.tags.split(','),
-    picURL: picURL,
-    circle: req.body.circle.split(','),
-  };
+  // const inData: postSchema = {
+  //   caption: req.body.caption,
+  //   tags: req.body.tags.split(','),
+  //   mediaURLs: picURL,
+  //   circle: req.body.circle.split(','),
+  // };
 
-  await postsCollection.insertOne(inData);
+  // await postsCollection.insertOne(inData);
+};
+
+export const createPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    await postService(req, res);
+    res
+      .status(200)
+      .json({ success: true, message: '✅ Uploaded Successfully' });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || '❌ Unknown Error Occurred!!',
+    });
+  }
 };

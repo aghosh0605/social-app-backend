@@ -6,7 +6,7 @@ import {
   LoginRequestSchema,
   SignupRequest,
   SignupRequestSchema,
-} from '../../models/auth/auth.schema';
+} from '../../models/auth.schema';
 import { LoginUser, SignupUser } from './controllers/auth.services';
 
 const authRoutes = Router();

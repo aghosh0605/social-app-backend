@@ -1,14 +1,15 @@
-import { Collection, DeleteResult } from 'mongodb';
+import { ObjectId, Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { responseSchema } from '../../../models/responseSchema';
+import { NextFunction, Request, Response, Router } from 'express';
 import Logger from '../../../loaders/logger';
 
-export const deleteService = async (id): Promise<responseSchema> => {
+const deleteService = async (id): Promise<responseSchema> => {
   const postsCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('posts');
   const resData: DeleteResult = await postsCollection.deleteOne({
-    _id: new Object(id),
+    _id: new ObjectId(id),
   });
 
   // if (!resData.) {
@@ -22,4 +23,19 @@ export const deleteService = async (id): Promise<responseSchema> => {
   //   `Found Results\n: ${resData.result} \n Deleted Results: ${resData.deletedCount}\n`
   // );
   return { status: 204, success: false, message: 'No Content' };
+};
+
+export const deletePosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const resData: responseSchema = await deleteService(req.params);
+    res.status(resData.status).json(resData.message);
+    next();
+  } catch (error) {
+    res.status(500).json(error);
+    Logger.error(error);
+  }
 };
