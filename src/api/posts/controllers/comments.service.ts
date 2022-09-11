@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
 export const makeComment = async (

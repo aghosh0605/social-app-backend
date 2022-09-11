@@ -1,7 +1,7 @@
 import { ObjectId, Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { responseSchema } from '../../../models/responseSchema';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
 const deleteService = async (id): Promise<responseSchema> => {

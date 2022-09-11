@@ -4,7 +4,7 @@ import { DBInstance } from '../../../loaders/database';
 import { postSchema } from '../../../models/postSchema';
 import { s3Upload } from '../../../utils/s3Client';
 import config from '../../../config';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
 const postService = async (req, res): Promise<void> => {

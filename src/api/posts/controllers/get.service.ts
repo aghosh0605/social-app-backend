@@ -1,7 +1,7 @@
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { postSchema } from '../../../models/postSchema';
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
 export const getPosts = async (
