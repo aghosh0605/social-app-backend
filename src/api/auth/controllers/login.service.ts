@@ -6,7 +6,7 @@ import config from '../../../config/index';
 import { throwSchema } from '../../../models/errorSchema';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { LoginRequest } from '../../../models/auth.schema';
+import { LoginSchema } from '../../../models/auth.schema';
 
 const LoginUser = async (username: string, password: string) => {
   const usersCollection: Collection<any> = await (
@@ -50,7 +50,7 @@ export const handleLogin = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password } = req.body as LoginRequest;
+    const { username, password } = req.body as LoginSchema;
     const userToken = await LoginUser(username, password);
     res.status(200).json({
       success: true,

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import postsRoute from './posts/routes';
 import healthCheckRoute from './healthcheck';
 import authRoutes from './auth/routes';
-import validateJWT from '../middlewares/authentication/verify-jwt';
+import validateJWT from '../middlewares/verify-jwt';
 export default (): Router => {
   const app = Router();
 

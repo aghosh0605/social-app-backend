@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as yup from 'yup';
 import { verify } from 'jsonwebtoken';
-import config from '../../config/index';
+import config from '../config/index';
 
 const JwtRequestSchema = yup.object({
   authorization: yup

@@ -4,7 +4,7 @@ import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/errorSchema';
 import * as bcrypt from 'bcrypt';
-import { SignupRequest } from '../../../models/auth.schema';
+import { SignupSchema } from '../../../models/auth.schema';
 
 const SignupUser = async (username: string, password: string) => {
   const usersCollection: Collection<any> = await (
@@ -54,7 +54,7 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password } = req.body as SignupRequest;
+    const { username, password } = req.body as SignupSchema;
     await SignupUser(username, password);
     res.status(201).json({
       success: true,

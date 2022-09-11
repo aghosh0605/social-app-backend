@@ -1,9 +1,6 @@
 import { Router } from 'express';
 import yupValidator from '../../middlewares/yupValidator';
-import {
-  LoginRequestSchema,
-  SignupRequestSchema,
-} from '../../models/auth.schema';
+import { yupLoginSchema, yupSignupSchema } from '../../models/auth.schema';
 import { handleLogin } from './controllers/login.service';
 import { handleSignup } from './controllers/signup.service';
 
@@ -13,16 +10,8 @@ const authRoutes = Router();
 //   [prop: string]: any;
 // } & Request;
 
-authRoutes.post(
-  '/login',
-  yupValidator('body', LoginRequestSchema),
-  handleLogin
-);
+authRoutes.post('/login', yupValidator('body', yupLoginSchema), handleLogin);
 
-authRoutes.post(
-  '/signup',
-  yupValidator('body', SignupRequestSchema),
-  handleSignup
-);
+authRoutes.post('/signup', yupValidator('body', yupSignupSchema), handleSignup);
 
 export default authRoutes;
