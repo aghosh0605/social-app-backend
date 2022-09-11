@@ -1,31 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
-import * as yup from 'yup';
-import { verify } from 'jsonwebtoken';
+import { JwtPayload, verify } from 'jsonwebtoken';
 import config from '../config/index';
+import { yupJwtHeader, JwtHeader } from './../models/jwtSchema';
 
-const JwtRequestSchema = yup.object({
-  authorization: yup
-    .string()
-    .trim()
-    .min(1, 'JWT cannot be null')
-    .matches(/^Bearer .+$/, 'JWT should be Bearer Token')
-    .required(),
-});
-
-type JwtRequest = yup.InferType<typeof JwtRequestSchema>;
-
-const validateJWT = async (req: Request, res: Response, next: NextFunction) => {
+export const validateJWT = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { authorization } = req.headers as JwtRequest;
+    const { authorization } = req.headers as JwtHeader;
     if (!authorization) {
       return next({
         statusCode: 404,
         message: 'No JWT Authorization Token available',
       });
     }
-    await JwtRequestSchema.validate(req.headers, { abortEarly: false });
+    await yupJwtHeader.validate(req.headers, { abortEarly: false });
     const authToken = authorization.split(' ')[1];
-    verify(authToken, config.jwtSecret);
+    const decoded = verify(authToken, config.jwtSecret);
+    //console.log(decoded);
+    req.user = (<JwtPayload>decoded).uid;
     next();
   } catch (err: Error | any) {
     if (err.name === 'ValidationError') {
@@ -44,5 +39,3 @@ const validateJWT = async (req: Request, res: Response, next: NextFunction) => {
     });
   }
 };
-
-export default validateJWT;

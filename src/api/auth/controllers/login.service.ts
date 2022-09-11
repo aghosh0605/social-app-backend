@@ -7,6 +7,7 @@ import { throwSchema } from '../../../models/errorSchema';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { LoginSchema } from '../../../models/auth.schema';
+import { JwtPayload } from 'jsonwebtoken';
 
 const LoginUser = async (username: string, password: string) => {
   const usersCollection: Collection<any> = await (
@@ -23,15 +24,16 @@ const LoginUser = async (username: string, password: string) => {
   } else {
     const valid = await bcrypt.compare(password, userExists?.password);
     if (valid) {
+      //console.log('' + userExists['_id']);
       const token = sign(
-        {
-          admin_logged_in: true,
-          username: username,
+        <JwtPayload>{
+          isAdmin: userExists.isAdmin,
+          uid: '' + userExists['_id'],
         },
         config.jwtSecret,
         {
           issuer: 'Cario Growth Services',
-          expiresIn: '24h',
+          expiresIn: '72h',
         }
       );
       return token;

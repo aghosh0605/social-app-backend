@@ -6,11 +6,18 @@ import { throwSchema } from '../../../models/errorSchema';
 import * as bcrypt from 'bcrypt';
 import { SignupSchema } from '../../../models/auth.schema';
 
-const SignupUser = async (username: string, password: string) => {
+const SignupUser = async (
+  username: string,
+  password: string,
+  email: string,
+  phone: string
+) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
-  const userExist = await usersCollection.findOne({ username: username });
+  const userExist: SignupSchema = await usersCollection.findOne({
+    username: username,
+  });
   if (userExist) {
     throw {
       statusCode: 400,
@@ -24,9 +31,14 @@ const SignupUser = async (username: string, password: string) => {
           salt,
           async (err: Error | undefined, hash: string) => {
             if (!err) {
-              await usersCollection.insertOne({
+              await usersCollection.insertOne(<SignupSchema>{
                 username: username,
                 password: hash,
+                email: email,
+                phone: phone,
+                emailVerification: false,
+                mobileVerification: false,
+                isAdmin: false,
               });
             } else {
               throw {
@@ -54,8 +66,8 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password } = req.body as SignupSchema;
-    await SignupUser(username, password);
+    const { username, password, email, phone } = req.body as SignupSchema;
+    await SignupUser(username, password, email, phone);
     res.status(201).json({
       success: true,
       status: `✅ ${username} Successfully Signed Up`,
