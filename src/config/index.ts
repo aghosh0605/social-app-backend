@@ -29,6 +29,12 @@ export default {
   awsBucketBaseURL: process.env.AWS_BUCKET_BASEURL,
 
   /**
+   * Email and OTP credentials(sendinblue and 2factor)
+   */
+  sendInBlueAPI: process.env.SENDINBLUE_API_KEY,
+  twoFactorAPI: process.env.API_KEY_2FACTOR,
+
+  /**
    * Used by Winston logger
    */
   logs: {
