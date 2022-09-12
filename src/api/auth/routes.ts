@@ -26,6 +26,6 @@ authRoutes.get(
   handleSendOtp
 );
 
-// authRoutes.post("/verify-otp", yupValidator("body", yupOtpVerifySchema));
+authRoutes.post("/verify-otp", yupValidator("body", yupOtpVerifySchema));
 
 export default authRoutes;

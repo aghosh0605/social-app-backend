@@ -23,7 +23,7 @@ export const yupSignupSchema = yup.object({
 export type SignupSchema = yup.InferType<typeof yupSignupSchema>;
 
 export const yupOtpVerifySchema = yup.object({
-  uid: yup.string().trim().required(),
+  sessionID: yup.string().trim().required(),
   otp: yup.number().required(),
 });
 
