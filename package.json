@@ -1,6 +1,8 @@
 {
   "name": "piechips",
   "main": "build/index.js",
+  "version": "1.0",
+  "description": "Piechips backend V1",
   "scripts": {
     "start": "node build/index.js",
     "build": "tsc",
@@ -29,7 +31,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.4.0",
     "express-rate-limit": "^6.6.0",
-    "got": "^12.4.1",
+    "got": "12.3.0",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.9.1",
