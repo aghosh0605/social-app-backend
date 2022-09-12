@@ -39,7 +39,7 @@ const sendOtp = async (uid: string) => {
   }
 };
 
-const VerifyOtp = async (otp: number, sessionID: string) => {
+const VerifyOtp = async (sessionID: string, otp: number) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("users");
@@ -77,11 +77,12 @@ export const handleSendOtp = async (
 ): Promise<void> => {
   try {
     const { uid } = req.params as SendOtpSchema;
-    sendOtp(uid);
+    await sendOtp(uid);
     res.status(200).json({
       success: true,
       message: "OTP Sent",
     });
+    next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
@@ -96,5 +97,19 @@ export const HandleVerifyOTP = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { sessionID, otp } = req.body as OtpVerifySchema;
+  try {
+    const { sessionID, otp } = req.body as OtpVerifySchema;
+    await VerifyOtp(sessionID, otp);
+    res.status(200).json({
+      success: true,
+      message: "Mobile number verfied successfully",
+    });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || "❌ Unknown Error Occurred !! ",
+    });
+  }
 };

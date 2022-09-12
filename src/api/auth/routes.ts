@@ -7,7 +7,7 @@ import {
   yupSignupSchema,
 } from "../../models/auth.schema";
 import { handleLogin } from "./controllers/login.service";
-import { handleSendOtp } from "./controllers/otp.service";
+import { handleSendOtp, HandleVerifyOTP } from "./controllers/otp.service";
 import { handleSignup } from "./controllers/signup.service";
 
 const authRoutes = Router();
@@ -26,6 +26,10 @@ authRoutes.get(
   handleSendOtp
 );
 
-authRoutes.post("/verify-otp", yupValidator("body", yupOtpVerifySchema));
+authRoutes.post(
+  "/verify-otp",
+  yupValidator("body", yupOtpVerifySchema),
+  HandleVerifyOTP
+);
 
 export default authRoutes;
