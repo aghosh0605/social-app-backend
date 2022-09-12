@@ -1,8 +1,14 @@
-import { Router } from 'express';
-import yupValidator from '../../middlewares/yupValidator';
-import { yupLoginSchema, yupSignupSchema } from '../../models/auth.schema';
-import { handleLogin } from './controllers/login.service';
-import { handleSignup } from './controllers/signup.service';
+import { Router } from "express";
+import yupValidator from "../../middlewares/yupValidator";
+import {
+  yupLoginSchema,
+  yupOtpVerifySchema,
+  yupSendOtpScheme,
+  yupSignupSchema,
+} from "../../models/auth.schema";
+import { handleLogin } from "./controllers/login.service";
+import { handleSendOtp } from "./controllers/otp.service";
+import { handleSignup } from "./controllers/signup.service";
 
 const authRoutes = Router();
 
@@ -10,8 +16,16 @@ const authRoutes = Router();
 //   [prop: string]: any;
 // } & Request;
 
-authRoutes.post('/login', yupValidator('body', yupLoginSchema), handleLogin);
+authRoutes.post("/login", yupValidator("body", yupLoginSchema), handleLogin);
 
-authRoutes.post('/signup', yupValidator('body', yupSignupSchema), handleSignup);
+authRoutes.post("/signup", yupValidator("body", yupSignupSchema), handleSignup);
+
+authRoutes.get(
+  "/send-otp/:uid",
+  yupValidator("params", yupSendOtpScheme),
+  handleSendOtp
+);
+
+// authRoutes.post("/verify-otp", yupValidator("body", yupOtpVerifySchema));
 
 export default authRoutes;
