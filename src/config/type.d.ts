@@ -1,6 +1,6 @@
 declare namespace jsonwebtoken {
   interface JwtPayload {
-    uid?: string;
+    id?: string;
     isAdmin?: boolean;
   }
 }
@@ -10,3 +10,7 @@ declare namespace Express {
     user?: string;
   }
 }
+
+// export type RequestType = {
+//   [prop: string]: any;
+// } & Request;

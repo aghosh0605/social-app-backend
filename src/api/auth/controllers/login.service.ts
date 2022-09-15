@@ -1,13 +1,12 @@
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import * as bcrypt from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { sign, JwtPayload } from 'jsonwebtoken';
 import config from '../../../config/index';
-import { throwSchema } from '../../../models/errorSchema';
+import { throwSchema } from '../../../models/commonSchemas';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { LoginSchema } from '../../../models/auth.schema';
-import { JwtPayload } from 'jsonwebtoken';
+import { LoginSchema } from '../../../models/authSchema';
 
 const LoginUser = async (username: string, password: string) => {
   const usersCollection: Collection<any> = await (
@@ -28,7 +27,7 @@ const LoginUser = async (username: string, password: string) => {
       const token = sign(
         <JwtPayload>{
           isAdmin: userExists.isAdmin,
-          uid: '' + userExists['_id'],
+          id: '' + userExists['_id'],
         },
         config.jwtSecret,
         {

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { throwSchema } from '../../../models/errorSchema';
+import { throwSchema } from '../../../models/commonSchemas';
 import * as bcrypt from 'bcrypt';
-import { SignupSchema } from '../../../models/auth.schema';
+import { SignupSchema } from '../../../models/authSchema';
 
 const SignupUser = async (
   username: string,
@@ -20,7 +20,7 @@ const SignupUser = async (
   });
   if (userExist) {
     throw {
-      statusCode: 400,
+      statusCode: 409,
       message: 'User already exists. Kindly use Login',
     } as throwSchema;
   } else {

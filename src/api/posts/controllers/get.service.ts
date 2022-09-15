@@ -10,7 +10,7 @@ export const getPosts = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // console.log(req.user);
+    //console.log(req.user);
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('posts');
