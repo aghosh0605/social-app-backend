@@ -45,7 +45,7 @@
     "yup-phone": "^1.3.2"
   },
   "comments": {
-    "dependencies": "Never update Got package"
+    "dependencies": "Never update Got package and NanoID"
   },
   "author": "Cario Growth",
   "license": "UNLICENSED"
