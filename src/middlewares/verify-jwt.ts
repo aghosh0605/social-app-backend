@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import config from '../config/index';
-import { yupJwtHeader, JwtHeader } from './../models/jwtSchema';
+import { yupJwtHeader, JwtHeader } from '../models/middlewareSchemas';
 
 export const validateJWT = async (
   req: Request,
@@ -12,7 +12,7 @@ export const validateJWT = async (
     const { authorization } = req.headers as JwtHeader;
     if (!authorization) {
       return next({
-        statusCode: 404,
+        statusCode: 401,
         message: 'No JWT Authorization Token available',
       });
     }
@@ -20,7 +20,7 @@ export const validateJWT = async (
     const authToken = authorization.split(' ')[1];
     const decoded = verify(authToken, config.jwtSecret);
     //console.log(decoded);
-    req.user = (<JwtPayload>decoded).uid;
+    req.user = (<JwtPayload>decoded).id;
     next();
   } catch (err: Error | any) {
     if (err.name === 'ValidationError') {
@@ -34,7 +34,7 @@ export const validateJWT = async (
       });
     }
     next({
-      statusCode: 500,
+      statusCode: 403,
       message: `${err.name}: ${err.message}`,
     });
   }

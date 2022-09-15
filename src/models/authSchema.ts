@@ -9,8 +9,8 @@ export const yupLoginSchema = yup.object({
 
 export type LoginSchema = yup.InferType<typeof yupLoginSchema>;
 
-export const yupSignupSchema = yup.object({
-  username: yup.string().trim().required(),
+export const yupSignupSchema = yup.object().shape({
+  username: yup.string().trim(),
   password: yup.string().trim().required(),
   email: yup.string().email().trim().required(),
   phone: yup.string().phone().required(),
@@ -18,6 +18,9 @@ export const yupSignupSchema = yup.object({
   emailVerification: yup.boolean(),
   mobileVerification: yup.boolean(),
   isAdmin: yup.boolean(),
+  emailVerificationHash: yup.string().trim(),
+  mobileVerificationHash: yup.string().trim(),
+  emailVerificationSalt: yup.string().trim(),
 });
 
 export type SignupSchema = yup.InferType<typeof yupSignupSchema>;

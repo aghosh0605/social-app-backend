@@ -3,14 +3,13 @@ import * as yup from 'yup';
 export const yupPostSchema = yup.object({
   UID: yup
     .string()
-    .required('Please provide User ID')
     .trim()
-    .matches(/^[0-9a-fA-F]{24}$/, 'Not a Valid UID'),
+    .matches(/^[0-9a-f]{24}$/, 'Not a Valid UID'),
   circleID: yup
     .string()
     .required('Please provide Circle ID')
     .trim()
-    .matches(/^[0-9a-fA-F]{24}$/, 'Not a Valid Circle ID'),
+    .matches(/^[0-9a-f]{24}$/, 'Not a Valid Circle ID'),
   tags: yup
     .array()
     .of(

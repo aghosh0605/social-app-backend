@@ -10,3 +10,13 @@ export const yupJwtHeader = yup.object({
 });
 
 export type JwtHeader = yup.InferType<typeof yupJwtHeader>;
+
+export const yupObjIdSchema = yup.object({
+  id: yup
+    .string()
+    .required('Please provide User ID')
+    .trim()
+    .matches(/^[0-9a-f]{24}$/, 'Not a Valid UID'),
+});
+
+export type ObjIdSchema = yup.InferType<typeof yupObjIdSchema>;
