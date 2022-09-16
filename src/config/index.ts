@@ -4,6 +4,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 export default {
   /**
+   * Server BaseURL
+   */
+  baseurl: process.env.BASE_URL || `http://localhost:${process.env.PORT}`,
+
+  /**
    * Port the app should run on
    */
   port: parseInt(process.env.PORT) || 5050,

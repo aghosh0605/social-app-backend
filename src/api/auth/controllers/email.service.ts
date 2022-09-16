@@ -6,6 +6,7 @@ import { sendMail } from '../../../utils/sendInBlueClient';
 import { NextFunction, Request, Response } from 'express';
 import { join } from 'path';
 import { generateNanoID } from '../../../utils/nanoidGenerate';
+import config from '../../../config';
 
 export const sendVerificationMail = async (
   req: Request,
@@ -32,7 +33,7 @@ export const sendVerificationMail = async (
     );
     const token = generateNanoID('0-9a-fA-F', 24);
     const uid = '' + userData['_id'];
-    userData.link = `https://piechips.herokuapp.com/api/auth/signup/verify/verifymail/${uid}/${token}`;
+    userData.link = `${config.baseurl}/api/auth/signup/verify/verifymail/${uid}/${token}`;
     const path = join(
       __dirname,
       '..',
