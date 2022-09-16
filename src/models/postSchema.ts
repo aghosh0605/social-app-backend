@@ -4,6 +4,7 @@ export const yupPostSchema = yup.object({
   UID: yup
     .string()
     .trim()
+    .required('Please provide User ID')
     .matches(/^[0-9a-f]{24}$/, 'Not a Valid UID'),
   circleID: yup
     .string()
@@ -20,25 +21,22 @@ export const yupPostSchema = yup.object({
         .max(50, 'Maximum 50 characters allowed')
     )
     .required('Please attach tags'),
-  mediaURLs: yup
-    .array()
-    .of(
-      yup.object({
-        mimeType: yup.string().required().trim(),
-        URL: yup.string().url().nullable(),
-        thumbnailURL: yup.string().url().nullable(),
-      })
-    )
-    .required('Please attach media URLs'),
+  mediaURLs: yup.array().of(
+    yup.object({
+      mimeType: yup.string().nullable().trim(),
+      URL: yup.string().url().nullable(),
+      thumbnailURL: yup.string().url().nullable(),
+    })
+  ),
   caption: yup
     .string()
-    .required()
+    .required('Enter a caption for the post')
     .trim()
     .min(1, 'Minimum one character required')
     .max(500, 'Maximum 500 characters allowed'),
   category: yup
     .string()
-    .required()
+    .required('Select a category')
     .trim()
     .min(1, 'Minimum one character required')
     .max(50, 'Maximum 50 characters allowed'),
@@ -46,3 +44,6 @@ export const yupPostSchema = yup.object({
 });
 
 export type postSchema = yup.InferType<typeof yupPostSchema>;
+
+const yupMediaUrlSchema = yupPostSchema.pick['mediaURLs'];
+export type mediaURLSchema = yup.InferType<typeof yupMediaUrlSchema>;

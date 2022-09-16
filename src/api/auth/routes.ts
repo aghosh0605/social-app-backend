@@ -30,13 +30,13 @@ authRoutes.get(
 );
 
 authRoutes.get(
-  '/verify/sendmail/:id',
+  '/sendmail/:id',
   yupValidator('params', yupObjIdSchema),
   sendVerificationMail
 );
 
 authRoutes.get(
-  '/signup/verify/verifymail/:id/:token',
+  '/verifymail/:id/:token',
   yupValidator('params', yupObjIdSchema),
   verifyMail
 );
