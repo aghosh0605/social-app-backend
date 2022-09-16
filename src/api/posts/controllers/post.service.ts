@@ -16,19 +16,21 @@ const postService = async (req, res): Promise<void> => {
       files.images.forEach(async (element: UploadedFile) => {
         element.name = 'postsIamges/' + element.name;
         <mediaURLSchema>picURL.push({
-          URL: config.awsBucketBaseURL + element.name,
+          URL: config.awsBucketBaseURL + '/' + element.name,
           mimeType: element.mimetype,
           thumbnailURL: '',
         });
+        //console.log(element.name);
         await s3Upload(element as UploadedFile);
       });
     } else {
       files.images.name = 'postsIamges/' + files.images.name;
       <mediaURLSchema>picURL.push({
-        URL: config.awsBucketBaseURL + files.images.name,
+        URL: config.awsBucketBaseURL + '/' + files.images.name,
         mimeType: files.images.mimetype,
         thumbnailURL: '',
       });
+      //console.log(files.images.name);
       await s3Upload(files.images as UploadedFile);
     }
   }
