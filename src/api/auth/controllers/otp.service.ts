@@ -5,7 +5,7 @@ import { DBInstance } from '../../../loaders/database';
 import Logger from '../../../loaders/logger';
 import { OtpVerifySchema, SendOtpSchema } from '../../../models/authSchema';
 import { throwSchema } from '../../../models/commonSchemas';
-import got from 'got';
+import axios from 'axios';
 
 const sendOtp = async (uid: string) => {
   const usersCollection: Collection<any> = await (
@@ -33,7 +33,7 @@ const sendOtp = async (uid: string) => {
         userExists?.phone +
         '/AUTOGEN';
 
-      const sessionID = await got(url).json();
+      const sessionID = await axios.get(url);
       console.log(sessionID);
     }
   }
@@ -65,7 +65,7 @@ const VerifyOtp = async (sessionID: string, otp: number) => {
         sessionID +
         '/' +
         otp;
-      const response = await got(url).json();
+      const response = await axios.get(url);
     }
   }
 };
