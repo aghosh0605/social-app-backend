@@ -1,5 +1,5 @@
-import * as yup from 'yup';
-import 'yup-phone';
+import * as yup from "yup";
+import "yup-phone";
 
 export const yupLoginSchema = yup.object({
   username: yup.string().required().trim(),
@@ -24,3 +24,16 @@ export const yupSignupSchema = yup.object().shape({
 });
 
 export type SignupSchema = yup.InferType<typeof yupSignupSchema>;
+
+export const yupOtpVerifySchema = yup.object({
+  sessionID: yup.string().trim().required(),
+  otp: yup.number().required(),
+});
+
+export type OtpVerifySchema = yup.InferType<typeof yupOtpVerifySchema>;
+
+export const yupSendOtpScheme = yup.object({
+  uid: yup.string().trim().required(),
+});
+
+export type SendOtpSchema = yup.InferType<typeof yupSendOtpScheme>;
