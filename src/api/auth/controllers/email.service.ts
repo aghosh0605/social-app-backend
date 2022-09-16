@@ -31,8 +31,8 @@ export const sendVerificationMail = async (
       }
     );
     const token = generateNanoID('0-9a-fA-F', 24);
-    userData.link =
-      'https://piechips.herokuapp.com/api/signup/verify/verifymail/' + token;
+    const uid = '' + userData['_id'];
+    userData.link = `https://piechips.herokuapp.com/api/auth/signup/verify/verifymail/${uid}/${token}`;
     const path = join(
       __dirname,
       '..',
@@ -50,6 +50,39 @@ export const sendVerificationMail = async (
       { $set: { emailVerifyHash: token } }
     );
     res.status(200).json({ success: true, message: 'Email Sent!!' });
+    next();
+  } catch (err) {
+    Logger.error(err);
+    res
+      .status(500)
+      .json({ success: false, message: 'Email Verification Failed!!' });
+  }
+};
+
+export const verifyMail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id, token } = req.params;
+    const usersCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection('users');
+    const userData = await usersCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!(userData.emailVerifyHash == token)) {
+      throw {
+        statusCode: 400,
+        message: 'Wrong Verification Token!!',
+      };
+    }
+    await usersCollection.updateOne(
+      { _id: userData._id },
+      { $set: { emailVerifyHash: '', emailVerification: true } }
+    );
+    res.status(200).json({ success: true, message: 'Email Verified' });
     next();
   } catch (err) {
     Logger.error(err);

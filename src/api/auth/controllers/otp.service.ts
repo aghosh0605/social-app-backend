@@ -33,8 +33,12 @@ const sendOtp = async (uid: string) => {
         userExists?.phone +
         '/AUTOGEN';
 
-      const sessionID = await axios.get(url);
-      console.log(sessionID);
+      const result = await axios.get(url);
+      await usersCollection.updateOne(
+        { _id: userExists._id },
+        { $set: { mobileVerifyHash: result.data.Details } }
+      );
+      return result.data.Details;
     }
   }
 };
@@ -44,7 +48,7 @@ const VerifyOtp = async (sessionID: string, otp: number) => {
     await DBInstance.getInstance()
   ).getCollection('users');
   const userExists = await usersCollection.findOne({
-    sessionID: sessionID,
+    mobileVerifyHash: sessionID,
   });
   if (!userExists) {
     throw {
@@ -65,7 +69,11 @@ const VerifyOtp = async (sessionID: string, otp: number) => {
         sessionID +
         '/' +
         otp;
-      const response = await axios.get(url);
+      await axios.get(url);
+      await usersCollection.updateOne(
+        { _id: userExists._id },
+        { $set: { mobileVerification: true, mobileVerifyHash: '' } }
+      );
     }
   }
 };
@@ -76,11 +84,11 @@ export const handleSendOtp = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { uid } = req.params as SendOtpSchema;
-    await sendOtp(uid);
+    const { id } = req.params;
+    const result = await sendOtp(id);
     res.status(200).json({
       success: true,
-      message: 'OTP Sent',
+      message: result,
     });
     next();
   } catch (err) {
@@ -98,8 +106,8 @@ export const handleVerifyOTP = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { sessionID, otp } = req.body as OtpVerifySchema;
-    await VerifyOtp(sessionID, otp);
+    const { sessionid, otp } = req.params;
+    await VerifyOtp(sessionid, parseInt(otp));
     res.status(200).json({
       success: true,
       message: 'Mobile number verfied successfully',

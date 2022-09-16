@@ -1,5 +1,5 @@
-import * as yup from "yup";
-import "yup-phone";
+import * as yup from 'yup';
+import 'yup-phone';
 
 export const yupLoginSchema = yup.object({
   username: yup.string().required().trim(),
