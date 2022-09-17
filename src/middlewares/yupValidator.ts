@@ -22,6 +22,7 @@ const yupValidator =
         break;
     }
     try {
+      //console.log(req.body);
       await schema.validate(_location, { abortEarly: false });
       next();
     } catch (error: Error | any) {

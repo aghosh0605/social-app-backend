@@ -2,34 +2,72 @@ import { Router } from 'express';
 import { createPosts } from './controllers/post.service';
 import { getAllPosts, getUserPosts } from './controllers/get.service';
 import { deletePost } from './controllers/delete.service';
-import { makeComment, deleteComment } from './controllers/comments.service';
+import {
+  getPostComment,
+  getChildComment,
+  makeComment,
+  editComment,
+  deleteComment,
+} from './controllers/comments.service';
 import yupValidator from '../../middlewares/yupValidator';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
+import { yupCommentShema } from '../../models/commentSchema';
 
 const postsRoute = Router();
 
+//Get all posts
 postsRoute.get('/all', getAllPosts);
 
+//Get posts created by an user
 postsRoute.get(
   '/user/:id',
   yupValidator('params', yupObjIdSchema),
   getUserPosts
 );
 
+//Create a Post
 postsRoute.post('/create', createPosts);
 
+//Delete a Post
 postsRoute.delete(
   '/delete/:id',
   yupValidator('params', yupObjIdSchema),
   deletePost
 );
 
+//Create a comment on a post
+//id is post ID
 postsRoute.post(
-  '/comment/update/:id',
+  '/comment/create/:id',
   yupValidator('params', yupObjIdSchema),
+  yupValidator('body', yupCommentShema),
   makeComment
 );
 
+//Edit a comment on a post
+//id is comment ID
+postsRoute.patch(
+  '/comment/edit/:id',
+  yupValidator('params', yupObjIdSchema),
+  yupValidator('body', yupCommentShema),
+  editComment
+);
+
+//Fetch comments of post
+postsRoute.get(
+  '/comment/fetch/:id',
+  yupValidator('params', yupObjIdSchema),
+  getPostComment
+);
+
+//Fetch Child comments
+postsRoute.get(
+  '/comment/fetch/child/:id',
+  yupValidator('params', yupObjIdSchema),
+  getChildComment
+);
+
+//Delete a Comment on a post
 postsRoute.delete(
   '/comment/delete/:id',
   yupValidator('params', yupObjIdSchema),

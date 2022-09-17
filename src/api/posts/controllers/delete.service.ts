@@ -1,6 +1,6 @@
 import { ObjectId, Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { responseSchema } from '../../../models/commonSchemas';
+import { responseSchema, throwSchema } from '../../../models/commonSchemas';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { postSchema } from '../../../models/postSchema';
@@ -18,10 +18,9 @@ const deleteService = async (req: Request): Promise<void> => {
   }
   if (req.user != postExist.UID) {
     throw {
-      status: 404,
-      success: false,
+      statusCode: 404,
       message: 'Only creator can delete post',
-    };
+    } as throwSchema;
   }
   if (postExist.mediaURLs.length > 0) {
     const delObjs = [];
