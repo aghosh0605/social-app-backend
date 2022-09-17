@@ -9,15 +9,15 @@ export const validateJWT = async (
   next: NextFunction
 ) => {
   try {
-    const { authorization } = req.headers as JwtHeader;
-    if (!authorization) {
+    const { Authorization } = req.headers as JwtHeader;
+    if (!Authorization) {
       return next({
         statusCode: 401,
         message: 'No JWT Authorization Token available',
       });
     }
     await yupJwtHeader.validate(req.headers, { abortEarly: false });
-    const authToken = authorization.split(' ')[1];
+    const authToken = Authorization.split(' ')[1];
     const decoded = verify(authToken, config.jwtSecret);
     //console.log(decoded);
     req.user = (<JwtPayload>decoded).id;
