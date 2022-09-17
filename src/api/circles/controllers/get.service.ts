@@ -26,3 +26,26 @@ export const getCircles = async (
     });
   }
 };
+
+export const getSpecificCircles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const circlesCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("circles");
+    const resData: circleSchema[] = await circlesCollection
+      .find({ _id: new ObjectId(`${req.params.id}`) })
+      .toArray();
+    res.status(200).json({ status: true, message: resData });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
+};
