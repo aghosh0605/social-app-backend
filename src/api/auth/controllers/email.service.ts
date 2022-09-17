@@ -31,9 +31,15 @@ export const sendVerificationMail = async (
         },
       }
     );
+    if (userData.emailVerification) {
+      throw {
+        statusCode: 400,
+        message: 'Email is already verified',
+      } as throwSchema;
+    }
     const token = generateNanoID('0-9a-fA-F', 24);
     const uid = '' + userData['_id'];
-    userData.link = `${config.baseurl}/api/auth/signup/verify/verifymail/${uid}/${token}`;
+    userData.link = `${config.baseurl}/api/auth/verifymail/${uid}/${token}`;
     const path = join(
       __dirname,
       '..',
@@ -53,10 +59,11 @@ export const sendVerificationMail = async (
     res.status(200).json({ success: true, message: 'Email Sent!!' });
     next();
   } catch (err) {
-    Logger.error(err);
-    res
-      .status(500)
-      .json({ success: false, message: 'Email Verification Failed!!' });
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || '❌ Unknown Error Occurred !! ',
+    });
   }
 };
 
@@ -70,14 +77,30 @@ export const verifyMail = async (
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('users');
-    const userData = await usersCollection.findOne({
-      _id: new ObjectId(id),
-    });
-    if (!(userData.emailVerifyHash == token)) {
+    const userData = await usersCollection.findOne(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        projection: {
+          username: true,
+          email: true,
+          emailVerification: true,
+          emailVerifyHash: 1,
+        },
+      }
+    );
+    if (userData.emailVerifyHash == '') {
+      throw {
+        statusCode: 400,
+        message: 'Please resend verification mail!!',
+      } as throwSchema;
+    }
+    if (userData.emailVerifyHash != token) {
       throw {
         statusCode: 400,
         message: 'Wrong Verification Token!!',
-      };
+      } as throwSchema;
     }
     await usersCollection.updateOne(
       { _id: userData._id },
@@ -86,9 +109,10 @@ export const verifyMail = async (
     res.status(200).json({ success: true, message: 'Email Verified' });
     next();
   } catch (err) {
-    Logger.error(err);
-    res
-      .status(500)
-      .json({ success: false, message: 'Email Verification Failed!!' });
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      status: false,
+      message: err.message || '❌ Unknown Error Occurred !! ',
+    });
   }
 };

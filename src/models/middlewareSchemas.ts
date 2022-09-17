@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 export const yupJwtHeader = yup.object({
-  Authorization: yup
+  authorization: yup
     .string()
     .trim()
     .min(1, 'JWT cannot be null')

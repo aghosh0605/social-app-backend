@@ -10,7 +10,11 @@ const postsRoute = Router();
 
 postsRoute.get('/all', getAllPosts);
 
-postsRoute.get('/:id', yupValidator('params', yupObjIdSchema), getUserPosts);
+postsRoute.get(
+  '/user/:id',
+  yupValidator('params', yupObjIdSchema),
+  getUserPosts
+);
 
 postsRoute.post('/create', createPosts);
 
