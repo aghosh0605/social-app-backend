@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import yupValidator from "../../middlewares/yupValidator";
 import { yupObjIdSchema } from "../../models/middlewareSchemas";
+import { deleteCircle } from "./controllers/delete.service";
 import { getCircles, getSpecificCircles } from "./controllers/get.service";
 import { createCircles } from "./controllers/post.service";
 
@@ -16,4 +17,10 @@ circlesRoute.get(
 );
 
 circlesRoute.post("/create", createCircles);
+
+circlesRoute.delete(
+  "/delete/:id",
+  yupValidator("params", yupObjIdSchema),
+  deleteCircle
+);
 export default circlesRoute;

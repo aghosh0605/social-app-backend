@@ -10,7 +10,6 @@ export const getCircles = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    //console.log(req.user);
     const circlesCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection("circles");
