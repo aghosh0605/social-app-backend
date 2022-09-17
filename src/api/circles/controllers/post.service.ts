@@ -1,53 +1,71 @@
 import { UploadedFile } from "express-fileupload";
-import { Db } from "mongodb";
-import db from "../../../loaders/database";
-import { dbSchema } from "../../../models/circles/dbSchema";
+import { Collection } from "mongodb";
+import { DBInstance } from "../../../loaders/database";
 import { s3Upload } from "../../../utils/s3Client";
 import config from "../../../config";
-var randomString = require("randomstring");
+import { NextFunction, Request, Response } from "express";
+import Logger from "../../../loaders/logger";
+import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
 
-export const postService = async (req, res): Promise<void> => {
-  const files = Object.assign(
-    {},
-    {
-      images: [
-        { data: req.files.profileUrl, imageType: "profileUrl" },
-        { data: req.files.bannerUrl, imageType: "bannerUrl" },
-      ],
-    }
-  );
-
-  const picURL: Array<Object> = [];
+const createService = async (req, res): Promise<void> => {
+  const files = Object.assign({}, req.files);
+  const picURL: Array<mediaURLSchema> = [];
+  const images = [files.profileImage, files.bannerImage];
 
   if (Object.keys(files).length > 0) {
-    files.images.forEach(async (element: any) => {
-      const random = randomString.generate({
-        length: 32,
-        charset: "alphanumeric",
+    if (images.length > 1) {
+      images.forEach(async (element: UploadedFile) => {
+        element.name = "circlesTestImages/" + element.name;
+        <mediaURLSchema>picURL.push({
+          URL: config.awsBucketBaseURL + element.name,
+          mimeType: element.mimetype,
+          thumbnailURL: "",
+        });
+        await s3Upload(element as UploadedFile);
       });
-      console.log(element.data);
-      const el = element.data.name.split(".");
-      const type = element.data.mimetype.split("/");
-      const elName = `circlesTestImages/${el[0]}-${random}.${type[1]}`;
-      element.data.name = elName;
-      picURL.push({
-        path: config.awsBucketBaseURL + elName,
-        ContentType: element.data.mimetype,
-        imageType: element.imageType,
+    } else {
+      files.images.name = "circlesTestImages/" + files.images.name;
+      <mediaURLSchema>picURL.push({
+        URL: config.awsBucketBaseURL + files.images.name,
+        mimeType: files.images.mimetype,
+        thumbnailURL: "",
       });
-      await s3Upload(element.data);
-    });
+      await s3Upload(files.images as UploadedFile);
+    }
   }
 
-  const data: Db = await db();
-  const inData: dbSchema = {
-    imagesData: picURL,
-    name: req.body.name,
-    category: req.body.category,
+  const circlesCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection("circles");
+  const inData: circleSchema = {
+    circleName: req.body.circleName,
+    UID: req.user,
     about: req.body.about,
-    private: req.body.private,
-    posts: [],
+    tags: req.body.tags.split(","),
+    mediaURLs: picURL as mediaURLSchema,
+    category: req.body.category,
+    createdOn: new Date(),
   };
 
-  await data.collection("circles").insertOne(inData);
+  await circlesCollection.insertOne(inData);
+};
+
+export const createCircles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    await createService(req, res);
+    res
+      .status(200)
+      .json({ success: true, message: "✅ Uploaded Successfully" });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
 };
