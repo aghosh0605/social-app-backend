@@ -79,8 +79,8 @@ export const makeLike = async (
       data.commentID = req.params.id;
       data.postID = undefined;
     }
-    await likesCollection.insertOne(data);
-    res.status(200).json({ success: true, message: 'Liked Successfully' });
+    const likeID: ObjectId = (await likesCollection.insertOne(data)).insertedId;
+    res.status(200).json({ success: true, message: likeID });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

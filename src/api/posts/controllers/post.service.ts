@@ -1,5 +1,5 @@
 import { UploadedFile } from 'express-fileupload';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { postSchema, mediaURLSchema } from '../../../models/postSchema';
 import { s3Upload } from '../../../utils/s3Client';
@@ -7,7 +7,7 @@ import config from '../../../config';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
-const postService = async (req, res): Promise<void> => {
+const postService = async (req, res): Promise<ObjectId> => {
   const files = Object.assign({}, req.files);
   const picURL: Array<mediaURLSchema> = [];
 
@@ -48,7 +48,7 @@ const postService = async (req, res): Promise<void> => {
     createdOn: new Date(),
   };
 
-  await postsCollection.insertOne(inData);
+  return (await postsCollection.insertOne(inData)).insertedId;
 };
 
 export const createPosts = async (
@@ -57,10 +57,8 @@ export const createPosts = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await postService(req, res);
-    res
-      .status(200)
-      .json({ success: true, message: '✅ Uploaded Successfully' });
+    const postID = await postService(req, res);
+    res.status(200).json({ success: true, message: postID });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

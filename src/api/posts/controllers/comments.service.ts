@@ -79,10 +79,9 @@ export const makeComment = async (
       data.parentCommentID = req.params.id;
       data.postID = undefined;
     }
-    await commentsCollection.insertOne(data);
-    res
-      .status(200)
-      .json({ success: true, message: 'Comment Added Successfully' });
+    const commentID: ObjectId = (await commentsCollection.insertOne(data))
+      .insertedId;
+    res.status(200).json({ success: true, message: commentID });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
