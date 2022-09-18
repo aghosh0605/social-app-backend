@@ -13,7 +13,7 @@ import { handleSendOtp, handleVerifyOTP } from './controllers/otp.service';
 
 const authRoutes = Router();
 
-authRoutes.post('/login', yupValidator('body', yupLoginSchema), handleLogin);
+authRoutes.post('/signin', yupValidator('body', yupLoginSchema), handleLogin);
 
 authRoutes.post('/signup', yupValidator('body', yupSignupSchema), handleSignup);
 
@@ -30,13 +30,13 @@ authRoutes.get(
 );
 
 authRoutes.get(
-  '/verify/sendmail/:id',
+  '/sendmail/:id',
   yupValidator('params', yupObjIdSchema),
   sendVerificationMail
 );
 
 authRoutes.get(
-  '/signup/verify/verifymail/:id/:token',
+  '/verifymail/:id/:token',
   yupValidator('params', yupObjIdSchema),
   verifyMail
 );

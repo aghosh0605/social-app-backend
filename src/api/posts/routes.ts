@@ -1,25 +1,119 @@
 import { Router } from 'express';
 import { createPosts } from './controllers/post.service';
-import { getPosts } from './controllers/get.service';
-import { deletePosts } from './controllers/delete.service';
-import { makeComment, deleteComment } from './controllers/comments.service';
+import { getAllPosts, getUserPosts } from './controllers/get.service';
+import { deletePost } from './controllers/delete.service';
+import {
+  getPostComment,
+  getChildComment,
+  makeComment,
+  editComment,
+  deleteComment,
+} from './controllers/comments.service';
+import {
+  getPostLike,
+  getCommentLike,
+  makeLike,
+  editLike,
+  deleteLike,
+} from './controllers/likes.service';
 import yupValidator from '../../middlewares/yupValidator';
-import { yupPostSchema } from '../../models/postSchema';
+import { yupObjIdSchema } from '../../models/middlewareSchemas';
+import { yupCommentShema } from '../../models/commentSchema';
 
 const postsRoute = Router();
+//==================================Post APIs===================================
+//Get all posts
+postsRoute.get('/all', getAllPosts);
 
-postsRoute.get('/', getPosts);
-
-postsRoute.post('/create', createPosts);
-
-postsRoute.delete(
-  '/:id/delete',
-  yupValidator('body', yupPostSchema),
-  deletePosts
+//Get posts created by an user
+postsRoute.get(
+  '/user/:id',
+  yupValidator('params', yupObjIdSchema),
+  getUserPosts
 );
 
-postsRoute.post('/comment/:id/update', makeComment);
+//Create a Post
+postsRoute.post('/create', createPosts);
 
-postsRoute.delete('/comment/:id/delete', deleteComment);
+//Delete a Post
+postsRoute.delete(
+  '/delete/:id',
+  yupValidator('params', yupObjIdSchema),
+  deletePost
+);
+
+//==================================Comment APIs===================================
+
+//Fetch comments of post
+postsRoute.get(
+  '/comment/fetch/:id',
+  yupValidator('params', yupObjIdSchema),
+  getPostComment
+);
+
+//Fetch Child comments
+postsRoute.get(
+  '/comment/fetch/child/:id',
+  yupValidator('params', yupObjIdSchema),
+  getChildComment
+);
+
+//Create a comment on a post
+//id is post ID
+postsRoute.post(
+  '/comment/create/:id',
+  yupValidator('params', yupObjIdSchema),
+  yupValidator('body', yupCommentShema),
+  makeComment
+);
+
+//Edit a comment on a post
+//id is comment ID
+postsRoute.patch(
+  '/comment/edit/:id',
+  yupValidator('params', yupObjIdSchema),
+  yupValidator('body', yupCommentShema),
+  editComment
+);
+
+//Delete a Comment on a post
+postsRoute.delete(
+  '/comment/delete/:id',
+  yupValidator('params', yupObjIdSchema),
+  deleteComment
+);
+
+//==================================Like APIs===================================
+
+//Fetch likes of post
+postsRoute.get(
+  '/like/fetch/post/:id',
+  yupValidator('params', yupObjIdSchema),
+  getPostLike
+);
+
+//Fetch likes of comments
+postsRoute.get(
+  '/like/fetch/comment/:id',
+  yupValidator('params', yupObjIdSchema),
+  getCommentLike
+);
+
+//Like a comment or post
+postsRoute.post('/like/:id', yupValidator('params', yupObjIdSchema), makeLike);
+
+//Edit Like of a comment or post
+postsRoute.patch(
+  '/like/edit/:id',
+  yupValidator('params', yupObjIdSchema),
+  editLike
+);
+
+// Dislike comment or post
+postsRoute.delete(
+  '/like/delete/:id',
+  yupValidator('params', yupObjIdSchema),
+  deleteLike
+);
 
 export default postsRoute;

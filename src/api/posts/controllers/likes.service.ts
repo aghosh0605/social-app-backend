@@ -2,22 +2,22 @@ import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { commentSchema } from '../../../models/commentSchema';
+import { likeSchema } from '../../../models/likeSchema';
 import { throwSchema } from '../../../models/commonSchemas';
 
-export const getPostComment = async (
+export const getPostLike = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const commentsCollection: Collection<any> = await (
+    const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('comments');
+    ).getCollection('likes');
     //console.log(req.params);
-    const result: commentSchema[] = await commentsCollection
+    const result: likeSchema[] = await likesCollection
       .find({
-        $and: [{ postID: req.params.id }, { isChild: false }],
+        $and: [{ postID: req.params.id }, { isComment: false }],
       })
       .toArray();
     res.status(200).json({ success: true, message: result });
@@ -31,19 +31,19 @@ export const getPostComment = async (
   }
 };
 
-export const getChildComment = async (
+export const getCommentLike = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const commentsCollection: Collection<any> = await (
+    const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('comments');
+    ).getCollection('likes');
     //console.log(req.params);
-    const result: commentSchema[] = await commentsCollection
+    const result: likeSchema[] = await likesCollection
       .find({
-        $and: [{ parentCommentID: req.params.id }, { isChild: true }],
+        $and: [{ commentID: req.params.id }, { isComment: true }],
       })
       .toArray();
     res.status(200).json({ success: true, message: result });
@@ -57,31 +57,30 @@ export const getChildComment = async (
   }
 };
 
-export const makeComment = async (
+export const makeLike = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const commentsCollection: Collection<any> = await (
+    const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('comments');
-    let data: commentSchema = {
+    ).getCollection('likes');
+    let data: likeSchema = {
       postID: req.params.id,
       UID: req.user,
-      commentText: req.body.commentText,
-      isChild: false,
-      parentCommentID: undefined,
+      commentID: undefined,
+      likeEmoji: req.body.likeEmoji,
+      isComment: false,
       createdOn: new Date(),
     };
-    if (req.body.isChild) {
-      data.isChild = true;
-      data.parentCommentID = req.params.id;
+    if (req.body.isComment) {
+      data.isComment = true;
+      data.commentID = req.params.id;
       data.postID = undefined;
     }
-    const commentID: ObjectId = (await commentsCollection.insertOne(data))
-      .insertedId;
-    res.status(200).json({ success: true, message: commentID });
+    const likeID: ObjectId = (await likesCollection.insertOne(data)).insertedId;
+    res.status(200).json({ success: true, message: likeID });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -92,43 +91,43 @@ export const makeComment = async (
   }
 };
 
-export const editComment = async (
+export const editLike = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const commentsCollection: Collection<any> = await (
+    const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('comments');
-    const commentExist = await commentsCollection.findOne({
+    ).getCollection('likes');
+    const likeExist = await likesCollection.findOne({
       _id: new ObjectId(req.params.id),
     });
-    if (!commentExist) {
+    if (!likeExist) {
       throw {
         statusCode: 400,
-        message: 'The comment cannot be found',
+        message: 'The like cannot be found',
       } as throwSchema;
     }
-    if (commentExist.UID != req.user) {
+    if (likeExist.UID != req.user) {
       throw {
         statusCode: 400,
         message: 'Only creator can edit post',
       } as throwSchema;
     }
-    await commentsCollection.updateOne(
+    await likesCollection.updateOne(
       {
         _id: new ObjectId(req.params.id),
       },
       {
         $set: {
-          commentText: req.body.commentText,
+          likeEmoji: req.body.likeEmoji,
         },
       }
     );
     res
       .status(200)
-      .json({ success: true, message: 'Comment Edited Successfully' });
+      .json({ success: true, message: 'Like Changed Successfully' });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -139,36 +138,34 @@ export const editComment = async (
   }
 };
 
-export const deleteComment = async (
+export const deleteLike = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const commentsCollection: Collection<any> = await (
+    const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('comments');
-    const commentExist = await commentsCollection.findOne({
+    ).getCollection('likes');
+    const likeExist = await likesCollection.findOne({
       _id: new ObjectId(req.params.id),
     });
-    if (!commentExist) {
+    if (!likeExist) {
       throw {
         statusCode: 400,
-        message: 'The comment cannot be found',
+        message: 'The like cannot be found',
       } as throwSchema;
     }
-    if (commentExist.UID != req.user) {
+    if (likeExist.UID != req.user) {
       throw {
         statusCode: 400,
-        message: 'Only creator can delete comment',
+        message: 'Only creator can unlike',
       } as throwSchema;
     }
-    await commentsCollection.deleteOne({
+    await likesCollection.deleteOne({
       _id: new ObjectId(req.params.id),
     });
-    res
-      .status(200)
-      .json({ success: true, message: 'Comment Deleted Successfully' });
+    res.status(200).json({ success: true, message: 'Disliked Successfully' });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

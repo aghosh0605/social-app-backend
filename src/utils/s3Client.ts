@@ -1,10 +1,9 @@
 import {
   S3Client,
   DeleteObjectsCommand,
-  DeleteObjectsCommandOutput,
   PutObjectCommand,
-  PutObjectCommandOutput,
   PutObjectCommandInput,
+  DeleteObjectsCommandOutput,
 } from '@aws-sdk/client-s3';
 import { UploadedFile } from 'express-fileupload';
 import Logger from '../loaders/logger';
@@ -18,7 +17,7 @@ const s3Initalize: S3Client = new S3Client({
   },
 });
 
-type paramsKey = [
+export type paramsKey = [
   {
     Key: string;
   }
@@ -36,11 +35,16 @@ export const s3Delete = async (urls: Array<Object>): Promise<void> => {
       Objects: urls as paramsKey,
     },
   };
-  const response: DeleteObjectsCommandOutput = await s3Initalize.send(
-    new DeleteObjectsCommand(deleteParams)
-  );
-  if (response.$metadata.httpStatusCode != 200) {
-    throw { statusCode: 404, message: 'Delete Object Failed' };
+  try {
+    const result: DeleteObjectsCommandOutput = await s3Initalize.send(
+      new DeleteObjectsCommand(deleteParams)
+    );
+    //console.log(result);
+    if (result.Errors) {
+      throw result.Errors;
+    }
+  } catch (err) {
+    Logger.error(err);
   }
 };
 
@@ -54,10 +58,9 @@ export const s3Upload = async (file: UploadedFile): Promise<void> => {
     ContentEncoding: file.encoding,
     ContentType: file.mimetype,
   };
-  const response: PutObjectCommandOutput = await s3Initalize.send(
-    new PutObjectCommand(putParams)
-  );
-  if (response.$metadata.httpStatusCode != 200) {
-    throw { statusCode: 404, message: 'Insert Object Failed' };
+  try {
+    await s3Initalize.send(new PutObjectCommand(putParams));
+  } catch (err) {
+    Logger.error(err);
   }
 };

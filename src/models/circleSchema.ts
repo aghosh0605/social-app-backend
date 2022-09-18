@@ -1,16 +1,13 @@
 import * as yup from 'yup';
 
-export const yupPostSchema = yup.object({
+export const yupCircleSchema = yup.object({
+  circleName: yup.string().trim().required('Please provide a circle name'),
   UID: yup
     .string()
     .trim()
     .required('Please provide User ID')
     .matches(/^[0-9a-f]{24}$/, 'Not a Valid UID'),
-  circleID: yup
-    .string()
-    .required('Please provide Circle ID')
-    .trim()
-    .matches(/^[0-9a-f]{24}$/, 'Not a Valid Circle ID'),
+  isPrivate: yup.boolean().required('Please provide circle if is private'),
   tags: yup
     .array()
     .of(
@@ -28,7 +25,7 @@ export const yupPostSchema = yup.object({
       thumbnailURL: yup.string().url().nullable(),
     })
   ),
-  caption: yup
+  about: yup
     .string()
     .required('Enter a caption for the post')
     .trim()
@@ -43,7 +40,7 @@ export const yupPostSchema = yup.object({
   createdOn: yup.date().default(() => new Date()),
 });
 
-export type postSchema = yup.InferType<typeof yupPostSchema>;
+export type circleSchema = yup.InferType<typeof yupCircleSchema>;
 
-const yupMediaUrlSchema = yupPostSchema.pick['mediaURLs'];
+const yupMediaUrlSchema = yupCircleSchema.pick['mediaURLs'];
 export type mediaURLSchema = yup.InferType<typeof yupMediaUrlSchema>;

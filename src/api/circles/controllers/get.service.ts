@@ -1,20 +1,20 @@
 import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { postSchema } from '../../../models/postSchema';
+import { circleSchema } from '../../../models/circleSchema';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 
-export const getAllPosts = async (
+export const getCircles = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    //console.log(req.user);
-    const postsCollection: Collection<any> = await (
+    const circlesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts');
-    const resData: postSchema[] = await postsCollection.find().toArray();
+    ).getCollection('circles');
+
+    const resData: circleSchema[] = await circlesCollection.find().toArray();
     res.status(200).json({ status: true, message: resData });
     next();
   } catch (err) {
@@ -26,20 +26,18 @@ export const getAllPosts = async (
   }
 };
 
-export const getUserPosts = async (
+export const getSpecificCircles = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    //console.log(req.params.id);
-    const postsCollection: Collection<any> = await (
+    const circlesCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts');
-    const resData: postSchema[] = await postsCollection
-      .find({ UID: req.params.id })
-      .toArray();
-    //console.log(resData);
+    ).getCollection('circles');
+    const resData: circleSchema = await circlesCollection.findOne({
+      _id: new ObjectId(`${req.params.id}`),
+    });
     res.status(200).json({ status: true, message: resData });
     next();
   } catch (err) {

@@ -4,7 +4,7 @@ import * as yup from 'yup';
 export const yupUserSchema = yupSignupSchema.shape({
   fullName: yup.string().trim().required(),
   profileURL: yup.string().trim(),
-  isDark: yup.boolean(),
+  isDark: yup.boolean().default(false),
   blockedUID: yup
     .string()
     .trim()

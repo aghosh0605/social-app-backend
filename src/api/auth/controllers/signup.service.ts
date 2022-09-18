@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { Collection } from 'mongodb';
+import { Collection, Document } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/commonSchemas';
 import * as bcrypt from 'bcrypt';
@@ -11,53 +11,47 @@ const SignupUser = async (
   password: string,
   email: string,
   phone: string
-) => {
+): Promise<Document> => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
-  const userExist: SignupSchema = await usersCollection.findOne({
-    username: username,
+  let userExist: SignupSchema = await usersCollection.findOne({
+    $or: [{ username: username }, { email: email }, { phone: phone }],
   });
   if (userExist) {
     throw {
       statusCode: 409,
-      message: 'User already exists. Kindly use Login',
+      message: 'User already exists. Kindly use Login ',
     } as throwSchema;
-  } else {
-    bcrypt.genSalt(10, (err: Error | undefined, salt: string) => {
-      if (!err) {
-        bcrypt.hash(
-          password,
-          salt,
-          async (err: Error | undefined, hash: string) => {
-            if (!err) {
-              await usersCollection.insertOne(<SignupSchema>{
-                username: username,
-                password: hash,
-                email: email,
-                phone: phone,
-                emailVerification: false,
-                mobileVerification: false,
-                isAdmin: false,
-              });
-            } else {
-              throw {
-                statusCode: 500,
-                message: 'Generation of password hash failed !!',
-                errorStack: err,
-              } as throwSchema;
-            }
-          }
-        );
-      } else {
-        throw {
-          statusCode: 500,
-          message: 'Salt Generation Failed !!',
-          errorStack: err,
-        } as throwSchema;
-      }
-    });
   }
+  const saltRounds = 10;
+  const hash = await bcrypt.hash(password, saltRounds);
+
+  await usersCollection.insertOne(<SignupSchema>{
+    username: username,
+    password: hash,
+    email: email,
+    phone: phone,
+    emailVerification: false,
+    mobileVerification: false,
+    isAdmin: false,
+  });
+
+  return await usersCollection.findOne(
+    {
+      $and: [{ username: username }, { email: email }, { phone: phone }],
+    },
+    {
+      projection: {
+        username: 1,
+        email: 1,
+        phone: 1,
+        emailVerification: 1,
+        mobileVerification: 1,
+        isAdmin: 1,
+      },
+    }
+  );
 };
 
 export const handleSignup = async (
@@ -67,10 +61,11 @@ export const handleSignup = async (
 ): Promise<void> => {
   try {
     const { username, password, email, phone } = req.body as SignupSchema;
-    await SignupUser(username, password, email, phone);
+    const result = await SignupUser(username, password, email, phone);
+    //console.log(result);
     res.status(201).json({
       success: true,
-      status: `✅ ${username} Successfully Signed Up`,
+      status: result,
     });
     next();
   } catch (err) {

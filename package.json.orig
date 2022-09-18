@@ -1,7 +1,11 @@
 {
   "name": "piechips",
   "main": "build/index.js",
+<<<<<<< HEAD
+  "version": "0.0.1",
+=======
   "version": "1.0.0",
+>>>>>>> d85aeaa56cb7aa467f53d55a864ca3f689a904cd
   "description": "Piechips backend V1",
   "scripts": {
     "start": "node build/index.js",

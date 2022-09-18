@@ -1,3 +1,4 @@
+import circleRoute from './circles/routes';
 import { Router } from 'express';
 import postsRoute from './posts/routes';
 import healthCheckRoute from './healthcheck';
@@ -10,7 +11,7 @@ export default (): Router => {
   app.use('/auth', authRoutes);
   app.use('/', healthCheckRoute);
   app.use('/posts', validateJWT, postsRoute);
-
+  app.use('/circles', validateJWT, circleRoute);
   return app;
 };
 

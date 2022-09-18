@@ -10,10 +10,11 @@ export const validateJWT = async (
 ) => {
   try {
     const { authorization } = req.headers as JwtHeader;
+    //console.log(req.headers);
     if (!authorization) {
       return next({
         statusCode: 401,
-        message: 'No JWT Authorization Token available',
+        message: 'No JWT authorization Token available',
       });
     }
     await yupJwtHeader.validate(req.headers, { abortEarly: false });
