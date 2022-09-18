@@ -9,12 +9,19 @@ import {
   editComment,
   deleteComment,
 } from './controllers/comments.service';
+import {
+  getPostLike,
+  getCommentLike,
+  makeLike,
+  editLike,
+  deleteLike,
+} from './controllers/likes.service';
 import yupValidator from '../../middlewares/yupValidator';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import { yupCommentShema } from '../../models/commentSchema';
 
 const postsRoute = Router();
-
+//==================================Post APIs===================================
 //Get all posts
 postsRoute.get('/all', getAllPosts);
 
@@ -35,6 +42,22 @@ postsRoute.delete(
   deletePost
 );
 
+//==================================Comment APIs===================================
+
+//Fetch comments of post
+postsRoute.get(
+  '/comment/fetch/:id',
+  yupValidator('params', yupObjIdSchema),
+  getPostComment
+);
+
+//Fetch Child comments
+postsRoute.get(
+  '/comment/fetch/child/:id',
+  yupValidator('params', yupObjIdSchema),
+  getChildComment
+);
+
 //Create a comment on a post
 //id is post ID
 postsRoute.post(
@@ -53,25 +76,44 @@ postsRoute.patch(
   editComment
 );
 
-//Fetch comments of post
-postsRoute.get(
-  '/comment/fetch/:id',
-  yupValidator('params', yupObjIdSchema),
-  getPostComment
-);
-
-//Fetch Child comments
-postsRoute.get(
-  '/comment/fetch/child/:id',
-  yupValidator('params', yupObjIdSchema),
-  getChildComment
-);
-
 //Delete a Comment on a post
 postsRoute.delete(
   '/comment/delete/:id',
   yupValidator('params', yupObjIdSchema),
   deleteComment
+);
+
+//==================================Like APIs===================================
+
+//Fetch likes of post
+postsRoute.get(
+  '/like/fetch/post/:id',
+  yupValidator('params', yupObjIdSchema),
+  getPostLike
+);
+
+//Fetch likes of comments
+postsRoute.get(
+  '/like/fetch/comment/:id',
+  yupValidator('params', yupObjIdSchema),
+  getCommentLike
+);
+
+//Like a comment or post
+postsRoute.post('/like/:id', yupValidator('params', yupObjIdSchema), makeLike);
+
+//Edit Like of a comment or post
+postsRoute.patch(
+  '/like/edit/:id',
+  yupValidator('params', yupObjIdSchema),
+  editLike
+);
+
+// Dislike comment or post
+postsRoute.delete(
+  '/like/delete/:id',
+  yupValidator('params', yupObjIdSchema),
+  deleteLike
 );
 
 export default postsRoute;
