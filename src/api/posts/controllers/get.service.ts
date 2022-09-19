@@ -15,7 +15,7 @@ export const getAllPosts = async (
       await DBInstance.getInstance()
     ).getCollection('posts');
     const resData: postSchema[] = await postsCollection.find().toArray();
-    res.status(200).json({ status: true, message: resData });
+    res.status(200).json({ success: true, message: resData });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -40,7 +40,7 @@ export const getUserPosts = async (
       .find({ UID: req.params.id })
       .toArray();
     //console.log(resData);
-    res.status(200).json({ status: true, message: resData });
+    res.status(200).json({ success: true, message: resData });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
