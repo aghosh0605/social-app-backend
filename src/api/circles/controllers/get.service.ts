@@ -15,7 +15,51 @@ export const getCircles = async (
     ).getCollection("circles");
 
     const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json({ success: true, message: resData });
+    res.status(200).json(resData);
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
+};
+
+export const getTopics = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const circlesCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("topics");
+
+    const resData: circleSchema[] = await circlesCollection.find().toArray();
+    res.status(200).json(resData);
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
+};
+
+export const getSubTopics = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const circlesCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("subTopics");
+
+    const resData: circleSchema[] = await circlesCollection.find().toArray();
+    res.status(200).json(resData);
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -42,7 +86,7 @@ export const getCirclesByUser = async (
       })
       .toArray();
 
-    res.status(200).json({ success: true, message: resData });
+    res.status(200).json(resData);
 
     next();
   } catch (err) {
@@ -70,7 +114,7 @@ export const getCirclesByCategory = async (
       })
       .toArray();
 
-    res.status(200).json({ success: true, message: resData });
+    res.status(200).json(resData);
 
     next();
   } catch (err) {
@@ -94,7 +138,7 @@ export const getSpecificCircles = async (
     const resData: circleSchema = await circlesCollection.findOne({
       _id: new ObjectId(`${req.params.id}`),
     });
-    res.status(200).json({ success: true, message: resData });
+    res.status(200).json(resData);
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

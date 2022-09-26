@@ -19,10 +19,37 @@ export const yupObjIdSchema = yup.object({
     .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
 });
 
+export type ObjIdSchema = yup.InferType<typeof yupObjIdSchema>;
+
 export const yupObjTypeSchema = yup.object({
   type: yup.string().required("Please provide circle category").trim(),
 });
 
 export type ObjTypeSchema = yup.InferType<typeof yupObjTypeSchema>;
 
-export type ObjIdSchema = yup.InferType<typeof yupObjIdSchema>;
+export const yupObjCirclesBodySchema = yup.object({
+  circleName: yup.string().trim().required("Please provide a circle name"),
+  UID: yup
+    .string()
+    .trim()
+    .required("Please provide User ID")
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
+  isPrivate: yup.boolean().required("Please provide circle if is private"),
+  tags: yup.string().trim().required("Please attach alteast one tag"),
+  about: yup
+    .string()
+    .required("Enter about the circle")
+    .trim()
+    .min(1, "Minimum one character required")
+    .max(500, "Maximum 500 characters allowed"),
+  category: yup
+    .string()
+    .required("Select a category")
+    .trim()
+    .min(1, "Minimum one character required")
+    .max(50, "Maximum 50 characters allowed"),
+});
+
+export type ObjCirclesBodySchema = yup.InferType<
+  typeof yupObjCirclesBodySchema
+>;
