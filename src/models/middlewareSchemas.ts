@@ -1,11 +1,11 @@
-import * as yup from 'yup';
+import * as yup from "yup";
 
 export const yupJwtHeader = yup.object({
   authorization: yup
     .string()
     .trim()
-    .min(1, 'JWT cannot be null')
-    .matches(/^Bearer .+$/, 'JWT should be Bearer Token')
+    .min(1, "JWT cannot be null")
+    .matches(/^Bearer .+$/, "JWT should be Bearer Token")
     .required(),
 });
 
@@ -14,9 +14,15 @@ export type JwtHeader = yup.InferType<typeof yupJwtHeader>;
 export const yupObjIdSchema = yup.object({
   id: yup
     .string()
-    .required('Please provide User ID')
+    .required("Please provide User ID")
     .trim()
-    .matches(/^[0-9a-f]{24}$/, 'Not a Valid UID'),
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
 });
+
+export const yupObjTypeSchema = yup.object({
+  type: yup.string().required("Please provide circle category").trim(),
+});
+
+export type ObjTypeSchema = yup.InferType<typeof yupObjTypeSchema>;
 
 export type ObjIdSchema = yup.InferType<typeof yupObjIdSchema>;
