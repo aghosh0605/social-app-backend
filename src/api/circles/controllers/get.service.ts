@@ -15,7 +15,7 @@ export const getCircles = async (
     ).getCollection('circles');
 
     const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json({ status: true, message: resData });
+    res.status(200).json({ success: true, message: resData });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -38,7 +38,7 @@ export const getSpecificCircles = async (
     const resData: circleSchema = await circlesCollection.findOne({
       _id: new ObjectId(`${req.params.id}`),
     });
-    res.status(200).json({ status: true, message: resData });
+    res.status(200).json({ success: true, message: resData });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

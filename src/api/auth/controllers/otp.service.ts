@@ -94,7 +94,7 @@ export const handleSendOtp = async (
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
-      status: false,
+      success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
     });
   }
@@ -116,7 +116,7 @@ export const handleVerifyOTP = async (
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
-      status: false,
+      success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
     });
   }

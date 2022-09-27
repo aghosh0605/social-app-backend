@@ -65,13 +65,13 @@ export const handleSignup = async (
     //console.log(result);
     res.status(201).json({
       success: true,
-      status: result,
+      message: result,
     });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
-      status: false,
+      success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
     });
   }
