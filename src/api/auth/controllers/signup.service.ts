@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { Collection, Document } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { throwSchema } from '../../../models/commonSchemas';
+import { throwSchema } from '../../../models/generalSchemas';
 import * as bcrypt from 'bcrypt';
 import { SignupSchema } from '../../../models/authSchema';
 
@@ -15,9 +15,25 @@ const SignupUser = async (
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
-  let userExist: SignupSchema = await usersCollection.findOne({
-    $or: [{ username: username }, { email: email }, { phone: phone }],
-  });
+  let userExist: SignupSchema = await usersCollection.findOne(
+    {
+      $and: [
+        { username: username },
+        { $or: [{ email: email }, { phone: phone }] },
+      ],
+    },
+    {
+      projection: {
+        username: 1,
+        password: 1,
+        email: 1,
+        phone: 1,
+        emailVerification: 1,
+        mobileVerification: 1,
+        isAdmin: 1,
+      },
+    }
+  );
   if (userExist) {
     throw {
       statusCode: 409,
@@ -30,8 +46,8 @@ const SignupUser = async (
   await usersCollection.insertOne(<SignupSchema>{
     username: username,
     password: hash,
-    email: email,
-    phone: phone,
+    email: email || undefined,
+    phone: phone || undefined,
     emailVerification: false,
     mobileVerification: false,
     isAdmin: false,

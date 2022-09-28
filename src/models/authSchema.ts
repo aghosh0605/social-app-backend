@@ -26,8 +26,12 @@ export const yupSignupSchema = yup.object().shape({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/gm,
       'Password not matches required characters'
     ),
-  email: yup.string().email().trim().required(),
-  phone: yup.string().phone().required(),
+  email: yup.string().email().trim(),
+  phone: yup.string().when('isPhoneBlank', {
+    is: false,
+    then: yup.string().phone(),
+    otherwise: yup.string(),
+  }),
   createdOn: yup.date().default(() => new Date()),
   emailVerification: yup.boolean().default(false),
   mobileVerification: yup.boolean().default(false),

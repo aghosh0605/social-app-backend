@@ -6,7 +6,7 @@ import config from '../../../config';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { circleSchema, mediaURLSchema } from '../../../models/circleSchema';
-import { throwSchema } from '../../../models/commonSchemas';
+import { throwSchema } from '../../../models/generalSchemas';
 
 const createService = async (req, res): Promise<ObjectId> => {
   //Checking if already exists

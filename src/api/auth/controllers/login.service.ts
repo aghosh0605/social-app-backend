@@ -3,7 +3,7 @@ import { DBInstance } from '../../../loaders/database';
 import * as bcrypt from 'bcrypt';
 import { sign, JwtPayload } from 'jsonwebtoken';
 import config from '../../../config/index';
-import { throwSchema } from '../../../models/commonSchemas';
+import { throwSchema } from '../../../models/generalSchemas';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { LoginSchema } from '../../../models/authSchema';
@@ -15,7 +15,13 @@ const LoginUser = async (username: string, password: string) => {
   ).getCollection('users');
   const userExists: SignupSchema = await usersCollection.findOne(
     {
-      username: username,
+      $or: [
+        {
+          username: username,
+        },
+        { email: username },
+        { phone: username },
+      ],
     },
     {
       projection: {
@@ -35,7 +41,7 @@ const LoginUser = async (username: string, password: string) => {
       message: 'Please create an account and try again',
     } as throwSchema;
   }
-  if (!userExists.mobileVerification) {
+  if (!userExists.mobileVerification || !userExists.emailVerification) {
     throw {
       statusCode: 400,
       message: 'Your account is not verified',
