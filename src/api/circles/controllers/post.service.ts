@@ -9,7 +9,6 @@ import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
 import { throwSchema } from "../../../models/commonSchemas";
 
 const createService = async (req, res): Promise<ObjectId> => {
-  //Checking if already exists
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("circles");

@@ -15,7 +15,11 @@ export const getCircles = async (
     ).getCollection("circles");
 
     const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: `All circles`,
+      data: resData,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -37,7 +41,11 @@ export const getTopics = async (
     ).getCollection("topics");
 
     const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: "Topics",
+      data: resData,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -59,7 +67,11 @@ export const getSubTopics = async (
     ).getCollection("subTopics");
 
     const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: "Sub Topics",
+      data: resData,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -86,7 +98,11 @@ export const getCirclesByUser = async (
       })
       .toArray();
 
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: `Circle of id : ${req.params.id}`,
+      data: resData,
+    });
 
     next();
   } catch (err) {
@@ -114,7 +130,11 @@ export const getCirclesByCategory = async (
       })
       .toArray();
 
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: `Circle of category : ${req.params.type}`,
+      data: resData,
+    });
 
     next();
   } catch (err) {
@@ -138,7 +158,11 @@ export const getSpecificCircles = async (
     const resData: circleSchema = await circlesCollection.findOne({
       _id: new ObjectId(`${req.params.id}`),
     });
-    res.status(200).json(resData);
+    res.status(200).json({
+      success: true,
+      message: `Circle of id  : ${req.params.id}`,
+      data: resData,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
