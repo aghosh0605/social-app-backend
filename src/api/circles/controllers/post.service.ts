@@ -8,7 +8,7 @@ import Logger from "../../../loaders/logger";
 import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
 import { throwSchema } from "../../../models/commonSchemas";
 
-const createService = async (req, res): Promise<ObjectId> => {
+const createService = async (req, res) => {
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("circles");
@@ -32,7 +32,7 @@ const createService = async (req, res): Promise<ObjectId> => {
       images.forEach(async (element: UploadedFile) => {
         element.name = "circleImages/" + element.name;
         <mediaURLSchema>picURL.push({
-          URL: config.awsBucketBaseURL + "/" + element.name,
+          URL: config.awsBucketBaseURL + element.name,
           mimeType: element.mimetype,
           thumbnailURL: "",
         });
@@ -41,7 +41,7 @@ const createService = async (req, res): Promise<ObjectId> => {
     } else {
       files.images.name = "circleImages/" + files.images.name;
       <mediaURLSchema>picURL.push({
-        URL: config.awsBucketBaseURL + "/" + files.images.name,
+        URL: config.awsBucketBaseURL + files.images.name,
         mimeType: files.images.mimetype,
         thumbnailURL: "",
       });
@@ -60,8 +60,10 @@ const createService = async (req, res): Promise<ObjectId> => {
     category: req.body.category,
     createdOn: new Date(),
   };
+  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
+  return "";
 };
 
 export const createCircles = async (
