@@ -16,7 +16,10 @@ import {
   getTopics,
 } from "./controllers/get.service";
 import { createCircles } from "./controllers/post.service";
-import { updateDataCircle } from "./controllers/update.service";
+import {
+  updateDataCircle,
+  updateImageCircle,
+} from "./controllers/update.service";
 
 const circlesRoute = Router();
 
@@ -60,6 +63,12 @@ circlesRoute.put(
   "/update/data/:id",
   yupValidator("body", yupObjCirclesBodySchema),
   updateDataCircle
+);
+
+circlesRoute.put(
+  "/update/images/:id",
+  // yupValidator("body", yupObjCirclesBodySchema),
+  updateImageCircle
 );
 
 export default circlesRoute;

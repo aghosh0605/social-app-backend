@@ -31,7 +31,6 @@ const deleteService = async (req: Request): Promise<void> => {
     foundCircle.mediaURLs.forEach((element) => {
       const URLPath = new URL(element.URL).pathname.substring(1);
       delObjs.push({ Key: URLPath });
-      //console.log(delObjs);
     });
     await s3Delete(delObjs);
   }
