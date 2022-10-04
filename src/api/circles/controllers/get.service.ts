@@ -114,7 +114,7 @@ export const getCirclesByUser = async (
   }
 };
 
-export const getCirclesByCategory = async (
+export const getCirclesByTag = async (
   req: Request,
   res: Response,
   next: NextFunction

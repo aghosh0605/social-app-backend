@@ -9,7 +9,7 @@ import {
 import { deleteCircle } from "./controllers/delete.service";
 import {
   getCircles,
-  getCirclesByCategory,
+  getCirclesByTag,
   getCirclesByUser,
   getSpecificCircles,
   getSubTopics,
@@ -41,7 +41,7 @@ circlesRoute.get(
 circlesRoute.get(
   "/category/:type",
   yupValidator("params", yupObjTypeSchema),
-  getCirclesByCategory
+  getCirclesByTag
 );
 
 circlesRoute.post(
