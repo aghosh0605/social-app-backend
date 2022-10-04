@@ -126,7 +126,7 @@ export const getCirclesByCategory = async (
 
     const resData: circleSchema[] = await circlesCollection
       .find({
-        category: `#${req.params.type}`,
+        tags: `${req.params.type}`,
       })
       .toArray();
 
