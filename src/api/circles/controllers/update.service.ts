@@ -37,6 +37,10 @@ const updateImageService = async (req: Request, res: Response) => {
 
   const newMediaUrls = await uploadPhotos(req, res);
 
+  if (req.body.tags) {
+    req.body.tags = req.body.tags.split(",");
+  }
+
   const resData = await circlesCollection.updateOne(
     {
       _id: new ObjectId(req.params.id),
@@ -73,6 +77,7 @@ const updateDataService = async (req: Request) => {
       message: "Only creator can edit the circle",
     };
   }
+  req.body.tags = req.body.tags.split(",");
 
   const resData = await circlesCollection.updateOne(
     {

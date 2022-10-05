@@ -29,11 +29,6 @@ export type ObjTypeSchema = yup.InferType<typeof yupObjTypeSchema>;
 
 export const yupObjCirclesBodySchema = yup.object({
   circleName: yup.string().trim().required("Please provide a circle name"),
-  UID: yup
-    .string()
-    .trim()
-    .required("Please provide User ID")
-    .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
   isPrivate: yup.boolean().required("Please provide circle if is private"),
   tags: yup.string().trim().required("Please attach alteast one tag"),
   about: yup

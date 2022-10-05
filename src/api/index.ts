@@ -11,7 +11,7 @@ export default (): Router => {
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
-  app.use("/circles", circleRoute);
+  app.use("/circles", validateJWT, circleRoute);
   return app;
 };
 
