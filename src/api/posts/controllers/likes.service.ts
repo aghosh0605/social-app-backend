@@ -3,7 +3,7 @@ import { DBInstance } from '../../../loaders/database';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { likeSchema } from '../../../models/likeSchema';
-import { throwSchema } from '../../../models/commonSchemas';
+import { throwSchema } from '../../../models/generalSchemas';
 
 export const getPostLike = async (
   req: Request,
