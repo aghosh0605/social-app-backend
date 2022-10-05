@@ -37,3 +37,35 @@
 - [x] Authentication API(Basic Authentication)
 - [x] Comments API(Basic)
 - [x] Mongo Connect Improved(Singleton Function)
+
+
+
+<!-- ############################# -->
+Following flow explanation
+<!-- ############################# -->
+
+```Javascript
+
+var userDocument = {
+  name:'',
+  phone:'',
+  password:'',
+  circle:["jkhsdjkhaskjhdkjasd","jadshjkhdjkashda"]
+}
+
+var circleDocument = {
+  name:'',
+  phone:'',
+  password:'',
+  followers:["jkhsdjkhaskjhdkjasd","jadshjkhdjkashda"]
+}
+
+circle followers => circleDocument.followers.length
+
+userArray = []
+circleDocument.followers[] => userCollection=> findbyid => and project only name,image & userid ? you have to get by for loop
+
+
+```
+
+
