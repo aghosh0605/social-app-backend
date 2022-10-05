@@ -1,26 +1,75 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import yupValidator from '../../middlewares/yupValidator';
-import { yupObjIdSchema } from '../../models/middlewareSchemas';
-import { deleteCircle } from './controllers/delete.service';
-import { getCircles, getSpecificCircles } from './controllers/get.service';
-import { createCircles } from './controllers/post.service';
+import yupValidator from "../../middlewares/yupValidator";
+import {
+  yupObjIdSchema,
+  yupObjCirclesBodySchema,
+  yupObjTypeSchema,
+} from "../../models/middlewareSchemas";
+import { deleteCircle } from "./controllers/delete.service";
+import {
+  getCircles,
+  getCirclesByTag,
+  getCirclesByUser,
+  getSpecificCircles,
+  getSubTopics,
+  getTopics,
+} from "./controllers/get.service";
+import { createCircles } from "./controllers/post.service";
+import {
+  updateDataCircle,
+  updateImageCircle,
+} from "./controllers/update.service";
 
-const circlesRoute = Router();
+const circlesPrivateRoutes = Router();
+const circlesPublicRoutes = Router();
 
-circlesRoute.get('/all', getCircles);
+circlesPublicRoutes.get("/all", getCircles);
 
-circlesRoute.get(
-  '/specific/:id',
-  yupValidator('params', yupObjIdSchema),
+circlesPublicRoutes.get("/subTopics", getSubTopics);
+
+circlesPublicRoutes.get("/topics", getTopics);
+
+circlesPublicRoutes.get(
+  "/specific/:id",
+  yupValidator("params", yupObjIdSchema),
   getSpecificCircles
 );
 
-circlesRoute.post('/create', createCircles);
+circlesPublicRoutes.get(
+  "/user/:id",
+  yupValidator("params", yupObjIdSchema),
+  getCirclesByUser
+);
 
-circlesRoute.delete(
-  '/delete/:id',
-  yupValidator('params', yupObjIdSchema),
+circlesPublicRoutes.get(
+  "/category/:type",
+  yupValidator("params", yupObjTypeSchema),
+  getCirclesByTag
+);
+
+circlesPrivateRoutes.post(
+  "/create",
+  yupValidator("body", yupObjCirclesBodySchema),
+  createCircles
+);
+
+circlesPrivateRoutes.delete(
+  "/delete/:id",
+  yupValidator("params", yupObjIdSchema),
   deleteCircle
 );
-export default circlesRoute;
+
+circlesPrivateRoutes.put(
+  "/update/data/:id",
+  yupValidator("body", yupObjCirclesBodySchema),
+  updateDataCircle
+);
+
+circlesPrivateRoutes.put(
+  "/update/images/:id",
+  // yupValidator("body", yupObjCirclesBodySchema),
+  updateImageCircle
+);
+
+export { circlesPrivateRoutes, circlesPublicRoutes };
