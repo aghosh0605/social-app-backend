@@ -24,13 +24,18 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const userID = await updateService(req, res);
-    res.status(200).json({ success: true, message: userID });
+    res.status(200).json({ 
+      success: true, 
+      message: "Updated User Successfully",
+      data: userID
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred!!',
+      data: null,
     });
   }
 };

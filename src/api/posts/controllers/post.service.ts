@@ -58,13 +58,18 @@ export const createPosts = async (
 ): Promise<void> => {
   try {
     const postID = await postService(req, res);
-    res.status(200).json({ success: true, message: postID });
+    res.status(200).json({ 
+      success: true, 
+      message: "Post Created",
+      data: postID, 
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred!!',
+      data: null,
     });
   }
 };

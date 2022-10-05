@@ -24,13 +24,18 @@ export const updatePost = async (
 ): Promise<void> => {
   try {
     const postID = await updateService(req, res);
-    res.status(200).json({ success: true, message: postID });
+    res.status(200).json({ 
+      success: true, 
+      message: "Post Updated",
+      data: postID
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred!!',
+      data: null,
     });
   }
 };
