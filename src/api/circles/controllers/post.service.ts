@@ -1,4 +1,3 @@
-
 import { UploadedFile } from "express-fileupload";
 import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
@@ -7,7 +6,6 @@ import config from "../../../config";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
 import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
-import { throwSchema } from "../../../models/commonSchemas";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
@@ -21,7 +19,7 @@ const createService = async (req, res) => {
     throw {
       statusCode: 400,
       message: "Circle Already Exists",
-    } as throwSchema;
+    };
   }
 
   // Upload Files to s3
