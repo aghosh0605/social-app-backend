@@ -18,3 +18,5 @@ export const yupUserSchema = yupSignupSchema.shape({
     .trim()
     .matches(/^[0-9a-f]{24}$/, 'Not a Valid Circle ID'),
 });
+
+export type yupUserProfileSchema = yup.InferType<typeof yupUserSchema>;

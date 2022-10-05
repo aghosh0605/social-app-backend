@@ -16,6 +16,7 @@ import {
   editLike,
   deleteLike,
 } from './controllers/likes.service';
+import {updatePost} from './controllers/update.service';
 import yupValidator from '../../middlewares/yupValidator';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import { yupCommentShema } from '../../models/commentSchema';
@@ -40,6 +41,13 @@ postsRoute.delete(
   '/delete/:id',
   yupValidator('params', yupObjIdSchema),
   deletePost
+);
+
+//Update a Post
+postsRoute.patch(
+  '/update/:id', 
+  yupValidator('params', yupObjIdSchema),
+  updatePost
 );
 
 //==================================Comment APIs===================================
