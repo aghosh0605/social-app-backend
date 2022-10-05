@@ -1,6 +1,6 @@
 import { ObjectId, Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { responseSchema, throwSchema } from '../../../models/commonSchemas';
+import { responseSchema, throwSchema } from '../../../models/generalSchemas';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { postSchema } from '../../../models/postSchema';

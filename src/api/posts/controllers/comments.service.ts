@@ -3,7 +3,7 @@ import { DBInstance } from '../../../loaders/database';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { commentSchema } from '../../../models/commentSchema';
-import { throwSchema } from '../../../models/commonSchemas';
+import { throwSchema } from '../../../models/generalSchemas';
 
 export const getPostComment = async (
   req: Request,
