@@ -18,7 +18,6 @@ const deleteService = async (req: Request): Promise<void> => {
     throw { status: 404, success: false, message: "No Circle Found!" };
   }
 
-  console.log(req.headers.authorization);
   if (req.user != foundCircle.UID) {
     throw {
       status: 404,

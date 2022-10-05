@@ -21,54 +21,55 @@ import {
   updateImageCircle,
 } from "./controllers/update.service";
 
-const circlesRoute = Router();
+const circlesPrivateRoutes = Router();
+const circlesPublicRoutes = Router();
 
-circlesRoute.get("/all", getCircles);
+circlesPublicRoutes.get("/all", getCircles);
 
-circlesRoute.get("/subTopics", getSubTopics);
+circlesPublicRoutes.get("/subTopics", getSubTopics);
 
-circlesRoute.get("/topics", getTopics);
+circlesPublicRoutes.get("/topics", getTopics);
 
-circlesRoute.get(
+circlesPublicRoutes.get(
   "/specific/:id",
   yupValidator("params", yupObjIdSchema),
   getSpecificCircles
 );
 
-circlesRoute.get(
+circlesPublicRoutes.get(
   "/user/:id",
   yupValidator("params", yupObjIdSchema),
   getCirclesByUser
 );
 
-circlesRoute.get(
+circlesPublicRoutes.get(
   "/category/:type",
   yupValidator("params", yupObjTypeSchema),
   getCirclesByTag
 );
 
-circlesRoute.post(
+circlesPrivateRoutes.post(
   "/create",
   yupValidator("body", yupObjCirclesBodySchema),
   createCircles
 );
 
-circlesRoute.delete(
+circlesPrivateRoutes.delete(
   "/delete/:id",
   yupValidator("params", yupObjIdSchema),
   deleteCircle
 );
 
-circlesRoute.put(
+circlesPrivateRoutes.put(
   "/update/data/:id",
   yupValidator("body", yupObjCirclesBodySchema),
   updateDataCircle
 );
 
-circlesRoute.put(
+circlesPrivateRoutes.put(
   "/update/images/:id",
   // yupValidator("body", yupObjCirclesBodySchema),
   updateImageCircle
 );
 
-export default circlesRoute;
+export { circlesPrivateRoutes, circlesPublicRoutes };

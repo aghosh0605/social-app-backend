@@ -1,4 +1,4 @@
-import circleRoute from "./circles/routes";
+import { circlesPrivateRoutes, circlesPublicRoutes } from "./circles/routes";
 import { Router } from "express";
 import postsRoute from "./posts/routes";
 import healthCheckRoute from "./healthcheck";
@@ -11,7 +11,8 @@ export default (): Router => {
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
-  app.use("/circles", validateJWT, circleRoute);
+  app.use("/circlePrivate", validateJWT, circlesPrivateRoutes);
+  app.use("/circles", circlesPublicRoutes);
   return app;
 };
 

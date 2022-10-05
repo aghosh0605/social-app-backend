@@ -36,10 +36,8 @@ const createService = async (req, res) => {
     category: req.body.category,
     createdOn: new Date(),
   };
-  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
-  return "";
 };
 
 export const createCircles = async (
