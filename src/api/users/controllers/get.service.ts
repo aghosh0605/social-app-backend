@@ -24,13 +24,18 @@ export const getUser = async (
 ): Promise<void> => {
   try {
     const user = await getCurrentUser(req.params.id);
-    res.status(200).json({ success: true, message: user });
+    res.status(200).json({ 
+      success: true, 
+      message: "Found User Details",
+      data: user
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred!!',
+      data: null,
     });
   }
 };

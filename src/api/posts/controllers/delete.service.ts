@@ -46,13 +46,18 @@ export const deletePost = async (
 ) => {
   try {
     await deleteService(req);
-    res.status(200).json({ success: true, message: 'Post Deleted' });
+    res.status(200).json({ 
+      success: true, 
+      message: 'Post Deleted',
+      data: null,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       status: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
+      data: null,
     });
   }
 };
