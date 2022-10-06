@@ -9,7 +9,7 @@ import Logger from '../../../loaders/logger';
 import { LoginSchema } from '../../../models/authSchema';
 import { SignupSchema } from '../../../models/authSchema';
 
-const LoginUser = async (username: string, password: string) => {
+const SigninUser = async (username: string, password: string) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
@@ -70,14 +70,14 @@ const LoginUser = async (username: string, password: string) => {
   return token;
 };
 
-export const handleLogin = async (
+export const handleSignin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { username, password } = req.body as LoginSchema;
-    const userToken = await LoginUser(username, password);
+    const userToken = await SigninUser(username, password);
     res.status(200).json({
       success: true,
       token: userToken,
