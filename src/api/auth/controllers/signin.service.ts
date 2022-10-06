@@ -41,7 +41,7 @@ const SigninUser = async (username: string, password: string) => {
       message: 'Please create an account and try again',
     } as throwSchema;
   }
-  if (!userExists.mobileVerification || !userExists.emailVerification) {
+  if (!userExists.mobileVerification && !userExists.emailVerification) {
     throw {
       statusCode: 400,
       message: 'Your account is not verified',
