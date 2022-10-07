@@ -8,7 +8,7 @@ import yupValidator from '../../middlewares/yupValidator';
 const usersRoute = Router();
 
 //Get a user by id
-usersRoute.get('/fetch/:id', yupValidator('params', yupObjIdSchema), getUser);
+usersRoute.get('/fetch', getUser);
 
 //Update a user by id
 usersRoute.patch(

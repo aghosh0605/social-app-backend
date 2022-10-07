@@ -1,21 +1,19 @@
-import {DBInstance} from "../../../loaders/database"
-import Logger from "../../../loaders/logger";
-import { Collection, ObjectId } from "mongodb";
-import { Request, Response, NextFunction } from "express";
+import { DBInstance } from '../../../loaders/database';
+import Logger from '../../../loaders/logger';
+import { Collection, ObjectId } from 'mongodb';
+import { Request, Response, NextFunction } from 'express';
 
 const getCurrentUser = async (id: string) => {
   const userCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
-  const user = await userCollection.findOne(
-    { _id: new ObjectId(id) }
-  );
+  const user = await userCollection.findOne({ _id: new ObjectId(id) });
   if (!user) {
     Logger.error('User not found');
     return null;
   }
-  return user
-}
+  return user;
+};
 
 export const getUser = async (
   req: Request,
@@ -23,11 +21,11 @@ export const getUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const user = await getCurrentUser(req.params.id);
-    res.status(200).json({ 
-      success: true, 
-      message: "Found User Details",
-      data: user
+    const user = await getCurrentUser(req.user);
+    res.status(200).json({
+      success: true,
+      message: 'Found User Details',
+      data: user,
     });
     next();
   } catch (err) {

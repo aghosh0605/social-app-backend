@@ -91,8 +91,7 @@ export const handleSignin = async (
     res.status(200).json({
       success: true,
       message: 'Signin successful',
-      token: resData.token,
-      data: resData.userdata,
+      data: resData,
     });
     next();
   } catch (err) {
