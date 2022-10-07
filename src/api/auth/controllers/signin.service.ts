@@ -56,7 +56,7 @@ const SigninUser = async (username: string, password: string) => {
     } as throwSchema;
   }
   //console.log('' + userExists['_id']);
-  const token = sign(
+  const jwtToken = sign(
     <JwtPayload>{
       isAdmin: userExists.isAdmin,
       id: '' + userExists['_id'],
@@ -67,7 +67,17 @@ const SigninUser = async (username: string, password: string) => {
       expiresIn: '72h',
     }
   );
-  return token;
+  const data = await usersCollection.findOne(
+    {
+      username: username,
+    },
+    {
+      projection: {
+        password: false,
+      },
+    }
+  );
+  return { token: jwtToken, userdata: data };
 };
 
 export const handleSignin = async (
@@ -77,11 +87,11 @@ export const handleSignin = async (
 ): Promise<void> => {
   try {
     const { username, password } = req.body as LoginSchema;
-    const userToken = await SigninUser(username, password);
+    const resData = await SigninUser(username, password);
     res.status(200).json({
       success: true,
       message: 'Signin successful',
-      data: userToken,
+      data: resData,
     });
     next();
   } catch (err) {
