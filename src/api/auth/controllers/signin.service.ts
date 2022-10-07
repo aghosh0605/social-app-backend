@@ -80,7 +80,8 @@ export const handleSignin = async (
     const userToken = await SigninUser(username, password);
     res.status(200).json({
       success: true,
-      token: userToken,
+      message: 'Signin successful',
+      data: userToken,
     });
     next();
   } catch (err) {
@@ -88,6 +89,7 @@ export const handleSignin = async (
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
+      data: null,
     });
   }
 };
