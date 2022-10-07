@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPosts } from './controllers/post.service';
+import { createPosts ,favouritePost} from './controllers/post.service';
 import { getAllPosts, getUserPosts } from './controllers/get.service';
 import { deletePost } from './controllers/delete.service';
 import {
@@ -9,6 +9,8 @@ import {
   editComment,
   deleteComment,
 } from './controllers/comments.service';
+
+import { yupFavPostSchema } from "../../models/postSchema";
 import {
   getPostLike,
   getCommentLike,
@@ -49,6 +51,12 @@ postsRoute.patch(
   yupValidator('params', yupObjIdSchema),
   updatePost
 );
+
+// Favourite a Post
+postsRoute.post(
+  "/favourite",
+  yupValidator("body", yupFavPostSchema),
+  favouritePost);
 
 //==================================Comment APIs===================================
 

@@ -73,3 +73,40 @@ export const createPosts = async (
     });
   }
 };
+
+export const favouritePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const postsCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("posts");
+    const postExist: postSchema = await postsCollection.findOne({
+      _id: new ObjectId(req.body.id),
+    });
+    if (!postExist) {
+      throw { status: 404, success: false, message: "No Post Found!" };
+    } else {
+      const favouritePost: Collection<any> = await (
+        await DBInstance.getInstance()
+      ).getCollection("favPosts");
+      let data = {
+        UID: req.body.id,
+        postID: postExist,
+        timeStamp: Date.now(),
+      };
+      const favPostID: ObjectId = (await favouritePost.insertOne(data))
+        .insertedId;
+      res.status(200).json({ success: true, favPostID: favPostID });
+      next();
+    }
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
+};
