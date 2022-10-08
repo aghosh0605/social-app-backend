@@ -22,18 +22,18 @@ const SigninUser = async (username: string, password: string) => {
         { email: username },
         { phone: username },
       ],
-    },
-    {
-      projection: {
-        username: 1,
-        password: 1,
-        email: 1,
-        phone: 1,
-        emailVerification: 1,
-        mobileVerification: 1,
-        isAdmin: 1,
-      },
     }
+    // {
+    //   projection: {
+    //     username: 1,
+    //     password: 1,
+    //     email: 1,
+    //     phone: 1,
+    //     emailVerification: 1,
+    //     mobileVerification: 1,
+    //     isAdmin: 1,
+    //   },
+    // }
   );
   if (!userExists) {
     throw {
@@ -67,17 +67,8 @@ const SigninUser = async (username: string, password: string) => {
       expiresIn: '72h',
     }
   );
-  const data = await usersCollection.findOne(
-    {
-      username: username,
-    },
-    {
-      projection: {
-        password: false,
-      },
-    }
-  );
-  return { token: jwtToken, userdata: data };
+  delete userExists['password'];
+  return { token: jwtToken, userdata: userExists };
 };
 
 export const handleSignin = async (
