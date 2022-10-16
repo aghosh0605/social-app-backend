@@ -45,7 +45,7 @@ const postService = async (req, res): Promise<ObjectId> => {
     tags: req.body.tags.split(','),
     mediaURLs: picURL as mediaURLSchema,
     category: req.body.category,
-    createdOn: new Date(),
+    createdOn: new Date().toDateString(),
   };
 
   return (await postsCollection.insertOne(inData)).insertedId;
