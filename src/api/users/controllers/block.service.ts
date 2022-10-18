@@ -22,7 +22,7 @@ export const blockUser = async (
       });
     } else {
       await usersCollection.updateOne(
-        { _id: id },
+        { _id: user },
         { $push: { blockedUID: id } }
       );
       next();
