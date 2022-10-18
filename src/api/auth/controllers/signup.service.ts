@@ -81,7 +81,8 @@ export const handleSignup = async (
     //console.log(result);
     res.status(201).json({
       success: true,
-      message: result,
+      message: "Signup successful. Kindly login to continue",
+      data: result
     });
     next();
   } catch (err) {
@@ -89,6 +90,7 @@ export const handleSignup = async (
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
+      data: null,
     });
   }
 };
