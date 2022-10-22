@@ -19,12 +19,10 @@ export const handleFollow = async (
     const allFollowing =
       reqType === "cid"
         ? await followersCollection.findOne({
-            followerId: req.user,
-            UID: req.params.id,
+            $and: [{ followerId: req.user }, { CID: req.params.id }],
           })
         : await followersCollection.findOne({
-            followerId: req.user,
-            CID: req.params.id,
+            $and: [{ followerId: req.user }, { UID: req.params.id }],
           });
 
     if (allFollowing) {
