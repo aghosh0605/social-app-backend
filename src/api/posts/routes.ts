@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPosts } from './controllers/post.service';
+import { createPosts, favouritePost } from './controllers/post.service';
 import { getAllPosts, getUserPosts } from './controllers/get.service';
 import { deletePost } from './controllers/delete.service';
 import {
@@ -9,6 +9,8 @@ import {
   editComment,
   deleteComment,
 } from './controllers/comments.service';
+
+import { yupFavPostSchema } from '../../models/postSchema';
 import { deleteImages } from './controllers/image.service';
 import {
   getPostLike,
@@ -17,7 +19,7 @@ import {
   editLike,
   deleteLike,
 } from './controllers/likes.service';
-import {updatePost} from './controllers/update.service';
+import { updatePost } from './controllers/update.service';
 import yupValidator from '../../middlewares/yupValidator';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import { yupCommentShema } from '../../models/commentSchema';
@@ -46,14 +48,21 @@ postsRoute.delete(
 
 //Update a Post
 postsRoute.patch(
-  '/update/:id', 
+  '/update/:id',
   yupValidator('params', yupObjIdSchema),
   updatePost
 );
 
+// Favourite a Post
+postsRoute.post(
+  '/favourite',
+  yupValidator('body', yupFavPostSchema),
+  favouritePost
+);
+
 //Delete Images
 postsRoute.delete(
-  '/delete/all/images/:id', 
+  '/delete/all/images/:id',
   yupValidator('params', yupObjIdSchema),
   deleteImages
 );

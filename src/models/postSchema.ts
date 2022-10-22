@@ -47,3 +47,10 @@ export type postSchema = yup.InferType<typeof yupPostSchema>;
 
 const yupMediaUrlSchema = yupPostSchema.pick['mediaURLs'];
 export type mediaURLSchema = yup.InferType<typeof yupMediaUrlSchema>;
+
+// Fav post schema
+export const yupFavPostSchema = yup.object({
+  postID: yup.string().required().trim(),
+});
+
+export type favPostSchema = yup.InferType<typeof yupFavPostSchema>;
