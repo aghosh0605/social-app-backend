@@ -9,6 +9,7 @@ import {
 import { deleteCircle } from "./controllers/delete.service";
 import {
   getCircles,
+  getCirclesByPost,
   getCirclesByTag,
   getCirclesByUser,
   getSpecificCircles,
@@ -46,6 +47,12 @@ circlesPublicRoutes.get(
   "/category/:type",
   yupValidator("params", yupObjTypeSchema),
   getCirclesByTag
+);
+
+circlesPublicRoutes.get(
+  "/posts/:id",
+  yupValidator("params", yupObjIdSchema),
+  getCirclesByPost
 );
 
 circlesPrivateRoutes.post(
