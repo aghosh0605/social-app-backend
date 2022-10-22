@@ -18,6 +18,7 @@ export type LoginSchema = yup.InferType<typeof yupLoginSchema>;
 
 export const yupSignupSchema = yup.object().shape({
   full_name: yup.string().trim(),
+  dob: yup.date().required('Please provide Date of Birth'),
   password: yup
     .string()
     .trim()
@@ -39,6 +40,18 @@ export const yupSignupSchema = yup.object().shape({
   emailVerificationHash: yup.string().trim(),
   mobileVerificationHash: yup.string().trim(),
   emailVerificationSalt: yup.string().trim(),
+  blockedUID: yup.array().of(
+    yup
+      .string()
+      .trim()
+      .matches(/^[0-9a-f]{24}$/, 'Not a Valid User ID')
+  ),
+  blockedCID: yup.array().of(
+    yup
+      .string()
+      .trim()
+      .matches(/^[0-9a-f]{24}$/, 'Not a Valid Circle ID')
+  ),
 });
 
 export type SignupSchema = yup.InferType<typeof yupSignupSchema>;
@@ -50,8 +63,21 @@ export const yupOtpVerifySchema = yup.object({
 
 export type OtpVerifySchema = yup.InferType<typeof yupOtpVerifySchema>;
 
-export const yupSendOtpScheme = yup.object({
+export const yupSendOtpSchema = yup.object({
   uid: yup.string().trim().required(),
 });
 
-export type SendOtpSchema = yup.InferType<typeof yupSendOtpScheme>;
+export type SendOtpSchema = yup.InferType<typeof yupSendOtpSchema>;
+
+export const yupResetSchema = yup.object({
+  password: yup
+    .string()
+    .required()
+    .trim()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/gm,
+      'Password not matches required characters'
+    ),
+});
+
+export type ResetSchema = yup.InferType<typeof yupResetSchema>;

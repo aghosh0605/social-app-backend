@@ -10,8 +10,9 @@ const SignupUser = async (
   full_name: string,
   password: string,
   email: string,
-  phone: string
-): Promise<void> => {
+  phone: string,
+  dob: Date
+): Promise<Document> => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
@@ -51,6 +52,12 @@ const SignupUser = async (
     emailVerification: false,
     mobileVerification: false,
     isAdmin: false,
+    dob: dob,
+    blockedUID: [],
+    blockedCID: [],
+  });
+  return await usersCollection.findOne({
+    $and: [{ email: email }, { phone: phone }],
   });
 };
 
@@ -60,12 +67,13 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { full_name, password, email, phone } = req.body as SignupSchema;
-    await SignupUser(full_name, password, email, phone);
+    const { full_name, password, email, phone, dob } = req.body as SignupSchema;
+    const result = await SignupUser(full_name, password, email, phone, dob);
     //console.log(result);
     res.status(201).json({
       success: true,
       message: 'Signup successful. Kindly login to continue',
+      data: result,
     });
     next();
   } catch (err) {

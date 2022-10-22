@@ -6,13 +6,20 @@ import { handleSignup } from './controllers/signup.service';
 import { sendVerificationMail, verifyMail } from './controllers/email.service';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import { handleSendOtp, handleVerifyOTP } from './controllers/otp.service';
-
+import { resetPassword } from './controllers/reset.service';
+import { yupResetSchema } from '../../models/authSchema';
 const authRoutes = Router();
 
 // Signin and Signup
 authRoutes.post('/signin', yupValidator('body', yupLoginSchema), handleSignin);
 
 authRoutes.post('/signup', yupValidator('body', yupSignupSchema), handleSignup);
+
+authRoutes.patch(
+  '/reset-password',
+  yupValidator('body', yupResetSchema),
+  resetPassword
+);
 
 authRoutes.get(
   '/sendotp/:id',

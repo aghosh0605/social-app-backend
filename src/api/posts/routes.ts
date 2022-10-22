@@ -55,8 +55,8 @@ postsRoute.patch(
 
 // Favourite a Post
 postsRoute.post(
-  '/favourite',
-  yupValidator('body', yupFavPostSchema),
+  '/favourite/:id',
+  yupValidator('params', yupObjIdSchema),
   favouritePost
 );
 

@@ -58,10 +58,10 @@ export const createPosts = async (
 ): Promise<void> => {
   try {
     const postID = await postService(req, res);
-    res.status(200).json({ 
-      success: true, 
-      message: "Post Created",
-      data: postID, 
+    res.status(200).json({
+      success: true,
+      message: 'Post Created',
+      data: postID,
     });
     next();
   } catch (err) {
@@ -82,19 +82,19 @@ export const favouritePost = async (
   try {
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection("posts");
+    ).getCollection('posts');
     const postExist: postSchema = await postsCollection.findOne({
-      _id: new ObjectId(req.body.id),
+      _id: new ObjectId(req.params.id),
     });
     if (!postExist) {
-      throw { status: 404, success: false, message: "No Post Found!" };
+      throw { status: 404, success: false, message: 'No Post Found!' };
     } else {
       const favouritePost: Collection<any> = await (
         await DBInstance.getInstance()
-      ).getCollection("favPosts");
+      ).getCollection('favPosts');
       let data = {
-        UID: req.body.id,
-        postID: postExist,
+        UID: req.user,
+        postID: req.params.id,
         timeStamp: Date.now(),
       };
       const favPostID: ObjectId = (await favouritePost.insertOne(data))
@@ -106,7 +106,7 @@ export const favouritePost = async (
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
+      message: err.message || '❌ Unknown Error Occurred!!',
     });
   }
 };
