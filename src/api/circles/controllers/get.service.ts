@@ -146,6 +146,37 @@ export const getCirclesByTag = async (
   }
 };
 
+export const getCirclesByPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const postsCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("posts");
+
+    const resData = await postsCollection
+      .find({
+        UID: req.params.id,
+      })
+      .toArray();
+
+    res.status(200).json({
+      success: true,
+      message: `posts for circle id : ${req.params.id}`,
+      data: resData,
+    });
+    next();
+  } catch (err) {
+    Logger.error(err.errorStack || err);
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+    });
+  }
+};
+
 export const getSpecificCircles = async (
   req: Request,
   res: Response,
