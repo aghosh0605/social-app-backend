@@ -4,7 +4,7 @@ import { yupObjIdSchema } from "../../models/middlewareSchemas";
 import {
   handleCircleFollow,
   handleUserFollow,
-} from "./controllers/folow.service";
+} from "./controllers/follow.service";
 
 const followRoutes = Router();
 
