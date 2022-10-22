@@ -40,7 +40,7 @@ export const yupPostSchema = yup.object({
     .trim()
     .min(1, 'Minimum one character required')
     .max(50, 'Maximum 50 characters allowed'),
-  createdOn: yup.date().default(() => new Date()),
+  createdOn: yup.string().default(() => new Date().toDateString()),
 });
 
 export type postSchema = yup.InferType<typeof yupPostSchema>;

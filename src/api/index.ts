@@ -4,7 +4,7 @@ import postsRoute from "./posts/routes";
 import healthCheckRoute from "./healthcheck";
 import authRoutes from "./auth/routes";
 import { validateJWT } from "../middlewares/verify-jwt";
-import usersRoute from './users/routes';
+import usersRoute from "./users/routes";
 export default (): Router => {
   const app = Router();
 
@@ -12,9 +12,9 @@ export default (): Router => {
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
-  app.use("/circlePrivate", validateJWT, circlesPrivateRoutes);
+  app.use("/private-circles", validateJWT, circlesPrivateRoutes);
   app.use("/circles", circlesPublicRoutes);
-  app.use('/users', validateJWT, usersRoute);
+  app.use("/users", validateJWT, usersRoute);
   return app;
 };
 
