@@ -11,7 +11,7 @@ const SignupUser = async (
   password: string,
   email: string,
   phone: string
-): Promise<Document> => {
+): Promise<void> => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
@@ -37,7 +37,7 @@ const SignupUser = async (
   if (userExist) {
     throw {
       statusCode: 409,
-      message: 'User already exists. Kindly use Login ',
+      message: 'User already exists. Kindly use Signin instead',
     } as throwSchema;
   }
   const saltRounds = 10;
@@ -52,22 +52,6 @@ const SignupUser = async (
     mobileVerification: false,
     isAdmin: false,
   });
-
-  return await usersCollection.findOne(
-    {
-      $and: [{ username: username }, { email: email }, { phone: phone }],
-    },
-    {
-      projection: {
-        username: 1,
-        email: 1,
-        phone: 1,
-        emailVerification: 1,
-        mobileVerification: 1,
-        isAdmin: 1,
-      },
-    }
-  );
 };
 
 export const handleSignup = async (
@@ -77,12 +61,11 @@ export const handleSignup = async (
 ): Promise<void> => {
   try {
     const { username, password, email, phone } = req.body as SignupSchema;
-    const result = await SignupUser(username, password, email, phone);
+    await SignupUser(username, password, email, phone);
     //console.log(result);
     res.status(201).json({
       success: true,
-      message: "Signup successful. Kindly login to continue",
-      data: result
+      message: 'Signup successful. Kindly login to continue',
     });
     next();
   } catch (err) {

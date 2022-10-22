@@ -22,18 +22,18 @@ const SigninUser = async (username: string, password: string) => {
         { email: username },
         { phone: username },
       ],
+    },
+    {
+      projection: {
+        username: 1,
+        password: 1,
+        email: 1,
+        phone: 1,
+        emailVerification: 1,
+        mobileVerification: 1,
+        isAdmin: 1,
+      },
     }
-    // {
-    //   projection: {
-    //     username: 1,
-    //     password: 1,
-    //     email: 1,
-    //     phone: 1,
-    //     emailVerification: 1,
-    //     mobileVerification: 1,
-    //     isAdmin: 1,
-    //   },
-    // }
   );
   if (!userExists) {
     throw {
@@ -41,18 +41,21 @@ const SigninUser = async (username: string, password: string) => {
       message: 'Please create an account and try again',
     } as throwSchema;
   }
-  if (!userExists.mobileVerification && !userExists.emailVerification) {
-    throw {
-      statusCode: 400,
-      message: 'Your account is not verified',
-    } as throwSchema;
-  }
+
   //console.log(password, userExists.password);
   const valid = await bcrypt.compare(password, userExists.password);
   if (!valid) {
     throw {
       statusCode: 400,
       message: 'Please check your email or password',
+    } as throwSchema;
+  }
+  delete userExists['password'];
+  if (!userExists.mobileVerification && !userExists.emailVerification) {
+    throw {
+      statusCode: 400,
+      message: 'Your account is not verified',
+      data: userExists,
     } as throwSchema;
   }
   //console.log('' + userExists['_id']);
@@ -67,7 +70,6 @@ const SigninUser = async (username: string, password: string) => {
       expiresIn: '72h',
     }
   );
-  delete userExists['password'];
   return { token: jwtToken, userdata: userExists };
 };
 
@@ -90,7 +92,7 @@ export const handleSignin = async (
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
-      data: null,
+      data: err.data,
     });
   }
 };
