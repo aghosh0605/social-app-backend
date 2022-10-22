@@ -9,6 +9,7 @@ import {
   editComment,
   deleteComment,
 } from './controllers/comments.service';
+import { deleteImages } from './controllers/image.service';
 import {
   getPostLike,
   getCommentLike,
@@ -48,6 +49,13 @@ postsRoute.patch(
   '/update/:id', 
   yupValidator('params', yupObjIdSchema),
   updatePost
+);
+
+//Delete Images
+postsRoute.delete(
+  '/delete/all/images/:id', 
+  yupValidator('params', yupObjIdSchema),
+  deleteImages
 );
 
 //==================================Comment APIs===================================
