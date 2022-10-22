@@ -10,7 +10,7 @@ export default (): Router => {
   const app = Router();
 
   //TODO: add routes here...
-  app.use("/follow", FollowRoutes);
+  app.use("/follow", validateJWT, FollowRoutes);
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
