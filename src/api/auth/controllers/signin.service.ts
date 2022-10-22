@@ -9,23 +9,17 @@ import Logger from '../../../loaders/logger';
 import { LoginSchema } from '../../../models/authSchema';
 import { SignupSchema } from '../../../models/authSchema';
 
-const SigninUser = async (username: string, password: string) => {
+const SigninUser = async (identity: string, password: string) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
   const userExists: SignupSchema = await usersCollection.findOne(
     {
-      $or: [
-        {
-          username: username,
-        },
-        { email: username },
-        { phone: username },
-      ],
+      $or: [{ email: identity }, { phone: identity }],
     },
     {
       projection: {
-        username: 1,
+        full_name: 1,
         password: 1,
         email: 1,
         phone: 1,
@@ -79,8 +73,8 @@ export const handleSignin = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password } = req.body as LoginSchema;
-    const resData = await SigninUser(username, password);
+    const { identity, password } = req.body as LoginSchema;
+    const resData = await SigninUser(identity, password);
     res.status(200).json({
       success: true,
       message: 'Signin successful',

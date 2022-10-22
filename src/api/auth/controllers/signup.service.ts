@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { Collection, Document } from 'mongodb';
+import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/generalSchemas';
 import * as bcrypt from 'bcrypt';
 import { SignupSchema } from '../../../models/authSchema';
 
 const SignupUser = async (
-  username: string,
+  full_name: string,
   password: string,
   email: string,
   phone: string
@@ -18,13 +18,13 @@ const SignupUser = async (
   let userExist: SignupSchema = await usersCollection.findOne(
     {
       $and: [
-        { username: username },
+        { full_name: full_name },
         { $or: [{ email: email }, { phone: phone }] },
       ],
     },
     {
       projection: {
-        username: 1,
+        full_name: 1,
         password: 1,
         email: 1,
         phone: 1,
@@ -44,10 +44,10 @@ const SignupUser = async (
   const hash = await bcrypt.hash(password, saltRounds);
 
   await usersCollection.insertOne(<SignupSchema>{
-    username: username,
+    full_name: full_name,
     password: hash,
-    email: email || undefined,
-    phone: phone || undefined,
+    email: email || null,
+    phone: phone || null,
     emailVerification: false,
     mobileVerification: false,
     isAdmin: false,
@@ -60,8 +60,8 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password, email, phone } = req.body as SignupSchema;
-    await SignupUser(username, password, email, phone);
+    const { full_name, password, email, phone } = req.body as SignupSchema;
+    await SignupUser(full_name, password, email, phone);
     //console.log(result);
     res.status(201).json({
       success: true,

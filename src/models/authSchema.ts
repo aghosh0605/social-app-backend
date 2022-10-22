@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import 'yup-phone';
 
 export const yupLoginSchema = yup.object({
-  username: yup.string().required().trim(),
+  identity: yup.string().required().trim(),
   password: yup
     .string()
     .required()
@@ -17,7 +17,7 @@ export const yupLoginSchema = yup.object({
 export type LoginSchema = yup.InferType<typeof yupLoginSchema>;
 
 export const yupSignupSchema = yup.object().shape({
-  username: yup.string().trim(),
+  full_name: yup.string().trim(),
   password: yup
     .string()
     .trim()
