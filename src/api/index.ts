@@ -6,6 +6,7 @@ import authRoutes from "./auth/routes";
 import { validateJWT } from "../middlewares/verify-jwt";
 import usersRoute from "./users/routes";
 import FollowRoutes from "./follow/routes";
+import searchRoutes from "./search/routes";
 export default (): Router => {
   const app = Router();
 
@@ -17,6 +18,7 @@ export default (): Router => {
   app.use("/private-circles", validateJWT, circlesPrivateRoutes);
   app.use("/circles", circlesPublicRoutes);
   app.use("/users", validateJWT, usersRoute);
+  app.use("/search", searchRoutes);
   return app;
 };
 
