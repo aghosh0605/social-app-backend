@@ -70,6 +70,7 @@ export const yupSendOtpSchema = yup.object({
 export type SendOtpSchema = yup.InferType<typeof yupSendOtpSchema>;
 
 export const yupResetSchema = yup.object({
+  identity: yup.string().required().trim(),
   password: yup
     .string()
     .required()

@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { throwSchema } from '../../../models/generalSchemas';
+import { throwSchema } from '../../../models/interfaces';
 import Logger from '../../../loaders/logger';
 import { sendMail } from '../../../utils/sendInBlueClient';
 import { NextFunction, Request, Response } from 'express';

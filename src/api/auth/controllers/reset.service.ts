@@ -1,8 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { ResetSchema } from '../../../models/authSchema';
+import { ResetSchema, SignupSchema } from '../../../models/authSchema';
+import { Collection } from 'mongodb';
+import { DBInstance } from '../../../loaders/database';
+import { throwSchema } from '../../../models/interfaces';
 
-const updatePassword = (password: string) => {};
+const updatePassword = async (identity: string, password: string) => {
+  const usersCollection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection('users');
+  const userExists: SignupSchema = await usersCollection.findOne(
+    {
+      $or: [{ email: identity }, { phone: identity }],
+    },
+    {
+      projection: {
+        email: 1,
+        phone: 1,
+        emailVerification: 1,
+        mobileVerification: 1,
+        isAdmin: 1,
+      },
+    }
+  );
+  if (!userExists) {
+    throw {
+      statusCode: 400,
+      message: 'User does not exist. Please try again.',
+    } as throwSchema;
+  }
+};
 
 export const resetPassword = async (
   req: Request,
@@ -10,8 +37,8 @@ export const resetPassword = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { password } = req.body as ResetSchema;
-    const resData = await updatePassword(password);
+    const { identity, password } = req.body as ResetSchema;
+    const resData = await updatePassword(identity, password);
     res.status(200).json({
       success: true,
       message: 'Password Change successful',

@@ -4,7 +4,7 @@ import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import Logger from '../../../loaders/logger';
 import { OtpVerifySchema, SendOtpSchema } from '../../../models/authSchema';
-import { throwSchema } from '../../../models/generalSchemas';
+import { throwSchema } from '../../../models/interfaces';
 import axios from 'axios';
 
 const sendOtp = async (uid: string) => {

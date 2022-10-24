@@ -3,7 +3,7 @@ import { DBInstance } from '../../../loaders/database';
 import * as bcrypt from 'bcrypt';
 import { sign, JwtPayload } from 'jsonwebtoken';
 import config from '../../../config/index';
-import { throwSchema } from '../../../models/generalSchemas';
+import { throwSchema } from '../../../models/interfaces';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { LoginSchema } from '../../../models/authSchema';
