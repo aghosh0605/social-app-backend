@@ -8,7 +8,7 @@ async function startServer() {
   await Loaders({ expressApp: app });
   app
     .listen(config.port, () => {
-      Logger.info(`
+      Logger.warn(`
       ################################################
       🛡️  Server listening on port: ${config.port} 🛡️
       ################################################

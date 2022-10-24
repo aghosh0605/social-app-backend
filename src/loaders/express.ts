@@ -49,7 +49,7 @@ export default ({ app }: { app: express.Application }): void => {
   //when we use next(err) it will go to error handling middleware and it will catch error and send response.
   app.use((err, req, res, next) => {
     res.status(err.statusCode || 500).json({
-      status: false,
+      success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
     });
   });

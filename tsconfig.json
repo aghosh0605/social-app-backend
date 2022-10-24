@@ -13,7 +13,10 @@
     "allowJs": true,
     "noEmit": false,
     "esModuleInterop": true
+    //Added later
+    // "typeRoots": ["./config/types"]
   },
   "include": ["./src/**/*"],
-  "exclude": ["node_modules", "tests"]
+  "exclude": ["node_modules", "tests"],
+  "files": ["./src/config/type.d.ts"]
 }

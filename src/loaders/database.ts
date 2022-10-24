@@ -1,26 +1,55 @@
-import { Db, MongoClient } from 'mongodb';
-import config from '../config';
-import Logger from './../loaders/logger';
+import { Db, Collection, MongoClient, MongoError } from 'mongodb';
+import Logger from './logger';
+import config from './../config/index';
 
-let db: Db;
+// Singleton DBInstance Class
+export class DBInstance {
+  private static instance: DBInstance;
+  private static db: Db;
 
-async function initializeClient(): Promise<Db> {
-  const client = await MongoClient.connect(config.databaseURL, {
+  //Connection Configutation
+  private opts: object = {
+    appname: 'piechips',
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    ignoreUndefined: true,
-  });
+    maxIdleTimeMS: 5000, //time a connection can be idle before it's closed.\
+    tls: true,
+    compressors: ['zstd'],
+  };
 
-  return client.db();
-}
+  //Database Credentials
+  private URL: string = config.dbURL;
+  private dbName: string = config.dbName;
+  private dbClient: MongoClient = new MongoClient(this.URL, this.opts);
 
-export default async (): Promise<Db> => {
-  if (!db) {
-    db = await initializeClient();
-    Logger.warn(
-      `✋ New Instance of Mongo Database ${db.databaseName} is called!`
-    );
+  //Constructor
+  private constructor() {
+    Logger.warn('🔶 New MongoClient Instance Created!!');
   }
 
-  return db;
-};
+  private async initialize() {
+    try {
+      const connClient = await this.dbClient.connect();
+      DBInstance.db = connClient.db(this.dbName);
+      Logger.warn(`✅ Connected to MongoDB: ${this.dbName}`);
+    } catch (err) {
+      Logger.error('❌ Could not connect to MongoDB\n%o', err);
+      throw MongoError;
+    }
+  }
+
+  //Singleton Function Implement
+  public static getInstance = async (): Promise<DBInstance> => {
+    if (!DBInstance.instance) {
+      DBInstance.instance = new DBInstance();
+      await DBInstance.instance.initialize();
+    }
+    Logger.info(`🔄 Old instance Called again :)`);
+    return DBInstance.instance;
+  };
+
+  //Usable Function Component to get data according to Collection Name
+  public getCollection = async (collection: string): Promise<Collection> => {
+    return DBInstance.db.collection(collection);
+  };
+}

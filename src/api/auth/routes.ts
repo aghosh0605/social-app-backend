@@ -1,74 +1,48 @@
-import { NextFunction, Request, Response, Router } from 'express';
-import Logger from '../../loaders/logger';
+import { Router } from 'express';
 import yupValidator from '../../middlewares/yupValidator';
-import {
-  LoginRequest,
-  LoginRequestSchema,
-  SignupRequest,
-  SignupRequestSchema,
-} from '../../models/auth/auth.schema';
-import { LoginUser, SignupUser } from './controllers/auth.services';
-
+import { yupLoginSchema, yupSignupSchema } from '../../models/authSchema';
+import { handleSignin } from './controllers/signin.service';
+import { handleSignup } from './controllers/signup.service';
+import { sendVerificationMail, verifyMail } from './controllers/email.service';
+import { yupObjIdSchema } from '../../models/middlewareSchemas';
+import { handleSendOtp, handleVerifyOTP } from './controllers/otp.service';
+import { resetPassword } from './controllers/reset.service';
+import { yupResetSchema } from '../../models/authSchema';
 const authRoutes = Router();
 
-// export type RequestType = {
-//   [prop: string]: any;
-// } & Request;
+// Signin and Signup
+authRoutes.post('/signin', yupValidator('body', yupLoginSchema), handleSignin);
 
-const handleLogin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const { username, password } = req.body as LoginRequest;
-    const userToken = await LoginUser(username, password);
-    res.status(200).json({
-      success: true,
-      token: userToken,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      status: false,
-      message: err.message || '❌ Unknown Error Occurred !! ',
-    });
-  }
-};
+authRoutes.post('/signup', yupValidator('body', yupSignupSchema), handleSignup);
 
-const handleSignup = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const { username, password } = req.body as SignupRequest;
-    await SignupUser(username, password);
-    res.status(201).json({
-      success: true,
-      status: `✅ ${username} Successfully Signed Up`,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      status: false,
-      message: err.message || '❌ Unknown Error Occurred !! ',
-    });
-  }
-};
-
-authRoutes.post(
-  '/login',
-  yupValidator('body', LoginRequestSchema),
-  handleLogin
+authRoutes.patch(
+  '/reset-password',
+  yupValidator('body', yupResetSchema),
+  resetPassword
 );
 
-authRoutes.post(
-  '/signup',
-  yupValidator('body', SignupRequestSchema),
-  handleSignup
+authRoutes.get(
+  '/sendotp/:id',
+  yupValidator('params', yupObjIdSchema),
+  handleSendOtp
+);
+
+authRoutes.get(
+  '/verifyotp/:sessionid/:otp',
+  //yupValidator('body', yupOtpVerifySchema),
+  handleVerifyOTP
+);
+
+authRoutes.get(
+  '/sendmail/:id',
+  yupValidator('params', yupObjIdSchema),
+  sendVerificationMail
+);
+
+authRoutes.get(
+  '/verifymail/:id/:token',
+  yupValidator('params', yupObjIdSchema),
+  verifyMail
 );
 
 export default authRoutes;

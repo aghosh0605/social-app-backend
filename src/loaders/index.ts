@@ -1,4 +1,4 @@
-import database from './database';
+import { DBInstance } from './database';
 import express from './express';
 import Logger from './logger';
 import Express from 'express';
@@ -8,11 +8,11 @@ export default async ({
 }: {
   expressApp: Express.Application;
 }): Promise<void> => {
-  await database();
-  Logger.info(`📌 Connection to database successful`);
+  await DBInstance.getInstance();
+  Logger.warn(`📌 Connection to database successful`);
 
   await express({ app: expressApp });
-  Logger.info('🏹 Express loaded');
+  Logger.debug('🏹 Express loaded');
 
-  Logger.info('✅ All modules loaded!');
+  Logger.debug('✅ All modules loaded!');
 };

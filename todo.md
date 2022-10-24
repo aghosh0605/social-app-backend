@@ -1,13 +1,21 @@
 # Todo of Piechips-backend
 
-Below are the TODOs of piechips
+## Below are the TODOs of piechips
 
 ### Todo
 
+- [ ] OAuth Login
+- [ ] Illegal Activity Report
+- [ ] Chips
+- [ ] Validation Everywhere
+
 ### In Progress
 
-- [ ] Authentication API
-- [ ] comments API
+- [ ] OTP Verification Registration
+- [ ] Email Verification Registration
+- [ ] Like API with Useradd
+- [ ] Circle API with useradd
+- [ ] Posts with Useradd
 
 ### Done ✓
 
@@ -21,9 +29,43 @@ Below are the TODOs of piechips
   - [x] POST
   - [x] DELETE
 - [x] Basic Database Schema Define
-- [x] Heroku Host for Devs
-- [x] TODO Develop
-- [x] Work on the POST API Improve
-- [x] Work on the POST Schema Improve
-  - [x] Extend the POST Schema for DBSchema
-- [x] POST API Picture Upload Add
+- [x] Heroku Host for Developers
+- [x] Work on the POST API Improve(with Multer)
+- [x] Work on the POST Schema Improve(with S3 Image store)
+  - [x] Extend the POST Schema for DBSchema(Image Link Store)
+- [x] POST API Picture Upload Add(Express-Fileupload)
+- [x] Authentication API(Basic Authentication)
+- [x] Comments API(Basic)
+- [x] Mongo Connect Improved(Singleton Function)
+
+
+
+<!-- ############################# -->
+Following flow explanation
+<!-- ############################# -->
+
+```Javascript
+
+var userDocument = {
+  name:'',
+  phone:'',
+  password:'',
+  circle:["jkhsdjkhaskjhdkjasd","jadshjkhdjkashda"]
+}
+
+var circleDocument = {
+  name:'',
+  phone:'',
+  password:'',
+  followers:["jkhsdjkhaskjhdkjasd","jadshjkhdjkashda"]
+}
+
+circle followers => circleDocument.followers.length
+
+userArray = []
+circleDocument.followers[] => userCollection=> findbyid => and project only name,image & userid ? you have to get by for loop
+
+
+```
+
+
