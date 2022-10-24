@@ -18,10 +18,11 @@ const SignupUser = async (
   ).getCollection('users');
   let userExist: SignupSchema = await usersCollection.findOne(
     {
-      $and: [
-        { full_name: full_name },
-        { $or: [{ email: email }, { phone: phone }] },
-      ],
+      // $and: [
+      //   { full_name: full_name },
+      //   { $or: [{ email: email }, { phone: phone }] },
+      // ],
+      $or: [{ email: email }, { phone: phone }],
     },
     {
       projection: {

@@ -1,5 +1,6 @@
 import { yupSignupSchema } from './authSchema';
 import * as yup from 'yup';
+import 'yup-phone';
 
 export const yupUserSchema = yupSignupSchema.shape({
   fullName: yup.string().trim().required(),
@@ -24,3 +25,24 @@ export const yupUserSchema = yupSignupSchema.shape({
 });
 
 export type yupUserProfileSchema = yup.InferType<typeof yupUserSchema>;
+
+export const yupUserSearchType = yup.object({
+  type: yup.string().trim().required('Please specify a user search type'),
+});
+
+export type userSearchType = yup.InferType<typeof yupUserSearchType>;
+
+export const yupUserSearchData = yup.object({
+  email: yup.string().email().trim(),
+  phone: yup.string().when('isPhoneBlank', {
+    is: false,
+    then: yup.string().phone(),
+    otherwise: yup.string(),
+  }),
+  id: yup
+    .string()
+    .trim()
+    .matches(/^[0-9a-f]{24}$/, 'Not a Valid User ID'),
+});
+
+export type userSearchData = yup.InferType<typeof yupUserSearchData>;
