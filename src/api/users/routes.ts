@@ -5,11 +5,17 @@ import { updateUser } from './controllers/update.service';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import yupValidator from '../../middlewares/yupValidator';
 import { blockUser } from './controllers/block.service';
+import { yupUserSearchData, yupUserSearchType } from '../../models/userSchema';
 
 const usersRoute = Router();
 
-//Get a user by id
-usersRoute.get('/fetch', getUser);
+//Get logged in user details
+usersRoute.get(
+  '/fetch/:type',
+  yupValidator('params', yupUserSearchType),
+  yupValidator('query', yupUserSearchData),
+  getUser
+);
 
 //Update a user by id
 usersRoute.patch(
@@ -18,6 +24,7 @@ usersRoute.patch(
   updateUser
 );
 
+//Block a specific user with id
 usersRoute.patch(
   '/user-block/:id',
   yupValidator('params', yupObjIdSchema),

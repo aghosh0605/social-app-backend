@@ -4,31 +4,30 @@ import { ResetSchema, SignupSchema } from '../../../models/authSchema';
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/interfaces';
+import { tokenInterface } from '../../../models/resetInterface';
+import * as bcrypt from 'bcrypt';
 
 const updatePassword = async (identity: string, password: string) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
-  ).getCollection('users');
-  const userExists: SignupSchema = await usersCollection.findOne(
-    {
-      $or: [{ email: identity }, { phone: identity }],
-    },
-    {
-      projection: {
-        email: 1,
-        phone: 1,
-        emailVerification: 1,
-        mobileVerification: 1,
-        isAdmin: 1,
-      },
-    }
-  );
+  ).getCollection('tokens');
+  const userExists: tokenInterface = await usersCollection.findOne({
+    $or: [{ email: identity }, { phone: identity }, {}],
+  });
   if (!userExists) {
     throw {
       statusCode: 400,
-      message: 'User does not exist. Please try again.',
+      message: 'Please use email or phone to reset your password',
     } as throwSchema;
   }
+  if (!userExists.isVerified) {
+    throw {
+      statusCode: 400,
+      message: 'Please verify your email or phone first to reset your password',
+    } as throwSchema;
+  }
+  const saltRounds = 10;
+  const hash = await bcrypt.hash(password, saltRounds);
 };
 
 export const resetPassword = async (
