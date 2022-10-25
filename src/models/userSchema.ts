@@ -3,7 +3,6 @@ import * as yup from 'yup';
 import 'yup-phone';
 
 export const yupUserSchema = yupSignupSchema.shape({
-  fullName: yup.string().trim().required(),
   profileURL: yup.string().trim(),
   isDark: yup.boolean().default(false),
   blockedUID: yup.array().of(

@@ -2,11 +2,8 @@ import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/interfaces';
 import Logger from '../../../loaders/logger';
-import { sendMail } from '../../../utils/sendInBlueClient';
 import { NextFunction, Request, Response } from 'express';
-import { join } from 'path';
-import { generateNanoID } from '../../../utils/nanoidGenerate';
-import config from '../../../config';
+import { emailSender } from '../../../config/transporters/signup';
 
 export const sendVerificationMail = async (
   req: Request,
@@ -26,36 +23,26 @@ export const sendVerificationMail = async (
           full_name: 1,
           email: true,
           emailVerification: true,
-          emailVerifyHash: 1,
         },
       }
     );
+    if (!userData) {
+      throw {
+        statusCode: 400,
+        message: 'User does not exists',
+      } as throwSchema;
+    }
     if (userData.emailVerification) {
       throw {
         statusCode: 400,
         message: 'Email is already verified',
       } as throwSchema;
     }
-    const token = generateNanoID('0-9a-fA-F', 24);
-    const uid = '' + userData['_id'];
-    userData.link = `${config.baseurl}/api/auth/verifymail/${uid}/${token}`;
-    const path = join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'templates',
-      `emailVerification.ejs`
-    );
+    await emailSender(userData);
 
-    const senderData = { name: 'Piechips', email: 'verification@piechips.com' };
-    await sendMail(path, userData, 'Verify your email', senderData);
-    await usersCollection.updateOne(
-      { _id: userData._id },
-      { $set: { emailVerifyHash: token } }
-    );
-    res.status(200).json({ success: true, message: 'Email Sent!!' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Verification Email Sent!!' });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -82,13 +69,19 @@ export const verifyMail = async (
       },
       {
         projection: {
-          username: true,
+          full_name: true,
           email: true,
           emailVerification: true,
           emailVerifyHash: 1,
         },
       }
     );
+    if (!userData) {
+      throw {
+        statusCode: 400,
+        message: 'User does not exist!',
+      } as throwSchema;
+    }
     if (userData.emailVerifyHash == '') {
       throw {
         statusCode: 400,
