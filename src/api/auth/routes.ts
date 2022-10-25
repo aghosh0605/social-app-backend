@@ -8,6 +8,7 @@ import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import { handleSendOtp, handleVerifyOTP } from './controllers/otp.service';
 import { resetPassword } from './controllers/reset.service';
 import { yupResetSchema } from '../../models/authSchema';
+
 const authRoutes = Router();
 
 // Signin and Signup

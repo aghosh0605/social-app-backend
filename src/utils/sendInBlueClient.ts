@@ -25,7 +25,7 @@ export const sendMail = async (
     name: sender.name,
     email: sender.email,
   };
-  sendSmtpEmail.to = [{ email: data.email, name: data.fullName }];
+  sendSmtpEmail.to = [{ email: data.email, name: data.full_name }];
   // sendSmtpEmail.cc = [{ email: 'example2@example2.com', name: 'Janice Doe' }];
   // sendSmtpEmail.bcc = [{ email: 'John Doe', name: 'example@example.com' }];
   sendSmtpEmail.replyTo = {

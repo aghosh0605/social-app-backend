@@ -17,7 +17,7 @@ export const yupLoginSchema = yup.object({
 export type LoginSchema = yup.InferType<typeof yupLoginSchema>;
 
 export const yupSignupSchema = yup.object().shape({
-  full_name: yup.string().trim(),
+  full_name: yup.string().trim().required('Please provide a full name'),
   dob: yup.date().required('Please provide Date of Birth'),
   password: yup
     .string()
@@ -28,11 +28,20 @@ export const yupSignupSchema = yup.object().shape({
       'Password not matches required characters'
     ),
   email: yup.string().email().trim(),
-  phone: yup.string().when('isPhoneBlank', {
-    is: false,
-    then: yup.string().phone(),
-    otherwise: yup.string(),
-  }),
+  phone: yup
+    .string()
+    .trim()
+    .min(5, 'Pleas enter a valid phone number')
+    .when('isPhoneBlank', {
+      is: false,
+      then: yup.string().phone(),
+      otherwise: yup.string().trim(),
+    }),
+  countryCode: yup
+    .string()
+    .min(2, 'Pleas enter a valid country code')
+    .trim()
+    .matches(/^(\+?\d{1,3}|\d{1,4})$/gm, 'Country Code not valid'),
   createdOn: yup.date().default(() => new Date()),
   emailVerification: yup.boolean().default(false),
   mobileVerification: yup.boolean().default(false),
