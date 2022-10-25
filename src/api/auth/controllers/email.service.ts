@@ -23,8 +23,7 @@ export const sendVerificationMail = async (
       },
       {
         projection: {
-          username: true,
-          fullName: 1,
+          full_name: 1,
           email: true,
           emailVerification: true,
           emailVerifyHash: 1,

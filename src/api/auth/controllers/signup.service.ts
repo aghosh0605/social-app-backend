@@ -11,23 +11,33 @@ const SignupUser = async (
   password: string,
   email: string,
   phone: string,
-  dob: Date
+  dob: Date,
+  countryCode: string
 ): Promise<Document> => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
+  if (!email && !phone) {
+    throw {
+      statusCode: 404,
+      message: 'Please provide an email or phone number',
+      data: null,
+    } as throwSchema;
+  }
+  if (phone && !countryCode) {
+    throw {
+      statusCode: 404,
+      message: 'Please provide a country code',
+      data: null,
+    } as throwSchema;
+  }
   let userExist: SignupSchema = await usersCollection.findOne(
     {
-      // $and: [
-      //   { full_name: full_name },
-      //   { $or: [{ email: email }, { phone: phone }] },
-      // ],
       $or: [{ email: email }, { phone: phone }],
     },
     {
       projection: {
         full_name: 1,
-        password: 1,
         email: 1,
         phone: 1,
         emailVerification: 1,
@@ -40,25 +50,39 @@ const SignupUser = async (
     throw {
       statusCode: 409,
       message: 'User already exists. Kindly use Signin instead',
+      data: userExist,
     } as throwSchema;
   }
   const saltRounds = 10;
   const hash = await bcrypt.hash(password, saltRounds);
 
-  await usersCollection.insertOne(<SignupSchema>{
+  const _dbData = {
     full_name: full_name,
     password: hash,
-    email: email || null,
-    phone: phone || null,
     emailVerification: false,
     mobileVerification: false,
     isAdmin: false,
     dob: dob,
     blockedUID: [],
     blockedCID: [],
-  });
+  };
+  let dbData;
+  if (email && phone && countryCode) {
+    dbData = {
+      ..._dbData,
+      email: email,
+      phone: phone,
+      countryCode: countryCode,
+    };
+  } else if (email) {
+    dbData = { ..._dbData, email: email, phone: '', countryCode: '' };
+  } else {
+    dbData = { ..._dbData, email: '', phone: phone, countryCode: countryCode };
+  }
+
+  await usersCollection.insertOne(<SignupSchema>dbData);
   return await usersCollection.findOne({
-    $and: [{ email: email }, { phone: phone }],
+    $or: [{ email: email }, { phone: phone }],
   });
 };
 
@@ -68,9 +92,17 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { full_name, password, email, phone, dob } = req.body as SignupSchema;
-    const result = await SignupUser(full_name, password, email, phone, dob);
-    //console.log(result);
+    const { full_name, password, email, phone, dob, countryCode } =
+      req.body as SignupSchema;
+    const result = await SignupUser(
+      full_name,
+      password,
+      email,
+      phone,
+      dob,
+      countryCode
+    );
+
     res.status(201).json({
       success: true,
       message: 'Signup successful. Kindly login to continue',
@@ -82,7 +114,7 @@ export const handleSignup = async (
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
-      data: null,
+      data: err.data,
     });
   }
 };
