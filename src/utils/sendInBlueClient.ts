@@ -1,8 +1,8 @@
 import SibApiV3Sdk from 'sib-api-v3-sdk';
 import config from './../config/index';
-import { renderFile } from 'ejs';
 import { generateNanoID } from './nanoidGenerate';
 import Logger from './../loaders/logger';
+import { transporter } from '../models/transporterInterface';
 
 let defaultClient = SibApiV3Sdk.ApiClient.instance;
 
@@ -13,33 +13,30 @@ let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-export const sendMail = async (
-  path: string,
-  data,
-  emailSubject: string,
-  sender
-) => {
-  sendSmtpEmail.subject = '{{params.subject}}';
-  sendSmtpEmail.htmlContent = await renderFile(path, data, { async: true });
+export const sendMail = async (emailConfig: transporter) => {
+  sendSmtpEmail.subject = emailConfig.subject;
+  sendSmtpEmail.htmlContent = emailConfig.html;
   sendSmtpEmail.sender = {
-    name: sender.name,
-    email: sender.email,
+    name: emailConfig.sender_name,
+    email: emailConfig.from,
   };
-  sendSmtpEmail.to = [{ email: data.email, name: data.full_name }];
+  sendSmtpEmail.to = [
+    { email: emailConfig.to, name: emailConfig.receiver_name },
+  ];
   // sendSmtpEmail.cc = [{ email: 'example2@example2.com', name: 'Janice Doe' }];
   // sendSmtpEmail.bcc = [{ email: 'John Doe', name: 'example@example.com' }];
   sendSmtpEmail.replyTo = {
-    email: 'developer@cariogrowth.com',
-    name: 'Cario Growth',
+    email: emailConfig.reply_email,
+    name: emailConfig.reply_name,
   };
   sendSmtpEmail.headers = {
-    'Mail-ID-Piechips': generateNanoID('0-9a-fA-F', 10),
+    'Mail-UniqueID-Piechips': generateNanoID('0-9a-fA-F', 10),
   };
-  sendSmtpEmail.params = {
-    subject: emailSubject,
-    token: data.emailVerifyHash,
-    uid: '' + data['_id'],
-  };
+  // sendSmtpEmail.params = {
+  //   subject: emailSubject,
+  //   token: data.emailVerifyHash,
+  //   uid: '' + data['_id'],
+  // };
   try {
     const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
     Logger.info('📨 Sent email ID: ' + JSON.stringify(result));
