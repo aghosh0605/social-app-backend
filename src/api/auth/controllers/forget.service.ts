@@ -49,7 +49,7 @@ const updatePassword = async (identity: string, password: string) => {
   );
 };
 
-export const resetPassword = async (
+export const forgotPassword = async (
   req: Request,
   res: Response,
   next: NextFunction
