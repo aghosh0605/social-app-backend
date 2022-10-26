@@ -88,7 +88,7 @@ export const handleSendOtp = async (
     res.status(200).json({
       success: true,
       message: 'OTP Send to your mobile number successfully',
-      data: result,
+      data: { sessionID: result },
     });
     next();
   } catch (err) {
