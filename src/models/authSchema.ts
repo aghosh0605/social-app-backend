@@ -46,6 +46,7 @@ export const yupSignupSchema = yup.object().shape({
   emailVerification: yup.boolean().default(false),
   mobileVerification: yup.boolean().default(false),
   isAdmin: yup.boolean().default(false),
+  isResetVerified: yup.boolean().default(false),
   emailVerificationHash: yup.string().trim(),
   mobileVerificationHash: yup.string().trim(),
   emailVerificationSalt: yup.string().trim(),

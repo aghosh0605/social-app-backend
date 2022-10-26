@@ -1,13 +1,13 @@
 import { generateNanoID } from '../../utils/nanoidGenerate';
 import { join } from 'path';
-import config from '../../config';
+import config from '..';
 import { renderFile } from 'ejs';
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../loaders/database';
 import { sendMail } from '../../utils/sendInBlueClient';
 import { transporter } from '../../models/transporterInterface';
 
-export const emailSender = async (userData) => {
+export const forgotEmailSender = async (userData) => {
   const emailConfig: transporter = await transportConfig(userData);
   await sendMail(emailConfig);
 
@@ -25,14 +25,15 @@ const transportConfig = async (userData) => {
   const token = generateNanoID('0-9a-fA-F', 24);
   userData.emailToken = token;
   const uid = '' + userData['_id'];
-  userData.link = `${config.baseurl}/api/auth/verifymail/${uid}/${token}`;
+  userData.link = `${config.baseurl}/api/auth/verifymail/${uid}/${token}?type=forgot`;
   const templatePath = join(
     __dirname,
     '..',
     '..',
     '..',
     'templates',
-    `emailVerification.ejs`
+    'forgot_password',
+    `forgot-password.ejs`
   );
   return {
     sender_name: 'Piechips',
@@ -41,7 +42,7 @@ const transportConfig = async (userData) => {
     to: userData.email,
     reply_name: 'Cario Growth Services',
     reply_email: 'support@cariogrowth.com',
-    subject: 'Please Verify your email',
+    subject: 'Forgot your password',
     html: await renderFile(templatePath, userData, { async: true }),
   };
 };

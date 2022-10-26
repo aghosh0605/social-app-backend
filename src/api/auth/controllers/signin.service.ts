@@ -26,6 +26,8 @@ const SigninUser = async (identity: string, password: string) => {
         emailVerification: 1,
         mobileVerification: 1,
         isAdmin: 1,
+        countryCode: 1,
+        dob: 1,
       },
     }
   );

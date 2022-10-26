@@ -3,11 +3,10 @@ import config from '../../../config/index';
 import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import Logger from '../../../loaders/logger';
-import { OtpVerifySchema, SendOtpSchema } from '../../../models/authSchema';
 import { throwSchema } from '../../../models/interfaces';
 import axios from 'axios';
 
-const sendOtp = async (uid: string) => {
+const sendOtp = async (uid: string, type: any) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
@@ -19,31 +18,28 @@ const sendOtp = async (uid: string) => {
       statusCode: 400,
       message: 'Please create an account and try again',
     } as throwSchema;
-  } else {
-    if (userExists.mobileVerification) {
-      throw {
-        statusCode: 400,
-        message: 'Mobile number already verifed',
-      } as throwSchema;
-    } else {
-      const url =
-        'https://2factor.in/API/V1/' +
-        config.twoFactorAPI +
-        '/SMS/' +
-        userExists?.phone +
-        '/AUTOGEN';
-
-      const result = await axios.get(url);
-      await usersCollection.updateOne(
-        { _id: userExists._id },
-        { $set: { mobileVerifyHash: result.data.Details } }
-      );
-      return result.data.Details;
-    }
   }
-};
+  if (userExists.mobileVerification && type == 'signup') {
+    throw {
+      statusCode: 400,
+      message: 'Mobile number already verifed',
+    } as throwSchema;
+  }
+  const url =
+    'https://2factor.in/API/V1/' +
+    config.twoFactorAPI +
+    '/SMS/' +
+    userExists?.phone +
+    '/AUTOGEN';
 
-const VerifyOtp = async (sessionID: string, otp: number) => {
+  const result = await axios.get(url);
+  await usersCollection.updateOne(
+    { _id: userExists._id },
+    { $set: { mobileVerifyHash: result.data.Details } }
+  );
+  return result.data.Details;
+};
+const VerifyOtp = async (sessionID: string, otp: number, type: any) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
@@ -53,29 +49,31 @@ const VerifyOtp = async (sessionID: string, otp: number) => {
   if (!userExists) {
     throw {
       statusCode: 400,
-      message: 'Please create an account and try again',
+      message: 'Please send OTP again!!',
     } as throwSchema;
-  } else {
-    if (userExists.mobileVerification) {
-      throw {
-        statusCode: 400,
-        message: 'Mobile number already verifed',
-      } as throwSchema;
-    } else {
-      const url =
-        'https://2factor.in/API/V1/' +
-        config.twoFactorAPI +
-        '/SMS/VERIFY/' +
-        sessionID +
-        '/' +
-        otp;
-      await axios.get(url);
-      await usersCollection.updateOne(
-        { _id: userExists._id },
-        { $set: { mobileVerification: true, mobileVerifyHash: '' } }
-      );
-    }
   }
+  if (userExists.mobileVerification && type == 'signup') {
+    throw {
+      statusCode: 400,
+      message: 'Mobile number already verifed',
+    } as throwSchema;
+  }
+  const url =
+    'https://2factor.in/API/V1/' +
+    config.twoFactorAPI +
+    '/SMS/VERIFY/' +
+    sessionID +
+    '/' +
+    otp;
+  await axios.get(url);
+  let updateData = { mobileVerification: true, mobileVerifyHash: '' };
+  if (type == 'forgot') {
+    updateData['isForgotVerified'] = true;
+  }
+  await usersCollection.updateOne(
+    { _id: userExists._id },
+    { $set: updateData }
+  );
 };
 
 export const handleSendOtp = async (
@@ -85,10 +83,12 @@ export const handleSendOtp = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await sendOtp(id);
+    const { type } = req.query;
+    const result = await sendOtp(id, type);
     res.status(200).json({
       success: true,
-      message: result,
+      message: 'OTP Send to your mobile number successfully',
+      data: result,
     });
     next();
   } catch (err) {
@@ -107,7 +107,8 @@ export const handleVerifyOTP = async (
 ): Promise<void> => {
   try {
     const { sessionid, otp } = req.params;
-    await VerifyOtp(sessionid, parseInt(otp));
+    const { type } = req.query;
+    await VerifyOtp(sessionid, parseInt(otp), type);
     res.status(200).json({
       success: true,
       message: 'Mobile number verfied successfully',

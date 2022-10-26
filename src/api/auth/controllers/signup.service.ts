@@ -43,6 +43,8 @@ const SignupUser = async (
         emailVerification: 1,
         mobileVerification: 1,
         isAdmin: 1,
+        countryCode: 1,
+        dob: 1,
       },
     }
   );
@@ -65,6 +67,7 @@ const SignupUser = async (
     dob: dob,
     blockedUID: [],
     blockedCID: [],
+    isForgotVerified: false,
   };
   let dbData;
   if (email && phone && countryCode) {
@@ -81,9 +84,12 @@ const SignupUser = async (
   }
 
   await usersCollection.insertOne(<SignupSchema>dbData);
-  return await usersCollection.findOne({
-    $or: [{ email: email }, { phone: phone }],
-  });
+  return await usersCollection.findOne(
+    {
+      $or: [{ email: email }, { phone: phone }],
+    },
+    { projection: { password: 0 } }
+  );
 };
 
 export const handleSignup = async (

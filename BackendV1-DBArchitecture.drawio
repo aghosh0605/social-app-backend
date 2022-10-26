@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2be-THTNuNvCN0owMqXN" name="DB-Achitcture">
-        <mxGraphModel dx="1064" dy="1439" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1097" dy="1662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -100,8 +100,11 @@
                 <mxCell id="ay8WU33fq49zgbgqs7b7-1" value="&lt;b&gt;isAdmin(true/false)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="496" width="200" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="&lt;span&gt;countryCode&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="2QIpF6AVUyKxiGPU-yzf-1">
+                <mxCell id="12" value="&lt;span&gt;countryCode&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="348" width="200" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="isForgotVerified" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="2QIpF6AVUyKxiGPU-yzf-1">
+                    <mxGeometry y="596" width="200" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="2QIpF6AVUyKxiGPU-yzf-3" value="&lt;b&gt;full_name&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="70" y="131" width="200" height="17" as="geometry"/>
@@ -225,7 +228,7 @@
                 <mxCell id="ZeOIJR77l9cZIXPEnhxW-10" value="isPrivate" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="58" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="ZeOIJR77l9cZIXPEnhxW-11" value="Tags(Subtopics)" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
+                <mxCell id="ZeOIJR77l9cZIXPEnhxW-11" value="Tags" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="75" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="ZeOIJR77l9cZIXPEnhxW-12" value="About" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
@@ -240,13 +243,13 @@
                 <mxCell id="HzWzUF8-_IMW7kiPa2Iw-8" value="Circle Create Date Time" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="125.5" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="HzWzUF8-_IMW7kiPa2Iw-9" value="Category(Topics)" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
+                <mxCell id="HzWzUF8-_IMW7kiPa2Iw-9" value="Category(Subtopics)" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="142.5" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-39" value="Circle Admins User ID" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="159.5" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="ikXOdWdKuYCcfvPJfYeY-1" value="CircleName" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
+                <mxCell id="ikXOdWdKuYCcfvPJfYeY-1" value="CircleName(Topic)" style="rounded=0;whiteSpace=wrap;html=1;" parent="ZeOIJR77l9cZIXPEnhxW-8" vertex="1">
                     <mxGeometry y="176.5" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="ZeOIJR77l9cZIXPEnhxW-18" value="Shares" style="swimlane;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;rounded=1;shadow=1;" parent="1" vertex="1">

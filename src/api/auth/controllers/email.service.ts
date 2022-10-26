@@ -3,7 +3,8 @@ import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/interfaces';
 import Logger from '../../../loaders/logger';
 import { NextFunction, Request, Response } from 'express';
-import { emailSender } from '../../../config/transporters/signup';
+import { emailSender } from '../../../config/transporters/signup.email';
+import { forgotEmailSender } from '../../../config/transporters/forgot.email';
 
 export const sendVerificationMail = async (
   req: Request,
@@ -11,6 +12,7 @@ export const sendVerificationMail = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const { type } = req.query;
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('users');
@@ -32,13 +34,20 @@ export const sendVerificationMail = async (
         message: 'User does not exists',
       } as throwSchema;
     }
-    if (userData.emailVerification) {
+    if (userData.emailVerification && type == 'signup') {
       throw {
         statusCode: 400,
         message: 'Email is already verified',
       } as throwSchema;
     }
-    await emailSender(userData);
+    switch (type) {
+      case 'forgot':
+        await forgotEmailSender(userData);
+        break;
+      case 'signup':
+        await emailSender(userData);
+        break;
+    }
 
     res
       .status(200)
@@ -60,6 +69,7 @@ export const verifyMail = async (
 ): Promise<void> => {
   try {
     const { id, token } = req.params;
+    const { type } = req.query;
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('users');
@@ -73,6 +83,7 @@ export const verifyMail = async (
           email: true,
           emailVerification: true,
           emailVerifyHash: 1,
+          isResetVerified: 1,
         },
       }
     );
@@ -82,7 +93,7 @@ export const verifyMail = async (
         message: 'User does not exist!',
       } as throwSchema;
     }
-    if (userData.emailVerifyHash == '') {
+    if (userData.emailVerifyHash == '' || !userData.emailVerifyHash) {
       throw {
         statusCode: 400,
         message: 'Please resend verification mail!!',
@@ -91,12 +102,18 @@ export const verifyMail = async (
     if (userData.emailVerifyHash != token) {
       throw {
         statusCode: 400,
-        message: 'Wrong Verification Token!!',
+        message: 'Wrong Verification Token!! Use the latest verification link',
       } as throwSchema;
     }
+    let updateData = { emailVerifyHash: '', emailVerification: true };
+
+    if (type == 'forgot') {
+      updateData['isForgotVerified'] = true;
+    }
+
     await usersCollection.updateOne(
       { _id: userData._id },
-      { $set: { emailVerifyHash: '', emailVerification: true } }
+      { $set: updateData }
     );
     res.status(200).json({ success: true, message: 'Email Verified' });
     next();
