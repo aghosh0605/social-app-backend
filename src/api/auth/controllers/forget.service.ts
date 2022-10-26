@@ -4,23 +4,24 @@ import { ResetSchema, SignupSchema } from '../../../models/authSchema';
 import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
 import { throwSchema } from '../../../models/interfaces';
-import { tokenInterface } from '../../../models/resetInterface';
 import * as bcrypt from 'bcrypt';
 
 const updatePassword = async (identity: string, password: string) => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
-  ).getCollection('tokens');
-  const userExists: tokenInterface = await usersCollection.findOne({
-    $or: [{ email: identity }, { phone: identity }, {}],
+  ).getCollection('users');
+  const userExists = await usersCollection.findOne({
+    $or: [{ email: identity }, { phone: identity }],
   });
+  // console.log(userExists);
   if (!userExists) {
     throw {
       statusCode: 400,
       message: 'Please use email or phone to reset your password',
     } as throwSchema;
   }
-  if (!userExists.isVerified) {
+
+  if (!userExists.isForgotVerified) {
     throw {
       statusCode: 400,
       message: 'Please verify your email or phone first to reset your password',
@@ -28,6 +29,24 @@ const updatePassword = async (identity: string, password: string) => {
   }
   const saltRounds = 10;
   const hash = await bcrypt.hash(password, saltRounds);
+  const _updateData = { password: hash, isForgotVerified: false };
+  // let updateData;
+  // if (type == 'email') {
+  //   updateData = {
+  //     emailVerifyHash: '',
+  //     emailVerification: true,
+  //     ..._updateData,
+  //   };
+  // } else {
+  //   updateData = {
+  //     mobileVerifyHash: '',
+  //     mobileVerification: true,
+  //     ..._updateData,
+  //   };
+  await usersCollection.updateOne(
+    { _id: userExists._id },
+    { $set: _updateData }
+  );
 };
 
 export const resetPassword = async (
@@ -40,7 +59,7 @@ export const resetPassword = async (
     const resData = await updatePassword(identity, password);
     res.status(200).json({
       success: true,
-      message: 'Password Change successful',
+      message: 'Password Changed successfully',
       data: resData,
     });
     next();
