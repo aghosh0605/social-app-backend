@@ -53,12 +53,15 @@ export const yupCircleSearchType = yup.object({
 export type circleSearchType = yup.InferType<typeof yupCircleSearchType>;
 
 export const yupCircleSearchData = yup.object({
-  email: yup.string().email().trim(),
-  phone: yup.string().when("isPhoneBlank", {
-    is: false,
-    then: yup.string().phone(),
-    otherwise: yup.string(),
-  }),
+  tag: yup.string().trim(),
+  user: yup
+    .string()
+    .trim()
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid User ID"),
+  posts: yup
+    .string()
+    .trim()
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid Posts ID"),
   id: yup
     .string()
     .trim()
