@@ -2,17 +2,18 @@ import { Router } from "express";
 
 import yupValidator from "../../middlewares/yupValidator";
 import {
+  yupCircleSearchData,
+  yupCircleSearchType,
+} from "../../models/circleSchema";
+import {
   yupObjIdSchema,
   yupObjCirclesBodySchema,
   yupObjTypeSchema,
 } from "../../models/middlewareSchemas";
 import { deleteCircle } from "./controllers/delete.service";
 import {
-  getCircles,
-  getCirclesByPost,
-  getCirclesByTag,
-  getCirclesByUser,
-  getSpecificCircles,
+  getCircle,
+  getAllCircles,
   getSubTopics,
   getTopics,
 } from "./controllers/get.service";
@@ -25,34 +26,17 @@ import {
 const circlesPrivateRoutes = Router();
 const circlesPublicRoutes = Router();
 
-circlesPublicRoutes.get("/all", getCircles);
+circlesPublicRoutes.get("/all", getAllCircles);
 
 circlesPublicRoutes.get("/subTopics", getSubTopics);
 
 circlesPublicRoutes.get("/topics", getTopics);
 
 circlesPublicRoutes.get(
-  "/specific/:id",
-  yupValidator("params", yupObjIdSchema),
-  getSpecificCircles
-);
-
-circlesPublicRoutes.get(
-  "/user/:id",
-  yupValidator("params", yupObjIdSchema),
-  getCirclesByUser
-);
-
-circlesPublicRoutes.get(
-  "/category/:type",
-  yupValidator("params", yupObjTypeSchema),
-  getCirclesByTag
-);
-
-circlesPublicRoutes.get(
-  "/posts/:id",
-  yupValidator("params", yupObjIdSchema),
-  getCirclesByPost
+  "/fetch/:type",
+  yupValidator("params", yupCircleSearchType),
+  yupValidator("query", yupCircleSearchData),
+  getCircle
 );
 
 circlesPrivateRoutes.post(
