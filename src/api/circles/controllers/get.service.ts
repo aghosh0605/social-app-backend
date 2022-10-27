@@ -130,9 +130,8 @@ export const getCircle = async (
 ): Promise<void> => {
   try {
     let resData: circleSchema[] | postSchema[];
-    console.log(req.query, req.params);
 
-    switch (req.params.type) {
+    switch (Object.keys(req.query)[0]) {
       case "type":
         console.log("typesss");
         resData = await getAllCircles();
