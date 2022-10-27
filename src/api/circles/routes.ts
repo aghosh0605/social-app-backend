@@ -2,12 +2,17 @@ import { Router } from "express";
 
 import yupValidator from "../../middlewares/yupValidator";
 import {
+  yupCircleSearchData,
+  yupCircleSearchType,
+} from "../../models/circleSchema";
+import {
   yupObjIdSchema,
   yupObjCirclesBodySchema,
   yupObjTypeSchema,
 } from "../../models/middlewareSchemas";
 import { deleteCircle } from "./controllers/delete.service";
 import {
+  getCircle,
   getCircles,
   getCirclesByPost,
   getCirclesByTag,
@@ -53,6 +58,13 @@ circlesPublicRoutes.get(
   "/posts/:id",
   yupValidator("params", yupObjIdSchema),
   getCirclesByPost
+);
+
+circlesPublicRoutes.get(
+  "/fetch/:type",
+  yupValidator("params", yupCircleSearchType),
+  yupValidator("query", yupCircleSearchData),
+  getCircle
 );
 
 circlesPrivateRoutes.post(

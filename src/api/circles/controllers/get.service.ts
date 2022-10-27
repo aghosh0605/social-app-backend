@@ -203,3 +203,38 @@ export const getSpecificCircles = async (
     });
   }
 };
+
+export const getCircle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    let circle;
+    console.log(req.params.type);
+
+    switch (req.params.type) {
+      case "id":
+        console.log(req.query.id);
+      case "posts":
+        console.log(req.query.posts);
+      case "tag":
+        console.log(req.query.tag);
+    }
+    console.log(req.query.id);
+
+    res.status(200).json({
+      success: true,
+      message: "Found circle Details",
+      data: circle,
+    });
+
+    next();
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || "❌ Unknown Error Occurred!!",
+      data: null,
+    });
+  }
+};
