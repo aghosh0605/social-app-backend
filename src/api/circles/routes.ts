@@ -13,11 +13,9 @@ import {
 import { deleteCircle } from "./controllers/delete.service";
 import {
   getCircle,
-  getCircles,
-  getCirclesByPost,
+  getAllCircles,
   getCirclesByTag,
   getCirclesByUser,
-  getSpecificCircles,
   getSubTopics,
   getTopics,
 } from "./controllers/get.service";
@@ -30,17 +28,11 @@ import {
 const circlesPrivateRoutes = Router();
 const circlesPublicRoutes = Router();
 
-circlesPublicRoutes.get("/all", getCircles);
+circlesPublicRoutes.get("/all", getAllCircles);
 
 circlesPublicRoutes.get("/subTopics", getSubTopics);
 
 circlesPublicRoutes.get("/topics", getTopics);
-
-circlesPublicRoutes.get(
-  "/specific/:id",
-  yupValidator("params", yupObjIdSchema),
-  getSpecificCircles
-);
 
 circlesPublicRoutes.get(
   "/user/:id",
@@ -52,12 +44,6 @@ circlesPublicRoutes.get(
   "/category/:type",
   yupValidator("params", yupObjTypeSchema),
   getCirclesByTag
-);
-
-circlesPublicRoutes.get(
-  "/posts/:id",
-  yupValidator("params", yupObjIdSchema),
-  getCirclesByPost
 );
 
 circlesPublicRoutes.get(
