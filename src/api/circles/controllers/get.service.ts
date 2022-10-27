@@ -3,31 +3,21 @@ import { DBInstance } from "../../../loaders/database";
 import { circleSchema } from "../../../models/circleSchema";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
+import { postSchema } from "../../../models/postSchema";
 
-export const getCircles = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("circles");
+const getCollection = async (name: string): Promise<Collection> => {
+  const Collection: Collection<any> = await (
+    await DBInstance.getInstance()
+  ).getCollection(name);
 
-    const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json({
-      success: true,
-      message: `All circles`,
-      data: resData,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+  return Collection;
+};
+
+// GET all circles
+export const getAllCircles = async (): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
+  const resData: circleSchema[] = await circlesCollection.find().toArray();
+  return resData;
 };
 
 export const getTopics = async (
@@ -82,124 +72,96 @@ export const getSubTopics = async (
   }
 };
 
-export const getCirclesByUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("circles");
+// ! GET all circles of a certain user using uid
+const getCirclesByUser = async (uid: any): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
 
-    const resData: circleSchema[] = await circlesCollection
-      .find({
-        UID: `${req.params.id}`,
-      })
-      .toArray();
+  const resData: circleSchema[] = await circlesCollection
+    .find({
+      UID: uid,
+    })
+    .toArray();
 
-    res.status(200).json({
-      success: true,
-      message: `Circle of id : ${req.params.id}`,
-      data: resData,
-    });
-
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+  return resData;
 };
 
-export const getCirclesByTag = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("circles");
+// ! GET All circles by a tag
+const getCirclesByTag = async (type: any): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
+  console.log(type);
 
-    const resData: circleSchema[] = await circlesCollection
-      .find({
-        tags: `${req.params.type}`,
-      })
-      .toArray();
+  const resData: circleSchema[] = await circlesCollection
+    .find({
+      tags: type,
+    })
+    .toArray();
 
-    res.status(200).json({
-      success: true,
-      message: `Circle of category : ${req.params.type}`,
-      data: resData,
-    });
-
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+  return resData;
 };
 
-export const getCirclesByPost = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const postsCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("posts");
+//! GET All posts of a specific circle
+const getPostOfCircle = async (circleId: any): Promise<postSchema[]> => {
+  const postsCollection: Collection<any> = await getCollection("posts");
 
-    const resData = await postsCollection
-      .find({
-        UID: req.params.id,
-      })
-      .toArray();
+  const resData: postSchema[] = await postsCollection
+    .find({
+      circleID: circleId,
+    })
+    .toArray();
 
-    res.status(200).json({
-      success: true,
-      message: `posts for circle id : ${req.params.id}`,
-      data: resData,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+  return resData;
 };
 
-export const getSpecificCircles = async (
+//! GET Specific circle using id
+const getSpecificCircle = async (id: any): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
+
+  const resData: circleSchema[] = await circlesCollection.findOne({
+    _id: new ObjectId(id),
+  });
+
+  return resData;
+};
+
+//! MAIN FUNCTION
+export const getCircle = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("circles");
-    const resData: circleSchema = await circlesCollection.findOne({
-      _id: new ObjectId(`${req.params.id}`),
-    });
+    let resData: circleSchema[] | postSchema[];
+
+    switch (Object.keys(req.query)[0]) {
+      case "all":
+        resData = await getAllCircles();
+        break;
+      case "id":
+        resData = await getSpecificCircle(req.query.id);
+        break;
+      case "posts":
+        resData = await getPostOfCircle(req.query.posts);
+        break;
+      case "tag":
+        resData = await getCirclesByTag(req.query.tag);
+        break;
+      case "user":
+        resData = await getCirclesByUser(req.query.user);
+        break;
+    }
+
     res.status(200).json({
       success: true,
-      message: `Circle of id  : ${req.params.id}`,
+      message: "Found circle Details",
       data: resData,
     });
+
     next();
   } catch (err) {
-    Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || "❌ Unknown Error Occurred!!",
+      data: null,
     });
   }
 };
