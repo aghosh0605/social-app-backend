@@ -1,6 +1,6 @@
 import { Router } from 'express';
-
-import { getUser } from './controllers/get.service';
+import { validateJWT } from '../../middlewares/verify-jwt';
+import { getUser, getCurrentUser } from './controllers/get.service';
 import { updateUser } from './controllers/update.service';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import yupValidator from '../../middlewares/yupValidator';
@@ -9,7 +9,9 @@ import { yupUserSearchData, yupUserSearchType } from '../../models/userSchema';
 
 const usersRoute = Router();
 
-//Get logged in user details
+usersRoute.get('/current', validateJWT, getCurrentUser);
+
+//Get user details
 usersRoute.get(
   '/fetch/:type',
   yupValidator('params', yupUserSearchType),
