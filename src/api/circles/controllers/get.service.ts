@@ -1,9 +1,10 @@
 import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
-import { circleSchema } from "../../../models/circleSchema";
+import { circleSchema, subTopicsSchema } from "../../../models/circleSchema";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
 import { postSchema } from "../../../models/postSchema";
+import { readSync } from "fs";
 
 const getCollection = async (name: string): Promise<Collection> => {
   const Collection: Collection<any> = await (
@@ -13,63 +14,28 @@ const getCollection = async (name: string): Promise<Collection> => {
   return Collection;
 };
 
-// GET all circles
+// !GET all circles
 export const getAllCircles = async (): Promise<circleSchema[]> => {
   const circlesCollection: Collection<any> = await getCollection("circles");
   const resData: circleSchema[] = await circlesCollection.find().toArray();
   return resData;
 };
 
-export const getTopics = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("topics");
+//! GET circle by topics
+export const getTopics = async (id: any): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
+  const resData: circleSchema[] = await circlesCollection
+    .find({ category: id })
+    .toArray();
 
-    const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json({
-      success: true,
-      message: "Topics",
-      data: resData,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+  return resData;
 };
 
-export const getSubTopics = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const circlesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection("subTopics");
-
-    const resData: circleSchema[] = await circlesCollection.find().toArray();
-    res.status(200).json({
-      success: true,
-      message: "Sub Topics",
-      data: resData,
-    });
-    next();
-  } catch (err) {
-    Logger.error(err.errorStack || err);
-    res.status(err.statusCode || 500).json({
-      success: false,
-      message: err.message || "❌ Unknown Error Occurred!!",
-    });
-  }
+//! GET ALL SUBTOPICS
+export const getSubTopics = async (): Promise<subTopicsSchema[]> => {
+  const subTopicsCollection: Collection<any> = await getCollection("subTopics");
+  const resData: subTopicsSchema[] = await subTopicsCollection.find().toArray();
+  return resData;
 };
 
 // ! GET all circles of a certain user using uid
@@ -130,7 +96,7 @@ export const getCircle = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    let resData: circleSchema[] | postSchema[];
+    let resData: circleSchema[] | postSchema[] | subTopicsSchema[];
 
     switch (Object.keys(req.query)[0]) {
       case "all":
@@ -147,6 +113,12 @@ export const getCircle = async (
         break;
       case "user":
         resData = await getCirclesByUser(req.query.user);
+        break;
+      case "sub-topics":
+        resData = await getSubTopics();
+        break;
+      case "topic":
+        resData = await getTopics(req.query.topic);
         break;
     }
 
