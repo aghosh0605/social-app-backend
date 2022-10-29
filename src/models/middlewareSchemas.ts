@@ -39,10 +39,8 @@ export const yupObjCirclesBodySchema = yup.object({
     .max(500, "Maximum 500 characters allowed"),
   category: yup
     .string()
-    .required("Select a category")
     .trim()
-    .min(1, "Minimum one character required")
-    .max(50, "Maximum 50 characters allowed"),
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid category ID"),
 });
 
 export type ObjCirclesBodySchema = yup.InferType<

@@ -66,6 +66,19 @@ export const yupCircleSearchData = yup.object({
     .string()
     .trim()
     .matches(/^[0-9a-f]{24}$/, "Not a Valid User ID"),
+  topic: yup
+    .string()
+    .trim()
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid topic ID"),
 });
 
 export type userCircleData = yup.InferType<typeof yupCircleSearchData>;
+
+export const yupSubTopicsSchema = yup.object({
+  _id: yup.string().trim().required("Please provide User ID"),
+  serial_Number: yup.number(),
+  picUrl: yup.string().trim(),
+  Details: yup.string().trim(),
+});
+
+export type subTopicsSchema = yup.InferType<typeof yupSubTopicsSchema>;
