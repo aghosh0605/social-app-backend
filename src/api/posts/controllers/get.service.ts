@@ -21,9 +21,14 @@ export const getAllPosts = async (
       await DBInstance.getInstance()
     ).getCollection('likes');
 
+    const circlesCollection = await (
+      await DBInstance.getInstance()
+    ).getCollection('circles');
+
     const posts = await postsCollection.find({}).toArray();
     const comments = await commentsCollection.find({}).toArray();
     const likes = await likesCollection.find({}).toArray();
+    const circles = await circlesCollection.find({}).toArray();
 
     let resData: postSchema[] = posts.map((post) => {
       let postComments = comments.filter((comment) => {
@@ -32,14 +37,21 @@ export const getAllPosts = async (
       let postLikes = likes.filter((like) => {
         return like.postID === post._id.toString();
       });
+      let postCircles = circles.filter((circle) => {
+        return postsCollection.find({ 
+          circleID : new ObjectId(circle._id.toString())
+        }).toArray();
+      });
       let likeCount = postLikes.length;
       let commentCount = postComments.length;
+      console.log("postCircles", postCircles);
       return { 
         ...post, 
         comments: postComments, 
         likes: postLikes, 
         likesCount: likeCount,
-        commentsCount: commentCount
+        commentsCount: commentCount,
+        circles: postCircles
       };
     });
 
@@ -71,16 +83,20 @@ export const getUserPosts = async (
     const commentsCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('comments');
-
     const likesCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('likes');
+    const circlesCollection = await (
+      await DBInstance.getInstance()
+    ).getCollection('circles');
 
     const posts = await postsCollection.find({
        UID: req.params.id 
     }).toArray();
     const comments = await commentsCollection.find({}).toArray();
     const likes = await likesCollection.find({}).toArray();
+    const circles = await circlesCollection.find({}).toArray();
+
     let resData: postSchema[] = posts.map((post) => {
       let postComments = comments.filter((comment) => {
         return comment.postID === post._id.toString();
@@ -88,14 +104,22 @@ export const getUserPosts = async (
       let postLikes = likes.filter((like) => {
         return like.postID === post._id.toString();
       });
+      let postCircles = circles.filter((circle) => {
+        return postsCollection.find({ 
+          UID: req.params.id,
+          "post.circleID": new ObjectId(circle._id.toString())
+        }).toArray();
+      });
       let likeCount = postLikes.length;
       let commentCount = postComments.length;
+
       return { 
         ...post, 
         comments: postComments, 
         likes: postLikes, 
         likesCount: likeCount,
-        commentsCount: commentCount
+        commentsCount: commentCount,
+        circles: postCircles
       };
     });
     res.status(200).json({ 
