@@ -25,12 +25,16 @@ const sendOtp = async (uid: string, type: any) => {
       message: 'Mobile number already verifed',
     } as throwSchema;
   }
+  let otp_template = 'Piechips';
+  if (type == 'forgot') {
+    otp_template = 'forgotTemplate';
+  }
   const url =
     'https://2factor.in/API/V1/' +
     config.twoFactorAPI +
     '/SMS/' +
     userExists?.phone +
-    '/AUTOGEN';
+    `/AUTOGEN/${otp_template}`;
 
   const result = await axios.get(url);
   await usersCollection.updateOne(
