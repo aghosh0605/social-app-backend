@@ -36,6 +36,11 @@ export const yupCircleSchema = yup.object({
     .trim()
     .min(1, "Minimum one character required")
     .max(50, "Maximum 50 characters allowed"),
+  categoryID: yup
+    .string()
+    .trim()
+    .required("Please provide Category ID")
+    .matches(/^[0-9a-f]{24}$/, "Not a Valid category ID"),
   createdOn: yup.date().default(() => new Date()),
 });
 
