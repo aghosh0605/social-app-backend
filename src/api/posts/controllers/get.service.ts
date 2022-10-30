@@ -12,7 +12,10 @@ export const getAllPosts = async (
   try {
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts'); 
+    ).getCollection('posts');
+
+    const limit = 5;
+    const page = req.params.page;
 
     const resData = await postsCollection
       .aggregate([
@@ -21,6 +24,12 @@ export const getAllPosts = async (
             from: 'comments',
             localField: '_id',
             foreignField: 'postID',
+            pipeline: [
+              { $project: { _id: 1 } },
+              {
+                $count: 'commentsCount',
+              },
+            ],
             as: 'comments',
           },
         },
@@ -29,6 +38,12 @@ export const getAllPosts = async (
             from: 'likes',
             localField: '_id',
             foreignField: 'postID',
+            pipeline: [
+              { $project: { _id: 1 } },
+              {
+                $count: 'likesCount',
+              },
+            ],
             as: 'likes',
           },
         },
@@ -37,50 +52,23 @@ export const getAllPosts = async (
             from: 'circles',
             localField: 'circleID',
             foreignField: '_id',
-            as: 'circle',
+            pipeline: [
+              { $project: { _id: 1 } },
+              {
+                $count: 'circlesCount',
+              },
+            ],
+            as: 'circles',
           },
         },
-        {
-          $unwind: {
-            path: '$circle',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            UID: 1,
-            caption: 1,
-            category: 1,
-            createdOn: 1,
-            circleID: 1,
-            tags: 1,
-            mediaURLs: 1,
-            circle: {
-              _id: 1,
-              circleName: 1,
-              UID: 1,
-            },
-            comments: {
-              _id: 1,
-              postID: 1,
-              UID: 1,
-              commentText: 1,
-            },
-            likes: {
-              _id: 1,
-              postID: 1,
-              UID: 1,
-              commentID: 1,
-            },
-          },
-        },
+        { $skip: limit * parseInt(page) },
+        { $limit: limit },
       ])
       .toArray();
-    res.status(200).json({ 
-      success: true, 
-      message: "All Posts",
-      data: resData, 
+    res.status(200).json({
+      success: true,
+      message: 'All Posts',
+      data: resData,
     });
     next();
   } catch (err) {
@@ -101,7 +89,7 @@ export const getUserPosts = async (
   try {
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts'); 
+    ).getCollection('posts');
     const commentsCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('comments');
@@ -112,9 +100,11 @@ export const getUserPosts = async (
       await DBInstance.getInstance()
     ).getCollection('circles');
 
-    const posts = await postsCollection.find({
-       UID: req.params.id 
-    }).toArray();
+    const posts = await postsCollection
+      .find({
+        UID: req.params.id,
+      })
+      .toArray();
     const comments = await commentsCollection.find({}).toArray();
     const likes = await likesCollection.find({}).toArray();
     const circles = await circlesCollection.find({}).toArray();
@@ -127,27 +117,29 @@ export const getUserPosts = async (
         return like.postID === post._id.toString();
       });
       let postCircles = circles.filter((circle) => {
-        return postsCollection.find({ 
-          UID: req.params.id,
-          "post.circleID": new ObjectId(circle._id.toString())
-        }).toArray();
+        return postsCollection
+          .find({
+            UID: req.params.id,
+            'post.circleID': new ObjectId(circle._id.toString()),
+          })
+          .toArray();
       });
       let likeCount = postLikes.length;
       let commentCount = postComments.length;
 
-      return { 
-        ...post, 
-        comments: postComments, 
-        likes: postLikes, 
+      return {
+        ...post,
+        comments: postComments,
+        likes: postLikes,
         likesCount: likeCount,
         commentsCount: commentCount,
-        circles: postCircles
+        circles: postCircles,
       };
     });
-    res.status(200).json({ 
-      success: true, 
-      message: "User Posts",
-      data: resData, 
+    res.status(200).json({
+      success: true,
+      message: 'User Posts',
+      data: resData,
     });
     next();
   } catch (err) {
