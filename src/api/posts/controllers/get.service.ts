@@ -52,12 +52,7 @@ export const getAllPosts = async (
             from: 'circles',
             localField: 'circleID',
             foreignField: '_id',
-            pipeline: [
-              { $project: { _id: 1 } },
-              {
-                $count: 'circlesCount',
-              },
-            ],
+            pipeline: [{ $project: { _id: 1, circleName: 1, category: 1 } }],
             as: 'circles',
           },
         },
