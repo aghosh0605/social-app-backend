@@ -9,7 +9,7 @@ import rateLimit from 'express-rate-limit';
 
 export default ({ app }: { app: express.Application }): void => {
   // It shows the real origin IP in the heroku or Cloudwatch logs
-  app.set('trust proxy', 1); //For heroku=1
+  app.set('trust proxy', 2); //For heroku=1
 
   // Enable Express Rate Limitter
   const limiter = rateLimit({
