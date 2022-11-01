@@ -12,6 +12,7 @@ export const uploadPhotos = async (req, res) => {
   //! nano id use
 
   const id = generateNanoID("0-9a-fA-F", 30);
+  console.log(files);
 
   if (Object.keys(files).length > 0) {
     if (images.length > 1) {
@@ -31,7 +32,7 @@ export const uploadPhotos = async (req, res) => {
         mimeType: files.images.mimetype,
         thumbnailURL: "",
       });
-      await s3Upload(files.images as UploadedFile);
+      // await s3Upload(files.images as UploadedFile);
     }
   }
 

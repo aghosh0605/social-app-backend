@@ -1,14 +1,34 @@
 import { UploadedFile } from "express-fileupload";
 import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
-import { s3Upload } from "../../../utils/s3Client";
-import config from "../../../config";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
 import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
+  const { profileImage, bannerImage } = req.files;
+
+  if (
+    profileImage.mimetype !== "image/jpeg" &&
+    profileImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 400,
+      message: "Wrong mimetype for profile image",
+    };
+  }
+
+  if (
+    bannerImage.mimetype !== "image/jpeg" &&
+    bannerImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 400,
+      message: "Wrong mimetype for banner image",
+    };
+  }
+
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("circles");
