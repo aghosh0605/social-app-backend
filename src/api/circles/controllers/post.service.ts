@@ -38,6 +38,8 @@ const createService = async (req, res) => {
     createdOn: new Date(),
   };
 
+  console.log(inData);
+
   return (await circlesCollection.insertOne(inData)).insertedId;
 };
 
