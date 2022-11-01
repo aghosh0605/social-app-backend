@@ -14,7 +14,7 @@ const createService = async (req, res) => {
     profileImage.mimetype !== "image/png"
   ) {
     throw {
-      statusCode: 400,
+      statusCode: 415,
       message: "Wrong mimetype for profile image",
     };
   }
@@ -24,7 +24,7 @@ const createService = async (req, res) => {
     bannerImage.mimetype !== "image/png"
   ) {
     throw {
-      statusCode: 400,
+      statusCode: 415,
       message: "Wrong mimetype for banner image",
     };
   }
