@@ -5,7 +5,11 @@ import { updateUser } from './controllers/update.service';
 import { yupObjIdSchema } from '../../models/middlewareSchemas';
 import yupValidator from '../../middlewares/yupValidator';
 import { blockUser } from './controllers/block.service';
-import { yupUserSearchData, yupUserSearchType } from '../../models/userSchema';
+import {
+  yupUserSchema,
+  yupUserSearchData,
+  yupUserSearchType,
+} from '../../models/userSchema';
 
 const usersRoute = Router();
 
@@ -21,8 +25,9 @@ usersRoute.get(
 
 //Update a user by id
 usersRoute.patch(
-  '/update/:id',
-  yupValidator('params', yupObjIdSchema),
+  '/update',
+  validateJWT,
+  yupValidator('body', yupUserSchema),
   updateUser
 );
 
