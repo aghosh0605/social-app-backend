@@ -1,24 +1,44 @@
-import { UploadedFile } from 'express-fileupload';
-import { Collection, ObjectId } from 'mongodb';
-import { DBInstance } from '../../../loaders/database';
-import { s3Upload } from '../../../utils/s3Client';
-import config from '../../../config';
-import { NextFunction, Request, Response } from 'express';
-import Logger from '../../../loaders/logger';
-import { circleSchema, mediaURLSchema } from '../../../models/circleSchema';
-import { uploadPhotos } from '../../../utils/uploadPhotos';
+import { UploadedFile } from "express-fileupload";
+import { Collection, ObjectId } from "mongodb";
+import { DBInstance } from "../../../loaders/database";
+import { NextFunction, Request, Response } from "express";
+import Logger from "../../../loaders/logger";
+import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
+import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
+  const { profileImage, bannerImage } = req.files;
+
+  if (
+    profileImage.mimetype !== "image/jpeg" &&
+    profileImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 415,
+      message: "Wrong mimetype for profile image",
+    };
+  }
+
+  if (
+    bannerImage.mimetype !== "image/jpeg" &&
+    bannerImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 415,
+      message: "Wrong mimetype for banner image",
+    };
+  }
+
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
-  ).getCollection('circles');
+  ).getCollection("circles");
   const circleExist: circleSchema = await circlesCollection.findOne({
     circleName: req.body.circleName,
   });
   if (circleExist) {
     throw {
       statusCode: 400,
-      message: 'Circle Already Exists',
+      message: "Circle Already Exists",
     };
   }
 
@@ -31,11 +51,14 @@ const createService = async (req, res) => {
     UID: req.user,
     about: req.body.about,
     isPrivate: JSON.parse(req.body.isPrivate),
-    tags: req.body.tags.split(','),
+    tags: req.body.tags.split(","),
     mediaURLs: picURL as mediaURLSchema,
     category: req.body.category,
+    categoryID: req.body.categoryID,
     createdOn: new Date(),
   };
+
+  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
 };
@@ -47,19 +70,17 @@ export const createCircles = async (
 ): Promise<void> => {
   try {
     const circleID = await createService(req, res);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: `You created a circle `,
-        data: circleID,
-      });
+    res.status(200).json({
+      success: true,
+      message: `You created a circle `,
+      data: circleID,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || '❌ Unknown Error Occurred!!',
+      message: err.message || "❌ Unknown Error Occurred!!",
     });
   }
 };
