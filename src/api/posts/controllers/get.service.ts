@@ -1,8 +1,8 @@
-import { Collection, ObjectId } from 'mongodb';
-import { DBInstance } from '../../../loaders/database';
-import { postSchema } from '../../../models/postSchema';
-import { NextFunction, Request, Response } from 'express';
-import Logger from '../../../loaders/logger';
+import { Collection, ObjectId } from "mongodb";
+import { DBInstance } from "../../../loaders/database";
+import { postSchema } from "../../../models/postSchema";
+import { NextFunction, Request, Response } from "express";
+import Logger from "../../../loaders/logger";
 
 export const getAllPosts = async (
   req: Request,
@@ -12,7 +12,7 @@ export const getAllPosts = async (
   try {
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts');
+    ).getCollection("posts");
 
     const limit = 5;
     const page = req.params.page;
@@ -21,48 +21,49 @@ export const getAllPosts = async (
       .aggregate([
         {
           $lookup: {
-            from: 'comments',
-            localField: '_id',
-            foreignField: 'postID',
+            from: "comments",
+            localField: "_id",
+            foreignField: "postID",
             pipeline: [
               { $project: { _id: 1 } },
               {
-                $count: 'commentsCount',
+                $count: "commentsCount",
               },
             ],
-            as: 'comments',
+            as: "comments",
           },
         },
         {
           $lookup: {
-            from: 'likes',
-            localField: '_id',
-            foreignField: 'postID',
+            from: "likes",
+            localField: "_id",
+            foreignField: "postID",
             pipeline: [
               { $project: { _id: 1 } },
               {
-                $count: 'likesCount',
+                $count: "likesCount",
               },
             ],
-            as: 'likes',
+            as: "likes",
           },
         },
         {
           $lookup: {
-            from: 'circles',
-            localField: 'circleID',
-            foreignField: '_id',
+            from: "circles",
+            localField: "circleID",
+            foreignField: "_id",
             pipeline: [{ $project: { _id: 1, circleName: 1, category: 1 } }],
-            as: 'circles',
+            as: "circles",
           },
         },
         { $skip: limit * parseInt(page) },
         { $limit: limit },
+        { $sort: { createdOn: -1 } },
       ])
       .toArray();
     res.status(200).json({
       success: true,
-      message: 'All Posts',
+      message: "All Posts",
       data: resData,
     });
     next();
@@ -70,7 +71,7 @@ export const getAllPosts = async (
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || '❌ Unknown Error Occurred!!',
+      message: err.message || "❌ Unknown Error Occurred!!",
       data: null,
     });
   }
@@ -82,58 +83,70 @@ export const getUserPosts = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    let _query;
+    switch (req.params.type) {
+      case "user":
+        _query = { UID: new ObjectId(req.params.id) };
+        break;
+      case "postid":
+        _query = { _id: new ObjectId(req.params.id) };
+        break;
+    }
     const postsCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('posts');
-    const commentsCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection('comments');
-    const likesCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection('likes');
-    const circlesCollection = await (
-      await DBInstance.getInstance()
-    ).getCollection('circles');
+    ).getCollection("posts");
 
-    const posts = await postsCollection
-      .find({
-        UID: req.params.id,
-      })
+    const limit = 5;
+    const page = req.params.page;
+
+    const resData = await postsCollection
+      .aggregate([
+        { $match: _query },
+        {
+          $lookup: {
+            from: "comments",
+            localField: "_id",
+            foreignField: "postID",
+            pipeline: [
+              { $project: { _id: 1 } },
+              {
+                $count: "commentsCount",
+              },
+            ],
+            as: "comments",
+          },
+        },
+        {
+          $lookup: {
+            from: "likes",
+            localField: "_id",
+            foreignField: "postID",
+            pipeline: [
+              { $project: { _id: 1 } },
+              {
+                $count: "likesCount",
+              },
+            ],
+            as: "likes",
+          },
+        },
+        {
+          $lookup: {
+            from: "circles",
+            localField: "circleID",
+            foreignField: "_id",
+            pipeline: [{ $project: { _id: 1, circleName: 1, category: 1 } }],
+            as: "circles",
+          },
+        },
+        { $skip: limit * parseInt(page) },
+        { $limit: limit },
+        { $sort: { createdOn: -1 } },
+      ])
       .toArray();
-    const comments = await commentsCollection.find({}).toArray();
-    const likes = await likesCollection.find({}).toArray();
-    const circles = await circlesCollection.find({}).toArray();
-
-    let resData: postSchema[] = posts.map((post) => {
-      let postComments = comments.filter((comment) => {
-        return comment.postID === post._id.toString();
-      });
-      let postLikes = likes.filter((like) => {
-        return like.postID === post._id.toString();
-      });
-      let postCircles = circles.filter((circle) => {
-        return postsCollection
-          .find({
-            UID: req.params.id,
-            'post.circleID': new ObjectId(circle._id.toString()),
-          })
-          .toArray();
-      });
-      let likeCount = postLikes.length;
-      let commentCount = postComments.length;
-
-      return {
-        ...post,
-        comments: postComments,
-        likes: postLikes,
-        likesCount: likeCount,
-        commentsCount: commentCount,
-        circles: postCircles,
-      };
-    });
     res.status(200).json({
       success: true,
-      message: 'User Posts',
+      message: "All Posts",
       data: resData,
     });
     next();
@@ -141,7 +154,7 @@ export const getUserPosts = async (
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || '❌ Unknown Error Occurred!!',
+      message: err.message || "❌ Unknown Error Occurred!!",
       data: null,
     });
   }

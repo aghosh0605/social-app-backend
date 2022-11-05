@@ -14,6 +14,13 @@ import { randomUUID } from "crypto";
 const createService = async (req, res) => {
   const { profileImage, bannerImage } = req.files;
 
+  if (!profileImage || !bannerImage) {
+    throw {
+      statusCode: 404,
+      message: "Images not found",
+    };
+  }
+
   if (
     profileImage.mimetype !== "image/jpeg" &&
     profileImage.mimetype !== "image/png"
@@ -48,7 +55,7 @@ const createService = async (req, res) => {
   }
 
   // Upload Files to s3
-  const picURL = await uploadPhotos(req, res);
+  const picURL = await uploadPhotos(req, res, "circleImages/");
 
   //Storing Data to mongoDB
   const inData: _circleSchema = {
@@ -61,9 +68,8 @@ const createService = async (req, res) => {
     category: req.body.category,
     categoryID: req.body.categoryID,
     createdOn: new Date(),
+    last_updated_date: new Date(),
   };
-
-  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
 };

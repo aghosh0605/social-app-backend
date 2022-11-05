@@ -19,6 +19,7 @@ export const yupUserSchema = yup
       linkedin: yup.string().trim(),
       other: yup.string().trim(),
     }),
+    isDOB_Visible: yup.boolean(),
   })
   .noUnknown(true)
   .strict();
