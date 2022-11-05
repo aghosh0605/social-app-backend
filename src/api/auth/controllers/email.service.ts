@@ -105,7 +105,11 @@ export const verifyMail = async (
         message: 'Wrong Verification Token!! Use the latest verification link',
       } as throwSchema;
     }
-    let updateData = { emailVerifyHash: '', emailVerification: true };
+    let updateData = {
+      emailVerifyHash: '',
+      emailVerification: true,
+      user_status: 1,
+    };
 
     if (type == 'forgot') {
       updateData['isForgotVerified'] = true;
