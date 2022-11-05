@@ -42,6 +42,7 @@ export const yupCircleSchema = yup.object({
     .required("Please provide Category ID")
     .matches(/^[0-9a-f]{24}$/, "Not a Valid category ID"),
   createdOn: yup.date().default(() => new Date()),
+  last_updated_date: yup.date().default(() => new Date()),
 });
 
 export type circleSchema = yup.InferType<typeof yupCircleSchema>;
