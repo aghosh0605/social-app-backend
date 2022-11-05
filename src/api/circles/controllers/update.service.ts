@@ -7,6 +7,15 @@ import { circleSchema } from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const updateImageService = async (req: Request, res: Response) => {
+  const { profileImage, bannerImage } = req.files;
+
+  if (!profileImage && !bannerImage) {
+    throw {
+      statusCode: 404,
+      message: "Images not found",
+    };
+  }
+
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("circles");
@@ -46,7 +55,11 @@ const updateImageService = async (req: Request, res: Response) => {
       _id: new ObjectId(req.params.id),
     },
     {
-      $set: { mediaURLs: newMediaUrls, ...req.body },
+      $set: {
+        mediaURLs: newMediaUrls,
+        last_updated_date: new Date(),
+        ...req.body,
+      },
     }
   );
 
@@ -84,7 +97,10 @@ const updateDataService = async (req: Request) => {
       _id: new ObjectId(req.params.id),
     },
     {
-      $set: { ...req.body },
+      $set: {
+        last_updated_date: new Date(),
+        ...req.body,
+      },
     }
   );
 
