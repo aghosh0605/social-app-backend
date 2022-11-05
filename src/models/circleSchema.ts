@@ -80,8 +80,8 @@ export const yupCircleSearchData = yup.object({
 export type userCircleData = yup.InferType<typeof yupCircleSearchData>;
 
 export const yupSubTopicsSchema = yup.object({
-  _id: yup.string().trim().required("Please provide User ID"),
-  serial_Number: yup.number(),
+  Serial_Number: yup.number(),
+  Category_Name: yup.string(),
   picUrl: yup.string().trim(),
   Details: yup.string().trim(),
 });
