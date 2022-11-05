@@ -123,6 +123,7 @@ export const getCircle = async (
         break;
       case "tag":
         resData = await getCirclesByTag(req.query.tag);
+
         break;
       case "user":
         resData = await getCirclesByUser(req.query.user);
