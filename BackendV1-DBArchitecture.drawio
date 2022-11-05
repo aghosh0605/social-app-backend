@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2be-THTNuNvCN0owMqXN" name="DB-Achitcture">
-        <mxGraphModel dx="1968" dy="1634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1160" dy="1634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -294,10 +294,10 @@
                 <mxCell id="-TFifHRZnb5QUAOWfHb_-15" value="isCircle(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
                     <mxGeometry y="91" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-17" value="Follower User ID" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-17" value="followerUID" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
                     <mxGeometry y="108" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="owdlpUDmySh1TMZ5OT5K-1" value="followUser(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
+                <mxCell id="14" value="isPost(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="HzWzUF8-_IMW7kiPa2Iw-1">
                     <mxGeometry y="125" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-7" value="Reports" style="swimlane;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;shadow=1;rounded=1;swimlaneFillColor=default;" parent="1" vertex="1">

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPosts, favouritePost } from './controllers/post.service';
+import { createPosts } from './controllers/post.service';
 import { getAllPosts, getUserPosts } from './controllers/get.service';
 import { deletePost } from './controllers/delete.service';
 import {
@@ -10,7 +10,6 @@ import {
   deleteComment,
 } from './controllers/comments.service';
 
-import { yupFavPostSchema } from '../../models/postSchema';
 import { deleteImages } from './controllers/image.service';
 import {
   getPostLike,
@@ -55,13 +54,6 @@ postsRoute.patch(
   '/update/:id',
   yupValidator('params', yupObjIdSchema),
   updatePost
-);
-
-// Favourite a Post
-postsRoute.post(
-  '/favourite/:id',
-  yupValidator('params', yupObjIdSchema),
-  favouritePost
 );
 
 //Delete Images
