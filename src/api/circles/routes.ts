@@ -13,6 +13,7 @@ import { deleteCircle } from "./controllers/delete.service";
 import { getCircle } from "./controllers/get.service";
 import { createCircles } from "./controllers/post.service";
 import { createSubTopics } from "./controllers/subtopics.service";
+} from '../../models/middlewareSchemas';
 import {
   updateDataCircle,
   updateImageCircle,
@@ -52,6 +53,6 @@ circlesPrivateRoutes.put(
   updateImageCircle
 );
 
-circlesPrivateRoutes.post("/create/sub-topic/new", createSubTopics);
+circlesPrivateRoutes.post('/create/sub-topic/new', createSubTopics);
 
 export { circlesPrivateRoutes, circlesPublicRoutes };
