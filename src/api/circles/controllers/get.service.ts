@@ -38,6 +38,19 @@ export const getSubTopics = async (): Promise<subTopicsSchema[]> => {
   return resData;
 };
 
+export const getCirclesBySubtopic = async (
+  categoryID: string
+): Promise<circleSchema[]> => {
+  const circlesCollection: Collection<any> = await getCollection("circles");
+
+  const resData: circleSchema[] = await circlesCollection
+    .find({
+      categoryID: categoryID,
+    })
+    .toArray();
+
+  return resData;
+};
 // ! GET all circles of a certain user using uid
 const getCirclesByUser = async (uid: any): Promise<circleSchema[]> => {
   const circlesCollection: Collection<any> = await getCollection("circles");
@@ -66,7 +79,7 @@ const getCirclesByTag = async (type: any): Promise<circleSchema[]> => {
 };
 
 //! GET All posts of a specific circle
-const getPostOfCircle = async (circleId: any): Promise<postSchema[]> => {
+export const getPostOfCircle = async (circleId: any): Promise<postSchema[]> => {
   const postsCollection: Collection<any> = await getCollection("posts");
 
   const resData: postSchema[] = await postsCollection
