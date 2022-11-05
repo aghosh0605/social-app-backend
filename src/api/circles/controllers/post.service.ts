@@ -1,14 +1,34 @@
 import { UploadedFile } from "express-fileupload";
 import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
-import { s3Upload } from "../../../utils/s3Client";
-import config from "../../../config";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
 import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
+  const { profileImage, bannerImage } = req.files;
+
+  if (
+    profileImage.mimetype !== "image/jpeg" &&
+    profileImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 415,
+      message: "Wrong mimetype for profile image",
+    };
+  }
+
+  if (
+    bannerImage.mimetype !== "image/jpeg" &&
+    bannerImage.mimetype !== "image/png"
+  ) {
+    throw {
+      statusCode: 415,
+      message: "Wrong mimetype for banner image",
+    };
+  }
+
   const circlesCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection("circles");
@@ -34,8 +54,11 @@ const createService = async (req, res) => {
     tags: req.body.tags.split(","),
     mediaURLs: picURL as mediaURLSchema,
     category: req.body.category,
+    categoryID: req.body.categoryID,
     createdOn: new Date(),
   };
+
+  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
 };
@@ -47,9 +70,11 @@ export const createCircles = async (
 ): Promise<void> => {
   try {
     const circleID = await createService(req, res);
-    res
-      .status(200)
-      .json({ success: true, message: `created circle with id :${circleID} ` });
+    res.status(200).json({
+      success: true,
+      message: `You created a circle `,
+      data: circleID,
+    });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

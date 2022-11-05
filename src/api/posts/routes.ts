@@ -21,13 +21,17 @@ import {
 } from './controllers/likes.service';
 import { updatePost } from './controllers/update.service';
 import yupValidator from '../../middlewares/yupValidator';
-import { yupObjIdSchema } from '../../models/middlewareSchemas';
+import { yupObjIdSchema, yupPageSchema } from '../../models/middlewareSchemas';
 import { yupCommentShema } from '../../models/commentSchema';
 
 const postsRoute = Router();
 //==================================Post APIs===================================
 //Get all posts
-postsRoute.get('/all', getAllPosts);
+postsRoute.get(
+  '/all/:page',
+  yupValidator('params', yupPageSchema),
+  getAllPosts
+);
 
 //Get posts created by an user
 postsRoute.get(
@@ -55,8 +59,8 @@ postsRoute.patch(
 
 // Favourite a Post
 postsRoute.post(
-  '/favourite',
-  yupValidator('body', yupFavPostSchema),
+  '/favourite/:id',
+  yupValidator('params', yupObjIdSchema),
   favouritePost
 );
 

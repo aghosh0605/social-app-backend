@@ -6,6 +6,7 @@ import authRoutes from "./auth/routes";
 import { validateJWT } from "../middlewares/verify-jwt";
 import usersRoute from "./users/routes";
 import FollowRoutes from "./follow/routes";
+import searchRoutes from "./search/routes";
 import subtopicRoute from "./subtopics/router";
 export default (): Router => {
   const app = Router();
@@ -19,7 +20,13 @@ export default (): Router => {
   app.use("/private-circles", validateJWT, circlesPrivateRoutes);
   app.use("/circles", circlesPublicRoutes);
   app.use("/users", validateJWT, usersRoute);
+  app.use("/follow", validateJWT, FollowRoutes);
+  app.use("/auth", authRoutes);
+  app.use("/", healthCheckRoute);
+  app.use("/posts", validateJWT, postsRoute);
+  app.use("/private-circles", validateJWT, circlesPrivateRoutes);
+  app.use("/circles", circlesPublicRoutes);
+  app.use("/users", usersRoute);
+  app.use("/search", searchRoutes);
   return app;
 };
-
-//Main routes file

@@ -2,6 +2,7 @@ export interface throwSchema {
   statusCode: number;
   message: string;
   errorStack: any;
+  data: object;
 }
 
 export interface nextError {
@@ -13,4 +14,5 @@ export interface responseSchema {
   status: number;
   success: boolean;
   message: string;
+  data: Object;
 }

@@ -1,72 +1,94 @@
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
-import { Collection, Document } from 'mongodb';
+import { Collection } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { throwSchema } from '../../../models/generalSchemas';
+import { throwSchema } from '../../../models/interfaces';
 import * as bcrypt from 'bcrypt';
 import { SignupSchema } from '../../../models/authSchema';
 
 const SignupUser = async (
-  username: string,
+  full_name: string,
   password: string,
   email: string,
-  phone: string
+  phone: string,
+  dob: Date,
+  countryCode: string
 ): Promise<Document> => {
   const usersCollection: Collection<any> = await (
     await DBInstance.getInstance()
   ).getCollection('users');
+  if (!email && !phone) {
+    throw {
+      statusCode: 404,
+      message: 'Please provide an email or phone number',
+      data: null,
+    } as throwSchema;
+  }
+  if (phone && !countryCode) {
+    throw {
+      statusCode: 404,
+      message: 'Please provide a country code',
+      data: null,
+    } as throwSchema;
+  }
   let userExist: SignupSchema = await usersCollection.findOne(
     {
-      $and: [
-        { username: username },
-        { $or: [{ email: email }, { phone: phone }] },
-      ],
+      $or: [{ email: email }, { phone: phone }],
     },
     {
       projection: {
-        username: 1,
-        password: 1,
+        full_name: 1,
         email: 1,
         phone: 1,
         emailVerification: 1,
         mobileVerification: 1,
         isAdmin: 1,
+        countryCode: 1,
+        dob: 1,
       },
     }
   );
   if (userExist) {
     throw {
       statusCode: 409,
-      message: 'User already exists. Kindly use Login ',
+      message: 'User already exists. Kindly use Signin instead',
+      data: userExist,
     } as throwSchema;
   }
   const saltRounds = 10;
   const hash = await bcrypt.hash(password, saltRounds);
 
-  await usersCollection.insertOne(<SignupSchema>{
-    username: username,
+  const _dbData = {
+    full_name: full_name,
     password: hash,
-    email: email || undefined,
-    phone: phone || undefined,
     emailVerification: false,
     mobileVerification: false,
     isAdmin: false,
-  });
+    dob: dob,
+    blockedUID: [],
+    blockedCID: [],
+    isForgotVerified: false,
+  };
+  let dbData;
+  if (email && phone && countryCode) {
+    dbData = {
+      ..._dbData,
+      email: email,
+      phone: phone,
+      countryCode: countryCode,
+    };
+  } else if (email) {
+    dbData = { ..._dbData, email: email, phone: '', countryCode: '' };
+  } else {
+    dbData = { ..._dbData, email: '', phone: phone, countryCode: countryCode };
+  }
 
+  await usersCollection.insertOne(<SignupSchema>dbData);
   return await usersCollection.findOne(
     {
-      $and: [{ username: username }, { email: email }, { phone: phone }],
+      $or: [{ email: email }, { phone: phone }],
     },
-    {
-      projection: {
-        username: 1,
-        email: 1,
-        phone: 1,
-        emailVerification: 1,
-        mobileVerification: 1,
-        isAdmin: 1,
-      },
-    }
+    { projection: { password: 0 } }
   );
 };
 
@@ -76,13 +98,21 @@ export const handleSignup = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { username, password, email, phone } = req.body as SignupSchema;
-    const result = await SignupUser(username, password, email, phone);
-    //console.log(result);
+    const { full_name, password, email, phone, dob, countryCode } =
+      req.body as SignupSchema;
+    const result = await SignupUser(
+      full_name,
+      password,
+      email,
+      phone,
+      dob,
+      countryCode
+    );
+
     res.status(201).json({
       success: true,
-      message: "Signup successful. Kindly login to continue",
-      data: result
+      message: 'Signup successful. Kindly login to continue',
+      data: result,
     });
     next();
   } catch (err) {
@@ -90,7 +120,7 @@ export const handleSignup = async (
     res.status(err.statusCode || 500).json({
       success: false,
       message: err.message || '❌ Unknown Error Occurred !! ',
-      data: null,
+      data: err.data,
     });
   }
 };

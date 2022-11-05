@@ -1,23 +1,20 @@
 import { Router } from "express";
 import yupValidator from "../../middlewares/yupValidator";
 import { yupObjIdSchema } from "../../models/middlewareSchemas";
-import {
-  handleCircleFollow,
-  handleUserFollow,
-} from "./controllers/folow.service";
+import { handleFollow } from "./controllers/follow.service";
 
 const followRoutes = Router();
 
 followRoutes.put(
   "/uid/:id",
   yupValidator("params", yupObjIdSchema),
-  handleUserFollow
+  handleFollow
 );
 
 followRoutes.put(
   "/cid/:id",
   yupValidator("params", yupObjIdSchema),
-  handleCircleFollow
+  handleFollow
 );
 
 export default followRoutes;

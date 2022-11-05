@@ -1,12 +1,10 @@
 import { Collection, ObjectId } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { throwSchema } from '../../../models/generalSchemas';
+import { throwSchema } from '../../../models/interfaces';
 import Logger from '../../../loaders/logger';
-import { sendMail } from '../../../utils/sendInBlueClient';
 import { NextFunction, Request, Response } from 'express';
-import { join } from 'path';
-import { generateNanoID } from '../../../utils/nanoidGenerate';
-import config from '../../../config';
+import { emailSender } from '../../../config/transporters/signup.email';
+import { forgotEmailSender } from '../../../config/transporters/forgot.email';
 
 export const sendVerificationMail = async (
   req: Request,
@@ -14,6 +12,7 @@ export const sendVerificationMail = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const { type } = req.query;
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('users');
@@ -23,40 +22,36 @@ export const sendVerificationMail = async (
       },
       {
         projection: {
-          username: true,
-          fullName: 1,
+          full_name: 1,
           email: true,
           emailVerification: true,
-          emailVerifyHash: 1,
         },
       }
     );
-    if (userData.emailVerification) {
+    if (!userData) {
+      throw {
+        statusCode: 400,
+        message: 'User does not exists',
+      } as throwSchema;
+    }
+    if (userData.emailVerification && type == 'signup') {
       throw {
         statusCode: 400,
         message: 'Email is already verified',
       } as throwSchema;
     }
-    const token = generateNanoID('0-9a-fA-F', 24);
-    const uid = '' + userData['_id'];
-    userData.link = `${config.baseurl}/api/auth/verifymail/${uid}/${token}`;
-    const path = join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'templates',
-      `emailVerification.ejs`
-    );
+    switch (type) {
+      case 'forgot':
+        await forgotEmailSender(userData);
+        break;
+      case 'signup':
+        await emailSender(userData);
+        break;
+    }
 
-    const senderData = { name: 'Piechips', email: 'verification@piechips.com' };
-    await sendMail(path, userData, 'Verify your email', senderData);
-    await usersCollection.updateOne(
-      { _id: userData._id },
-      { $set: { emailVerifyHash: token } }
-    );
-    res.status(200).json({ success: true, message: 'Email Sent!!' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Verification Email Sent!!' });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
@@ -74,6 +69,7 @@ export const verifyMail = async (
 ): Promise<void> => {
   try {
     const { id, token } = req.params;
+    const { type } = req.query;
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
     ).getCollection('users');
@@ -83,14 +79,21 @@ export const verifyMail = async (
       },
       {
         projection: {
-          username: true,
+          full_name: true,
           email: true,
           emailVerification: true,
           emailVerifyHash: 1,
+          isResetVerified: 1,
         },
       }
     );
-    if (userData.emailVerifyHash == '') {
+    if (!userData) {
+      throw {
+        statusCode: 400,
+        message: 'User does not exist!',
+      } as throwSchema;
+    }
+    if (userData.emailVerifyHash == '' || !userData.emailVerifyHash) {
       throw {
         statusCode: 400,
         message: 'Please resend verification mail!!',
@@ -99,12 +102,18 @@ export const verifyMail = async (
     if (userData.emailVerifyHash != token) {
       throw {
         statusCode: 400,
-        message: 'Wrong Verification Token!!',
+        message: 'Wrong Verification Token!! Use the latest verification link',
       } as throwSchema;
     }
+    let updateData = { emailVerifyHash: '', emailVerification: true };
+
+    if (type == 'forgot') {
+      updateData['isForgotVerified'] = true;
+    }
+
     await usersCollection.updateOne(
       { _id: userData._id },
-      { $set: { emailVerifyHash: '', emailVerification: true } }
+      { $set: updateData }
     );
     res.status(200).json({ success: true, message: 'Email Verified' });
     next();

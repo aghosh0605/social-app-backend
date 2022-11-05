@@ -1,6 +1,6 @@
 import { ObjectId, Collection, DeleteResult } from 'mongodb';
 import { DBInstance } from '../../../loaders/database';
-import { responseSchema, throwSchema } from '../../../models/generalSchemas';
+import { responseSchema, throwSchema } from '../../../models/interfaces';
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../loaders/logger';
 import { postSchema } from '../../../models/postSchema';
@@ -46,8 +46,8 @@ export const deletePost = async (
 ) => {
   try {
     await deleteService(req);
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       message: 'Post Deleted',
       data: null,
     });

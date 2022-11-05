@@ -1,0 +1,1104 @@
+openapi: 3.0.0
+info:
+  title: Piechips
+  version: 1.0.0
+
+servers:
+  - url: https://piechips.herokuapp.com
+  - url: http://localhost:8000
+  - url: http://localhost:3000
+  - url: https://2factor.in
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    noauthAuth:
+      type: http
+      scheme: noauth
+tags:
+  - name: posts
+  - name: Authenttication
+  - name: circles
+  - name: Comments
+  - name: Likes
+  - name: Users
+  - name: Follow
+  - name: search
+paths:
+  /api/posts/all:
+    get:
+      tags:
+        - posts
+      summary: Posts GET
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/create:
+    post:
+      tags:
+        - posts
+      summary: Posts POST
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+                  example: Multiple Media
+                circleID:
+                  type: string
+                  example: 6326fc0e112bd809ebb626eb
+                tags:
+                  type: string
+                  example: '#windows,#linux'
+                images:
+                  type: string
+                  format: binary
+                category:
+                  type: string
+                  example: Public
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzI2ZjkyMzExMmJkODA5ZWJiNjI2ZTkiLCJpYXQiOjE2NjM0OTg5NzEsImV4cCI6MTY2Mzc1ODE3MSwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.9OBiYsp0-TnlhlvKdGQMF146Z7BCBDNREJYb9HxD0Ls
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/delete/6326fc3a112bd809ebb626ec:
+    delete:
+      tags:
+        - posts
+      summary: Posts DELETE
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzI2ZjkyMzExMmJkODA5ZWJiNjI2ZTkiLCJpYXQiOjE2NjM0OTg5NzEsImV4cCI6MTY2Mzc1ODE3MSwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.9OBiYsp0-TnlhlvKdGQMF146Z7BCBDNREJYb9HxD0Ls
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/user/6326f923112bd809ebb626e9:
+    get:
+      tags:
+        - posts
+      summary: User Specific Posts
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/favourite/6326fd26112bd809ebb626ed:
+    post:
+      tags:
+        - posts
+      summary: Favourite Post
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/update/6326fd26112bd809ebb626ed:
+    patch:
+      tags:
+        - posts
+      summary: Update Posts
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                caption:
+                  type: string
+                  example: ice cream to blockchain
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/signin:
+    post:
+      tags:
+        - Authenttication
+      summary: signin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                identity: aghosh0605@gmail.com
+                password: 9434852054aA@
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/signup:
+    post:
+      tags:
+        - Authenttication
+      summary: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                full_name: Aniruddha Ghosh
+                password: 9434852054aA@
+                email: aghosh0605@gmail.com
+                dob: 06/05/2001
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/sendmail/6326f923112bd809ebb626e9:
+    get:
+      tags:
+        - Authenttication
+      summary: Send Verification Mail
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMwMTM5NTYsImV4cCI6MTY2MzI3MzE1NiwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.oWbJQxvKOQ4UHyzBSDWX1MnvA9u8VkO_DR6CllRxSKM
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/sendotp/632b2956f295459308cee487:
+    get:
+      tags:
+        - Authenttication
+      summary: send-otp-app
+      responses:
+        '200':
+          description: OK
+          headers:
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: '100'
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '99'
+            RateLimit-Reset:
+              schema:
+                type: integer
+                example: '899'
+            Content-Security-Policy:
+              schema:
+                type: string
+                example: >-
+                  default-src 'self';base-uri 'self';font-src 'self' https:
+                  data:;form-action 'self';frame-ancestors 'self';img-src 'self'
+                  data:;object-src 'none';script-src 'self';script-src-attr
+                  'none';style-src 'self' https:
+                  'unsafe-inline';upgrade-insecure-requests
+            Cross-Origin-Embedder-Policy:
+              schema:
+                type: string
+                example: require-corp
+            Cross-Origin-Opener-Policy:
+              schema:
+                type: string
+                example: same-origin
+            Cross-Origin-Resource-Policy:
+              schema:
+                type: string
+                example: same-origin
+            X-DNS-Prefetch-Control:
+              schema:
+                type: string
+                example: 'off'
+            X-Frame-Options:
+              schema:
+                type: string
+                example: SAMEORIGIN
+            Strict-Transport-Security:
+              schema:
+                type: string
+                example: max-age=15552000; includeSubDomains
+            X-Download-Options:
+              schema:
+                type: string
+                example: noopen
+            X-Content-Type-Options:
+              schema:
+                type: string
+                example: nosniff
+            Origin-Agent-Cluster:
+              schema:
+                type: string
+                example: '?1'
+            X-Permitted-Cross-Domain-Policies:
+              schema:
+                type: string
+                example: none
+            Referrer-Policy:
+              schema:
+                type: string
+                example: no-referrer
+            X-XSS-Protection:
+              schema:
+                type: integer
+                example: '0'
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '65'
+            ETag:
+              schema:
+                type: string
+                example: W/"41-pYuK/vmXNhMsiL0D1IqpCjZoXyI"
+            Date:
+              schema:
+                type: string
+                example: Fri, 16 Sep 2022 15:55:03 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: 2a0960e6-d384-4259-bf49-201b31ca5774
+  /api/auth/verifyotp/2d6d11d6-aa72-4433-9839-09984921ac95/520802:
+    get:
+      tags:
+        - Authenttication
+      summary: verify-otp-app
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/verifymail/6325c91a3a3f79caf107845e/265F38B9aF26d2eFB40Cd89d:
+    get:
+      tags:
+        - Authenttication
+      summary: verify Mail
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/auth/reset-password:
+    patch:
+      tags:
+        - Authenttication
+      summary: Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                password: '123456789'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/all:
+    get:
+      tags:
+        - circles
+      summary: Circles GET All
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/specific/6342e946330e940c57feaa05:
+    get:
+      tags:
+        - circles
+      summary: Get Specific Circle
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/user/633d6a12a0371985ac7b9c8b:
+    get:
+      tags:
+        - circles
+      summary: Circles GET by user
+      security:
+        - noauthAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/category/Formula:
+    get:
+      tags:
+        - circles
+      summary: Circles GET By category
+      security:
+        - noauthAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/subTopics:
+    get:
+      tags:
+        - circles
+      summary: Circles GET subtopics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/circles/topics:
+    get:
+      tags:
+        - circles
+      summary: Circles GET topics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/private-circles/update/data/6353fa9c47af4823bf568578:
+    put:
+      tags:
+        - circles
+      summary: Update data specific circle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                circleName: Circles for redbull powertrains
+                isPrivate: 'false'
+                tags: max verstappen,sergio perez
+                about: Circles for redbull
+                category: Formula 1
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/private-circles/update/images/{id}:
+    put:
+      tags:
+        - circles
+      summary: Update images of specific circle
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profileImage:
+                  type: string
+                  format: binary
+                bannerImage:
+                  type: string
+                  format: binary
+                circleName:
+                  type: string
+                  example: Circles for redbull powertrain
+                tags:
+                  type: string
+                  example: max verstappen,alex albon
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/private-circles/delete/6342e946330e940c57feaa05:
+    delete:
+      tags:
+        - circles
+      summary: Circles Delete
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/private-circles/create:
+    post:
+      tags:
+        - circles
+      summary: Circles Create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profileImage:
+                  type: string
+                  format: binary
+                bannerImage:
+                  type: string
+                  format: binary
+                category:
+                  type: string
+                  example: sarthak
+                about:
+                  type: string
+                  example: Circles for mclaren
+                isPrivate:
+                  type: boolean
+                  example: 'false'
+                tags:
+                  type: string
+                  example: name1,name2
+                circleName:
+                  type: string
+                  example: sarthak
+                UID:
+                  type: string
+                  example: 6326f923112bd809ebb626e9
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzI2ZjkyMzExMmJkODA5ZWJiNjI2ZTkiLCJpYXQiOjE2NjM0OTkxMzYsImV4cCI6MTY2Mzc1ODMzNiwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.3KCsnoxmwr_5JOqL3qOVDRM-Rin5N9-MVV2erzIJBH8
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/create/6326fd26112bd809ebb626ed:
+    post:
+      tags:
+        - Comments
+      summary: Make Post Comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                commentText: This is the objectID Test comment
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/create/6326fd65112bd809ebb626ef:
+    post:
+      tags:
+        - Comments
+      summary: Make Child Comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                commentText: This is the first comment
+                isChild: true
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/edit/6326fd65112bd809ebb626ef:
+    patch:
+      tags:
+        - Comments
+      summary: Edit Comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                commentText: This is the editing comment
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/fetch/6326fd26112bd809ebb626ed:
+    get:
+      tags:
+        - Comments
+      summary: Get Comments
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/fetch/child/6326fd65112bd809ebb626ef:
+    get:
+      tags:
+        - Comments
+      summary: Get Child Comments
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/comment/delete/6326ff3b112bd809ebb626f1:
+    delete:
+      tags:
+        - Comments
+      summary: Delete Comment
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/like/6326fd26112bd809ebb626ed:
+    post:
+      tags:
+        - Likes
+      summary: Like a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                likeEmoji: '&#128519'
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts//like/edit/6326fd35112bd809ebb626ee:
+    patch:
+      tags:
+        - Likes
+      summary: Edit a Like
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                likeEmoji: '&#128514'
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts//like/delete/6326fd7c112bd809ebb626f0:
+    delete:
+      tags:
+        - Likes
+      summary: Dislike a post or comment
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzI2ZjkyMzExMmJkODA5ZWJiNjI2ZTkiLCJpYXQiOjE2NjM0OTg5NzEsImV4cCI6MTY2Mzc1ODE3MSwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.9OBiYsp0-TnlhlvKdGQMF146Z7BCBDNREJYb9HxD0Ls
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/like/fetch/post/6326fd26112bd809ebb626ed:
+    get:
+      tags:
+        - Likes
+      summary: Get Post Likes
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/like/fetch/comment/6326fd65112bd809ebb626ef:
+    get:
+      tags:
+        - Likes
+      summary: Get Comment Like
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/posts/like/6326fd65112bd809ebb626ef:
+    post:
+      tags:
+        - Likes
+      summary: Like a comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                likeEmoji: '&#128519'
+                isComment: true
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzFkZTU5Mzk5MmZjZDAyZWZkNDQ3NzMiLCJpYXQiOjE2NjMzNTk4MjMsImV4cCI6MTY2MzYxOTAyMywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.BSINUE57yEDFpKUcBt0sqOfXxc4S5noCXyvVaMFJYUU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/fetch:
+    get:
+      tags:
+        - Users
+      summary: Get User Details
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzNmNTMyZWVhMzNiYzZhOWE3NDU1ZjciLCJpYXQiOjE2NjUxMjcyMjIsImV4cCI6MTY2NTM4NjQyMiwiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.KUtwOtAOwMp8ESNBc_8VhdT55Dz-uchhtBamxhx6tHU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/update/633f532eea33bc6a9a7455f7:
+    patch:
+      tags:
+        - Users
+      summary: Change User Profile Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                bio: Here we go again
+      parameters:
+        - name: authorization
+          in: header
+          schema:
+            type: string
+          example: >-
+            Bearer
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiaWQiOiI2MzNmNTMyZWVhMzNiYzZhOWE3NDU1ZjciLCJpYXQiOjE2NjUwOTQ1NTcsImV4cCI6MTY2NTM1Mzc1NywiaXNzIjoiQ2FyaW8gR3Jvd3RoIFNlcnZpY2VzIn0.XgKCvHKKvGN_oRiClZxZtjb5MSyEFplgKTvdGWbmEjI
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/users/user-block/6353f22ca5dcf6f484c34207:
+    patch:
+      tags:
+        - Users
+      summary: Block Users
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/follow/uid/6353f22ca5dcf6f484c34207:
+    put:
+      tags:
+        - Follow
+      summary: User follow
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/follow/cid/6341158c2b757575f7dec352:
+    put:
+      tags:
+        - Follow
+      summary: Circle Follow
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/search/homePageSearch:
+    post:
+      tags:
+        - search
+      summary: Home Page search
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/search/circlePageSearch:
+    post:
+      tags:
+        - search
+      summary: Circle Page search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                searchData: ha
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api:
+    get:
+      tags:
+        - default
+      summary: Healthcheck
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /API/V1/e9552544-2a80-11ed-9c12-0200cd936042/BAL/SMS:
+    get:
+      tags:
+        - default
+      summary: OTP Balance Check
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 12 Sep 2022 08:41:22 GMT
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            X-Powered-By:
+              schema:
+                type: string
+                example: PHP/5.4.35
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: PUT, GET, POST, DELETE, OPTIONS
+            CF-Cache-Status:
+              schema:
+                type: string
+                example: DYNAMIC
+            Server:
+              schema:
+                type: string
+                example: cloudflare
+            CF-RAY:
+              schema:
+                type: string
+                example: 749757fe2a0f8609-BOM
+            Content-Encoding:
+              schema:
+                type: string
+                example: br
+            alt-svc:
+              schema:
+                type: string
+                example: h3=":443"; ma=86400, h3-29=":443"; ma=86400
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                Status: Success
+                Details: '49'
+  /API/V1/e9552544-2a80-11ed-9c12-0200cd936042/SMS/9434852054/AUTOGEN:
+    get:
+      tags:
+        - default
+      summary: SEND AUTOGEN OTP
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Mon, 12 Sep 2022 08:40:52 GMT
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            X-Powered-By:
+              schema:
+                type: string
+                example: PHP/5.4.35
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: PUT, GET, POST, DELETE, OPTIONS
+            CF-Cache-Status:
+              schema:
+                type: string
+                example: DYNAMIC
+            Server:
+              schema:
+                type: string
+                example: cloudflare
+            CF-RAY:
+              schema:
+                type: string
+                example: 7497573f7c848609-BOM
+            Content-Encoding:
+              schema:
+                type: string
+                example: br
+            alt-svc:
+              schema:
+                type: string
+                example: h3=":443"; ma=86400, h3-29=":443"; ma=86400
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                Status: Success
+                Details: b75afb4d-a6e0-4284-9c25-cc9e6f07d2a0
+  /API/V1/e9552544-2a80-11ed-9c12-0200cd936042/SMS/VERIFY/b75afb4d-a6e0-4284-9c25-cc9e6f07d2a0/109708:
+    get:
+      tags:
+        - default
+      summary: Verify OTP
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
