@@ -58,6 +58,7 @@ export const getAllPosts = async (
         },
         { $skip: limit * parseInt(page) },
         { $limit: limit },
+        { $sort: -1 },
       ])
       .toArray();
     res.status(200).json({

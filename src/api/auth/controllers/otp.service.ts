@@ -70,7 +70,11 @@ const VerifyOtp = async (sessionID: string, otp: number, type: any) => {
     '/' +
     otp;
   await axios.get(url);
-  let updateData = { mobileVerification: true, mobileVerifyHash: '' };
+  let updateData = {
+    mobileVerification: true,
+    mobileVerifyHash: '',
+    user_status: 1,
+  };
   if (type == 'forgot') {
     updateData['isForgotVerified'] = true;
   }

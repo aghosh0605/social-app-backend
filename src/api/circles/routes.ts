@@ -17,6 +17,7 @@ import {
   getTopics,
 } from './controllers/get.service';
 import { createCircles } from './controllers/post.service';
+import { createSubTopics } from './controllers/subtopics.service';
 import {
   updateDataCircle,
   updateImageCircle,
@@ -61,5 +62,7 @@ circlesPrivateRoutes.put(
   // yupValidator("body", yupObjCirclesBodySchema),
   updateImageCircle
 );
+
+circlesPrivateRoutes.post('/create/sub-topic/new', createSubTopics);
 
 export { circlesPrivateRoutes, circlesPublicRoutes };

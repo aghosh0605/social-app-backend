@@ -68,6 +68,7 @@ const SignupUser = async (
     blockedUID: [],
     blockedCID: [],
     isForgotVerified: false,
+    user_status: 0,
   };
   let dbData;
   if (email && phone && countryCode) {

@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2be-THTNuNvCN0owMqXN" name="DB-Achitcture">
-        <mxGraphModel dx="1097" dy="1662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1160" dy="1634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -28,7 +28,7 @@
                 <mxCell id="HzWzUF8-_IMW7kiPa2Iw-15" value="&lt;b&gt;Dark Theme(true/false)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="144" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="8kqa-zrqso4DdCSM_s6q-1" value="&lt;b&gt;Profile Picture URL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="8kqa-zrqso4DdCSM_s6q-1" value="&lt;b&gt;avatarURL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="127" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-4" value="&lt;b&gt;Blocked Users ID&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
@@ -40,10 +40,10 @@
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-28" value="&lt;b&gt;Liked Tags&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="195" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-1" value="&lt;b&gt;User About&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-1" value="&lt;b&gt;info&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="212" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-2" value="&lt;b&gt;Address&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-2" value="&lt;b&gt;place&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="229" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="-TFifHRZnb5QUAOWfHb_-4" value="Education" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
@@ -61,10 +61,10 @@
                 <mxCell id="-TFifHRZnb5QUAOWfHb_-9" value="Skills" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="331" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-10" value="Certificates/ Awards" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-10" value="isDOB_Visible" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="246" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-11" value="&lt;b&gt;Resume URL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-11" value="&lt;b&gt;user_status&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="365" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="-TFifHRZnb5QUAOWfHb_-12" value="Music" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
@@ -82,7 +82,7 @@
                 <mxCell id="owdlpUDmySh1TMZ5OT5K-4" value="De-Activate" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="536" width="200" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="owdlpUDmySh1TMZ5OT5K-8" value="&lt;b&gt;EmailVerification-salt&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="owdlpUDmySh1TMZ5OT5K-8" value="&lt;b&gt;appearanceURL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="516" width="200" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="owdlpUDmySh1TMZ5OT5K-2" value="&lt;b&gt;EmailVerification ( true/false )&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
@@ -103,7 +103,7 @@
                 <mxCell id="12" value="&lt;span&gt;countryCode&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="348" width="200" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="isForgotVerified" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="2QIpF6AVUyKxiGPU-yzf-1">
+                <mxCell id="13" value="isForgotVerified" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="596" width="200" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="2QIpF6AVUyKxiGPU-yzf-3" value="&lt;b&gt;full_name&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -294,10 +294,10 @@
                 <mxCell id="-TFifHRZnb5QUAOWfHb_-15" value="isCircle(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
                     <mxGeometry y="91" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="-TFifHRZnb5QUAOWfHb_-17" value="Follower User ID" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
+                <mxCell id="-TFifHRZnb5QUAOWfHb_-17" value="followerUID" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
                     <mxGeometry y="108" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="owdlpUDmySh1TMZ5OT5K-1" value="followUser(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" parent="HzWzUF8-_IMW7kiPa2Iw-1" vertex="1">
+                <mxCell id="14" value="isPost(true/false)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="HzWzUF8-_IMW7kiPa2Iw-1">
                     <mxGeometry y="125" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-7" value="Reports" style="swimlane;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;shadow=1;rounded=1;swimlaneFillColor=default;" parent="1" vertex="1">
