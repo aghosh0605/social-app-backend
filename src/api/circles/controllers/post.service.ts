@@ -3,8 +3,13 @@ import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
-import { circleSchema, mediaURLSchema } from "../../../models/circleSchema";
+import {
+  circleSchema,
+  mediaURLSchema,
+  _circleSchema,
+} from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
+import { randomUUID } from "crypto";
 
 const createService = async (req, res) => {
   const { profileImage, bannerImage } = req.files;
@@ -46,7 +51,7 @@ const createService = async (req, res) => {
   const picURL = await uploadPhotos(req, res);
 
   //Storing Data to mongoDB
-  const inData: circleSchema = {
+  const inData: _circleSchema = {
     circleName: req.body.circleName,
     UID: req.user,
     about: req.body.about,

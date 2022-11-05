@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import * as yup from "yup";
 import "yup-phone";
 export const yupCircleSchema = yup.object({
@@ -44,7 +45,10 @@ export const yupCircleSchema = yup.object({
   createdOn: yup.date().default(() => new Date()),
 });
 
-export type circleSchema = yup.InferType<typeof yupCircleSchema>;
+export type _circleSchema = yup.InferType<typeof yupCircleSchema>;
+export type circleSchema = _circleSchema & {
+  _id: ObjectId;
+};
 
 const yupMediaUrlSchema = yupCircleSchema.pick["mediaURLs"];
 export type mediaURLSchema = yup.InferType<typeof yupMediaUrlSchema>;
@@ -86,4 +90,8 @@ export const yupSubTopicsSchema = yup.object({
   Details: yup.string().trim(),
 });
 
-export type subTopicsSchema = yup.InferType<typeof yupSubTopicsSchema>;
+type _subTopicsSchema = yup.InferType<typeof yupSubTopicsSchema>;
+
+export type subTopicsSchema = _subTopicsSchema & {
+  _id: ObjectId;
+};
