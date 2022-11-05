@@ -6,11 +6,13 @@ import authRoutes from "./auth/routes";
 import { validateJWT } from "../middlewares/verify-jwt";
 import usersRoute from "./users/routes";
 import FollowRoutes from "./follow/routes";
+import subtopicRoute from "./subtopics/router";
 export default (): Router => {
   const app = Router();
 
   //TODO: add routes here...
   app.use("/follow", FollowRoutes);
+  app.use("/subtopic", subtopicRoute);
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
