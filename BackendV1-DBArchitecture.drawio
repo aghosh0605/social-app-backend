@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2be-THTNuNvCN0owMqXN" name="DB-Achitcture">
-        <mxGraphModel dx="1097" dy="1662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1160" dy="1634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -28,7 +28,7 @@
                 <mxCell id="HzWzUF8-_IMW7kiPa2Iw-15" value="&lt;b&gt;Dark Theme(true/false)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="144" width="200" height="17" as="geometry"/>
                 </mxCell>
-                <mxCell id="8kqa-zrqso4DdCSM_s6q-1" value="&lt;b&gt;Profile Picture URL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
+                <mxCell id="8kqa-zrqso4DdCSM_s6q-1" value="&lt;b&gt;avatarURL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="127" width="200" height="17" as="geometry"/>
                 </mxCell>
                 <mxCell id="8kqa-zrqso4DdCSM_s6q-4" value="&lt;b&gt;Blocked Users ID&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
@@ -103,7 +103,7 @@
                 <mxCell id="12" value="&lt;span&gt;countryCode&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="348" width="200" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="isForgotVerified" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="2QIpF6AVUyKxiGPU-yzf-1">
+                <mxCell id="13" value="isForgotVerified" style="rounded=0;whiteSpace=wrap;html=1;" parent="2QIpF6AVUyKxiGPU-yzf-1" vertex="1">
                     <mxGeometry y="596" width="200" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="2QIpF6AVUyKxiGPU-yzf-3" value="&lt;b&gt;full_name&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
