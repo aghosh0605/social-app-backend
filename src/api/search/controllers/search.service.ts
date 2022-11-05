@@ -1,7 +1,7 @@
-import { Collection, ObjectId } from 'mongodb';
-import { DBInstance } from '../../../loaders/database';
-import { NextFunction, Request, Response } from 'express';
-import Logger from '../../../loaders/logger';
+import { Collection, ObjectId } from "mongodb";
+import { DBInstance } from "../../../loaders/database";
+import { NextFunction, Request, Response } from "express";
+import Logger from "../../../loaders/logger";
 
 export const searchHomePage = async (
   req: Request,
@@ -11,27 +11,40 @@ export const searchHomePage = async (
   try {
     const usersCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('users');
+    ).getCollection("users");
     const circleCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('circles');
+    ).getCollection("circles");
+    const postsCollection: Collection<any> = await (
+      await DBInstance.getInstance()
+    ).getCollection("posts");
     if (req.body.searchData) {
       let circleMatchingData = await circleCollection
         .find({
-          circleName: { $regex: req.body.searchData, $options: 'i' },
+          circleName: { $regex: req.body.searchData, $options: "i" },
         })
         .project({ _id: 0 })
         .toArray();
       let usersMatchingData = await usersCollection
         .find({
-          full_name: { $regex: req.body.searchData, $options: 'i' },
+          full_name: { $regex: req.body.searchData, $options: "i" },
         })
         .project({ _id: 0 })
         .toArray();
-      let finalData = { circleMatchingData, usersMatchingData };
+      let postsMatchingData = await postsCollection
+        .find({
+          circleName: { $regex: req.body.searchData, $options: "i" },
+        })
+        .project({ _id: 0 })
+        .toArray();
+      let finalData = {
+        circleMatchingData,
+        usersMatchingData,
+        postsMatchingData,
+      };
       res.status(200).json({
         success: true,
-        message: 'Searched Successfully!',
+        message: "Searched Successfully!",
         data: finalData,
       });
       next();
@@ -40,7 +53,7 @@ export const searchHomePage = async (
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || '❌ Unknown Error Occurred!!',
+      message: err.message || "❌ Unknown Error Occurred!!",
     });
   }
 };
@@ -53,33 +66,31 @@ export const searchCirclePage = async (
   try {
     const circleCollection: Collection<any> = await (
       await DBInstance.getInstance()
-    ).getCollection('circles');
+    ).getCollection("circles");
     if (req.body.searchData) {
       let circleMatchingData = await circleCollection
         .find({
           $or: [
-            { circleName: { $regex: req.body.searchData, $options: 'i' } },
+            { circleName: { $regex: req.body.searchData, $options: "i" } },
             {
-              category: { $regex: req.body.searchData, $options: 'i' },
+              category: { $regex: req.body.searchData, $options: "i" },
             },
           ],
         })
         .project({ _id: 0 })
         .toArray();
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Searched Successfully!',
-          data: circleMatchingData,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Searched Successfully!",
+        data: circleMatchingData,
+      });
       next();
     }
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
       success: false,
-      message: err.message || '❌ Unknown Error Occurred!!',
+      message: err.message || "❌ Unknown Error Occurred!!",
     });
   }
 };
