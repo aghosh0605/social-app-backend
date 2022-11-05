@@ -5,7 +5,7 @@ import 'yup-phone';
 export const yupUserSchema = yup
   .object()
   .shape({
-    profileURL: yup.string().trim(),
+    avatarURL: yup.string().trim(),
     isDark: yup.boolean().default(false),
     info: yup.string().trim(),
     likedTags: yup.array().of(yup.string().trim()),
