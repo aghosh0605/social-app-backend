@@ -43,7 +43,7 @@ const createService = async (req, res) => {
   }
 
   // Upload Files to s3
-  const picURL = await uploadPhotos(req, res);
+  const picURL = await uploadPhotos(req, res, "circleImages/");
 
   //Storing Data to mongoDB
   const inData: circleSchema = {
@@ -57,8 +57,6 @@ const createService = async (req, res) => {
     categoryID: req.body.categoryID,
     createdOn: new Date(),
   };
-
-  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
 };

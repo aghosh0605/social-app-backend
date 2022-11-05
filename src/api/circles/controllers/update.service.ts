@@ -35,7 +35,7 @@ const updateImageService = async (req: Request, res: Response) => {
     };
   }
 
-  const newMediaUrls = await uploadPhotos(req, res);
+  const newMediaUrls = await uploadPhotos(req, res, "circleImages/");
 
   if (req.body.tags) {
     req.body.tags = req.body.tags.split(",");
