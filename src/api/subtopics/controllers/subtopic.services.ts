@@ -31,4 +31,8 @@ export const handleExolore = async (
       posts.push(post);
     });
   });
+  res.status(200).json({
+    success: true,
+    data: posts,
+  });
 };

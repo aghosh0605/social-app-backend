@@ -22,10 +22,12 @@ export const getAllCircles = async (): Promise<circleSchema[]> => {
 };
 
 //! GET circle by topics
-export const getTopics = async (id: any): Promise<circleSchema[]> => {
+export const getCirclebySubTopicID = async (
+  id: any
+): Promise<circleSchema[]> => {
   const circlesCollection: Collection<any> = await getCollection("circles");
   const resData: circleSchema[] = await circlesCollection
-    .find({ category: id })
+    .find({ categoryID: id })
     .toArray();
 
   return resData;
@@ -128,11 +130,11 @@ export const getCircle = async (
       case "user":
         resData = await getCirclesByUser(req.query.user);
         break;
-      case "sub-topics":
+      case "sub-topics-all":
         resData = await getSubTopics();
         break;
-      case "topic":
-        resData = await getTopics(req.query.topic);
+      case "subID":
+        resData = await getCirclebySubTopicID(req.query.subID);
         break;
     }
 

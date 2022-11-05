@@ -32,9 +32,9 @@ postsRoute.get(
   getAllPosts
 );
 
-//Get posts created by an user
+//Get specific posts
 postsRoute.get(
-  "/user/:id",
+  "/specific/:type/:id/:page",
   yupValidator("params", yupObjIdSchema),
   getUserPosts
 );
