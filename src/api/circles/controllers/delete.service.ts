@@ -18,17 +18,23 @@ const deleteService = async (req: Request): Promise<void> => {
     throw { status: 404, success: false, message: "No Circle Found!" };
   }
 
-  if (req.user != foundCircle.UID) {
+  if (req.user != foundCircle.loggedIn_user_id) {
     throw {
       status: 404,
       success: false,
       message: "Only creator can delete circle",
     };
   }
+  console.log(foundCircle);
 
-  if (foundCircle.mediaURLs.length > 0) {
+  const mediaURLs = [
+    { ...foundCircle.cover_image_data },
+    { ...foundCircle.profile_image_data },
+  ];
+
+  if (mediaURLs.length > 0) {
     const delObjs = [];
-    foundCircle.mediaURLs.forEach((element) => {
+    mediaURLs.forEach((element) => {
       const URLPath = new URL(element.URL).pathname.substring(1);
       delObjs.push({ Key: URLPath });
     });
@@ -51,7 +57,13 @@ export const deleteCircle = async (
 ) => {
   try {
     await deleteService(req);
-    res.status(200).json({ success: true, message: "Circle Deleted" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Circle Deleted",
+        data: { loggedIn_user_id: req.user, circle_id: req.params.id },
+      });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);
