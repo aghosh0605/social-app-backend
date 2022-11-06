@@ -10,9 +10,10 @@ const getUserbyID = async (id: any) => {
   ).getCollection('users');
   const user = await userCollection.findOne({ _id: new ObjectId(id) });
   if (!user) {
-    throw {
+    return {
       statusCode: 409,
       message: 'User not Found',
+      data: null,
     } as throwSchema;
   }
   return user;
@@ -26,9 +27,10 @@ const getUserDetails = async (identity: any) => {
     $or: [{ email: identity }, { phone: identity }],
   });
   if (!user) {
-    throw {
+    return {
       statusCode: 409,
       message: 'User not Found',
+      data: null,
     } as throwSchema;
   }
   return user;
@@ -40,26 +42,25 @@ export const getUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    let user;
+    let resData = [];
     switch (req.params.type) {
       case 'id':
         // console.log('Entered id');
-        user = await getUserbyID(req.query.id);
+        resData = await getUserbyID(req.query.id);
         break;
       case 'email':
-        user = await getUserDetails(req.query.email);
+        resData = await getUserDetails(req.query.email);
         break;
       case 'phone':
-        user = await getUserDetails(req.query.phone);
+        resData = await getUserDetails(req.query.phone);
         break;
     }
 
     res.status(200).json({
       success: true,
       message: 'Found User Details',
-      data: user,
+      data: resData,
     });
-    next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
@@ -70,29 +71,17 @@ export const getUser = async (
   }
 };
 
-export const getCurrentUser = async (
+export const getLoggedInUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
-): Promise<void> => {
+) => {
   try {
-    const userCollection: Collection<any> = await (
-      await DBInstance.getInstance()
-    ).getCollection('users');
-    const user = await userCollection.findOne({ _id: new ObjectId(req.user) });
-    if (!user) {
-      throw {
-        statusCode: 409,
-        message: 'User not Found',
-      } as throwSchema;
-    }
-
+    const user = await getUserbyID(req.user);
     res.status(200).json({
       success: true,
       message: 'Found User Details',
       data: user,
     });
-    next();
   } catch (err) {
     Logger.error(err.errorStack || err);
     res.status(err.statusCode || 500).json({
@@ -101,4 +90,4 @@ export const getCurrentUser = async (
       data: null,
     });
   }
-};
+}
