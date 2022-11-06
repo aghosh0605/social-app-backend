@@ -3,11 +3,7 @@ import { Collection, ObjectId } from "mongodb";
 import { DBInstance } from "../../../loaders/database";
 import { NextFunction, Request, Response } from "express";
 import Logger from "../../../loaders/logger";
-import {
-  circleSchema,
-  mediaURLSchema,
-  _circleSchema,
-} from "../../../models/circleSchema";
+import { circleSchema, _circleSchema } from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
@@ -44,7 +40,7 @@ const createService = async (req, res) => {
     await DBInstance.getInstance()
   ).getCollection("circles");
   const circleExist: circleSchema = await circlesCollection.findOne({
-    circleName: req.body.circleName,
+    circleName: req.body.circle_name,
   });
   if (circleExist) {
     throw {
@@ -70,8 +66,8 @@ const createService = async (req, res) => {
     profile_image_date: picURL.profile_image_data,
   };
   console.log(inData);
-
-  return (await circlesCollection.insertOne(inData)).insertedId;
+  const id = (await circlesCollection.insertOne(inData)).insertedId;
+  return { circle_id: id, ...inData };
 };
 
 export const createCircles = async (
