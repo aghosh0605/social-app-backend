@@ -7,9 +7,9 @@ import { circleSchema } from "../../../models/circleSchema";
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const updateImageService = async (req: Request, res: Response) => {
-  const { profileImage, bannerImage } = req.files;
+  const { profile_image_data, cover_image_data } = req.files;
 
-  if (!profileImage && !bannerImage) {
+  if (!profile_image_data && !cover_image_data) {
     throw {
       statusCode: 404,
       message: "Images not found",
@@ -28,21 +28,21 @@ const updateImageService = async (req: Request, res: Response) => {
     throw { status: 404, success: false, message: "No Circle Found!" };
   }
 
-  const deleteUrls = foundCircle.mediaURLs.map((el) => {
-    const url = el.URL.split("com")[1];
-    const deleteUrl = url.slice(1, url.length);
-    return { Key: deleteUrl };
-  });
-
-  await s3Delete(deleteUrls);
-
-  if (req.user != foundCircle.UID) {
+  if (req.user != foundCircle.loggedIn_user_id) {
     throw {
       status: 404,
       success: false,
       message: "Only creator can edit the circle",
     };
   }
+
+  // const deleteUrls = foundCircle.mediaURLs.map((el) => {
+  //   const url = el.URL.split("com")[1];
+  //   const deleteUrl = url.slice(1, url.length);
+  //   return { Key: deleteUrl };
+  // });
+
+  // await s3Delete(deleteUrls);
 
   const newMediaUrls = await uploadPhotos(req, res, "circleImages/");
 

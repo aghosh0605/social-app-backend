@@ -6,7 +6,7 @@ import { s3Upload } from "./s3Client";
 
 export const uploadPhotos = async (req, res, baseUrl) => {
   const files = Object.assign({}, req.files);
-  const picURL: Array<mediaURLSchema> = [];
+  const picURL: any = {};
   const images = [];
   const keys = Object.keys(req.files);
   //! nano id use
@@ -20,22 +20,20 @@ export const uploadPhotos = async (req, res, baseUrl) => {
     if (images.length > 1) {
       images.forEach(async (element: UploadedFile, i) => {
         element.name = baseUrl + id + "-" + element.name;
-        picURL.push({
-          key: keys[i],
+        picURL[keys[i]] = {
           URL: config.awsBucketBaseURL + element.name,
           mimeType: element.mimetype,
           thumbnailURL: "",
-        });
+        };
         await s3Upload(element as UploadedFile);
       });
     } else {
       images[0].name = baseUrl + id + "-" + images[0].name;
-      picURL.push({
-        key: keys[0],
+      picURL[keys[0]] = {
         URL: config.awsBucketBaseURL + images[0].name,
         mimeType: images[0].mimetype,
         thumbnailURL: "",
-      });
+      };
 
       await s3Upload(images[0] as UploadedFile);
     }

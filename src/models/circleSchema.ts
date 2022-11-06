@@ -9,15 +9,6 @@ export const yupCircleSchema = yup.object({
     .required("Please provide User ID")
     .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
   is_private: yup.boolean().required("Please provide circle if is private"),
-  tags: yup
-    .array()
-    .of(
-      yup
-        .string()
-        .trim()
-        .min(1, "Minimum one character required")
-        .max(50, "Maximum 50 characters allowed")
-    ),
   cover_image_data: yup.object({
     type: yup.string().nullable().trim(),
     mimeType: yup.string().nullable().trim(),

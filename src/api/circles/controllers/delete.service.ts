@@ -18,7 +18,7 @@ const deleteService = async (req: Request): Promise<void> => {
     throw { status: 404, success: false, message: "No Circle Found!" };
   }
 
-  if (req.user != foundCircle.UID) {
+  if (req.user != foundCircle.loggedIn_user_id) {
     throw {
       status: 404,
       success: false,
@@ -26,14 +26,14 @@ const deleteService = async (req: Request): Promise<void> => {
     };
   }
 
-  if (foundCircle.mediaURLs.length > 0) {
-    const delObjs = [];
-    foundCircle.mediaURLs.forEach((element) => {
-      const URLPath = new URL(element.URL).pathname.substring(1);
-      delObjs.push({ Key: URLPath });
-    });
-    await s3Delete(delObjs);
-  }
+  // if (foundCircle.mediaURLs.length > 0) {
+  //   const delObjs = [];
+  //   foundCircle.mediaURLs.forEach((element) => {
+  //     const URLPath = new URL(element.URL).pathname.substring(1);
+  //     delObjs.push({ Key: URLPath });
+  //   });
+  //   await s3Delete(delObjs);
+  // }
 
   const resData: DeleteResult = await circlesCollection.deleteOne({
     _id: new ObjectId(req.params.id),

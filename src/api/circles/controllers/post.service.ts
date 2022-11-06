@@ -11,9 +11,9 @@ import {
 import { uploadPhotos } from "../../../utils/uploadPhotos";
 
 const createService = async (req, res) => {
-  const { profileImage, bannerImage } = req.files;
+  const { cover_image_data, profile_image_data } = req.files;
 
-  if (!profileImage || !bannerImage) {
+  if (!cover_image_data || !profile_image_data) {
     throw {
       statusCode: 404,
       message: "Images not found",
@@ -21,8 +21,8 @@ const createService = async (req, res) => {
   }
 
   if (
-    profileImage.mimetype !== "image/jpeg" &&
-    profileImage.mimetype !== "image/png"
+    cover_image_data.mimetype !== "image/jpeg" &&
+    cover_image_data.mimetype !== "image/png"
   ) {
     throw {
       statusCode: 415,
@@ -31,8 +31,8 @@ const createService = async (req, res) => {
   }
 
   if (
-    bannerImage.mimetype !== "image/jpeg" &&
-    bannerImage.mimetype !== "image/png"
+    profile_image_data.mimetype !== "image/jpeg" &&
+    profile_image_data.mimetype !== "image/png"
   ) {
     throw {
       statusCode: 415,
@@ -58,17 +58,18 @@ const createService = async (req, res) => {
 
   //Storing Data to mongoDB
   const inData: _circleSchema = {
-    circleName: req.body.circleName,
-    UID: req.user,
-    about: req.body.about,
-    isPrivate: JSON.parse(req.body.isPrivate),
-    tags: req.body.tags.split(","),
-    mediaURLs: picURL as mediaURLSchema,
-    category: req.body.category,
-    categoryID: req.body.categoryID,
-    createdOn: new Date(),
+    circle_name: req.body.circle_name,
+    loggedIn_user_id: req.user,
+    about_circle_description: req.body.about_circle_description,
+    is_private: req.body.is_Private,
+    topic_name: req.body.topic_name,
+    topic_id: req.body.topic_id,
+    posted_date: new Date(),
     last_updated_date: new Date(),
+    cover_image_data: picURL.cover_image_data,
+    profile_image_date: picURL.profile_image_data,
   };
+  console.log(inData);
 
   return (await circlesCollection.insertOne(inData)).insertedId;
 };
