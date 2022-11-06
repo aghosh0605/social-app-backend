@@ -18,7 +18,7 @@ export default (): Router => {
   app.use("/posts", validateJWT, postsRoute);
   app.use("/private-circles", validateJWT, circlesPrivateRoutes);
   app.use("/circles", circlesPublicRoutes);
-  app.use("/users", validateJWT, usersRoute);
+  app.use("/users", usersRoute);
   app.use("/follow", validateJWT, FollowRoutes);
   app.use("/search", searchRoutes);
   return app;
