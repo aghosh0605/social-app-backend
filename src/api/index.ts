@@ -12,8 +12,7 @@ export default (): Router => {
   const app = Router();
 
   //TODO: add routes here...
-  app.use("/follow", FollowRoutes);
-  app.use("/subtopic", subtopicRoute);
+  app.use("/subtopic", validateJWT, subtopicRoute);
   app.use("/auth", authRoutes);
   app.use("/", healthCheckRoute);
   app.use("/posts", validateJWT, postsRoute);
@@ -21,12 +20,6 @@ export default (): Router => {
   app.use("/circles", circlesPublicRoutes);
   app.use("/users", validateJWT, usersRoute);
   app.use("/follow", validateJWT, FollowRoutes);
-  app.use("/auth", authRoutes);
-  app.use("/", healthCheckRoute);
-  app.use("/posts", validateJWT, postsRoute);
-  app.use("/private-circles", validateJWT, circlesPrivateRoutes);
-  app.use("/circles", circlesPublicRoutes);
-  app.use("/users", usersRoute);
   app.use("/search", searchRoutes);
   return app;
 };
