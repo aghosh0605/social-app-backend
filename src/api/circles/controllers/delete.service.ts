@@ -25,15 +25,21 @@ const deleteService = async (req: Request): Promise<void> => {
       message: "Only creator can delete circle",
     };
   }
+  console.log(foundCircle);
 
-  // if (foundCircle.mediaURLs.length > 0) {
-  //   const delObjs = [];
-  //   foundCircle.mediaURLs.forEach((element) => {
-  //     const URLPath = new URL(element.URL).pathname.substring(1);
-  //     delObjs.push({ Key: URLPath });
-  //   });
-  //   await s3Delete(delObjs);
-  // }
+  const mediaURLs = [
+    { ...foundCircle.cover_image_data },
+    { ...foundCircle.profile_image_data },
+  ];
+
+  if (mediaURLs.length > 0) {
+    const delObjs = [];
+    mediaURLs.forEach((element) => {
+      const URLPath = new URL(element.URL).pathname.substring(1);
+      delObjs.push({ Key: URLPath });
+    });
+    await s3Delete(delObjs);
+  }
 
   const resData: DeleteResult = await circlesCollection.deleteOne({
     _id: new ObjectId(req.params.id),
@@ -51,7 +57,13 @@ export const deleteCircle = async (
 ) => {
   try {
     await deleteService(req);
-    res.status(200).json({ success: true, message: "Circle Deleted" });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Circle Deleted",
+        data: { loggedIn_user_id: req.user, circle_id: req.params.id },
+      });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

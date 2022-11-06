@@ -63,7 +63,7 @@ const createService = async (req, res) => {
     posted_date: new Date(),
     last_updated_date: new Date(),
     cover_image_data: picURL.cover_image_data,
-    profile_image_date: picURL.profile_image_data,
+    profile_image_data: picURL.profile_image_data,
   };
   console.log(inData);
   const id = (await circlesCollection.insertOne(inData)).insertedId;

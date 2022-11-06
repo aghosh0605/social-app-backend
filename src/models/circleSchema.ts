@@ -15,7 +15,7 @@ export const yupCircleSchema = yup.object({
     URL: yup.string().url().nullable(),
     thumbnailURL: yup.string().url().nullable(),
   }),
-  profile_image_date: yup.object({
+  profile_image_data: yup.object({
     type: yup.string().nullable().trim(),
     mimeType: yup.string().nullable().trim(),
     URL: yup.string().url().nullable(),
