@@ -44,28 +44,24 @@ const updateImageService = async (req: Request, res: Response) => {
 
   // await s3Delete(deleteUrls);
 
-  const newMediaUrls = await uploadPhotos(req, res, "circleImages/");
+  // const newMediaUrls = await uploadPhotos(req, res, "circleImages/");
 
-  if (req.body.tags) {
-    req.body.tags = req.body.tags.split(",");
-  }
+  // const resData = await circlesCollection.updateOne(
+  //   {
+  //     _id: new ObjectId(req.params.id),
+  //   },
+  //   {
+  //     $set: {
+  //       mediaURLs: newMediaUrls,
+  //       last_updated_date: new Date(),
+  //       ...req.body,
+  //     },
+  //   }
+  // );
 
-  const resData = await circlesCollection.updateOne(
-    {
-      _id: new ObjectId(req.params.id),
-    },
-    {
-      $set: {
-        mediaURLs: newMediaUrls,
-        last_updated_date: new Date(),
-        ...req.body,
-      },
-    }
-  );
-
-  if (!resData.acknowledged) {
-    throw { status: 404, success: false, message: "Editing Permission Error" };
-  }
+  // if (!resData.acknowledged) {
+  //   throw { status: 404, success: false, message: "Editing Permission Error" };
+  // }
 
   return `circle is updated`;
 };
@@ -83,14 +79,25 @@ const updateDataService = async (req: Request) => {
     throw { status: 404, success: false, message: "No Circle Found!" };
   }
 
-  if (req.user != foundCircle.UID) {
+  const findSimilar = await circlesCollection.findOne({
+    circle_name: req.body.circle_name,
+  });
+
+  if (findSimilar && findSimilar.circle_name != foundCircle.circle_name) {
+    throw {
+      status: 400,
+      success: false,
+      message: "two circles can't have same username",
+    };
+  }
+
+  if (req.user != foundCircle.loggedIn_user_id) {
     throw {
       status: 404,
       success: false,
       message: "Only creator can edit the circle",
     };
   }
-  req.body.tags = req.body.tags.split(",");
 
   const resData = await circlesCollection.updateOne(
     {
@@ -108,7 +115,11 @@ const updateDataService = async (req: Request) => {
     throw { status: 404, success: false, message: "Editing Permission Error" };
   }
 
-  return `circle with id : ${foundCircle._id} is updated`;
+  const updatedCircle: circleSchema = await circlesCollection.findOne({
+    _id: new ObjectId(req.params.id),
+  });
+
+  return updatedCircle;
 };
 
 export const updateDataCircle = async (
@@ -118,7 +129,13 @@ export const updateDataCircle = async (
 ) => {
   try {
     const data = await updateDataService(req);
-    res.status(200).json({ success: true, message: data });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: `circle with id ${req.params.id} updated`,
+        data: data,
+      });
     next();
   } catch (err) {
     Logger.error(err.errorStack || err);

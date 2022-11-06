@@ -57,7 +57,7 @@ const createService = async (req, res) => {
     circle_name: req.body.circle_name,
     loggedIn_user_id: req.user,
     about_circle_description: req.body.about_circle_description,
-    is_private: req.body.is_Private,
+    is_private: req.body.is_private,
     topic_name: req.body.topic_name,
     topic_id: req.body.topic_id,
     posted_date: new Date(),
