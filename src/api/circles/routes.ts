@@ -43,6 +43,7 @@ circlesPrivateRoutes.delete(
 
 circlesPrivateRoutes.put(
   "/update/data/:id",
+  yupValidator("params", yupObjIdSchema),
   yupValidator("body", yupObjCirclesBodySchema),
   updateDataCircle
 );

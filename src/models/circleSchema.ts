@@ -2,47 +2,43 @@ import { ObjectId } from "mongodb";
 import * as yup from "yup";
 import "yup-phone";
 export const yupCircleSchema = yup.object({
-  circleName: yup.string().trim().required("Please provide a circle name"),
-  UID: yup
+  circle_name: yup.string().trim().required("Please provide a circle name"),
+  loggedIn_user_id: yup
     .string()
     .trim()
     .required("Please provide User ID")
     .matches(/^[0-9a-f]{24}$/, "Not a Valid UID"),
-  isPrivate: yup.boolean().required("Please provide circle if is private"),
-  tags: yup
-    .array()
-    .of(
-      yup
-        .string()
-        .trim()
-        .min(1, "Minimum one character required")
-        .max(50, "Maximum 50 characters allowed")
-    ),
-  mediaURLs: yup.array().of(
-    yup.object({
-      mimeType: yup.string().nullable().trim(),
-      URL: yup.string().url().nullable(),
-      thumbnailURL: yup.string().url().nullable(),
-    })
-  ),
-  about: yup
+  is_private: yup.boolean().required("Please provide circle if is private"),
+  cover_image_data: yup.object({
+    type: yup.string().nullable().trim(),
+    mimeType: yup.string().nullable().trim(),
+    URL: yup.string().url().nullable(),
+    thumbnailURL: yup.string().url().nullable(),
+  }),
+  profile_image_data: yup.object({
+    type: yup.string().nullable().trim(),
+    mimeType: yup.string().nullable().trim(),
+    URL: yup.string().url().nullable(),
+    thumbnailURL: yup.string().url().nullable(),
+  }),
+  about_circle_description: yup
     .string()
     .required("Enter about the circle")
     .trim()
     .min(1, "Minimum one character required")
     .max(500, "Maximum 500 characters allowed"),
-  category: yup
+  topic_name: yup
     .string()
     .required("Select a category")
     .trim()
     .min(1, "Minimum one character required")
     .max(50, "Maximum 50 characters allowed"),
-  categoryID: yup
+  topic_id: yup
     .string()
     .trim()
     .required("Please provide Category ID")
     .matches(/^[0-9a-f]{24}$/, "Not a Valid category ID"),
-  createdOn: yup.date().default(() => new Date()),
+  posted_date: yup.date().default(() => new Date()),
   last_updated_date: yup.date().default(() => new Date()),
 });
 

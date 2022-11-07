@@ -52,7 +52,17 @@ export const getAllPosts = async (
             from: "circles",
             localField: "circleID",
             foreignField: "_id",
-            pipeline: [{ $project: { _id: 1, circleName: 1, category: 1 } }],
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  circleName: 1,
+                  category: 1,
+                  categoryID: 1,
+                  mediaURLs: 1,
+                },
+              },
+            ],
             as: "circles",
           },
         },
@@ -61,6 +71,7 @@ export const getAllPosts = async (
         { $sort: { createdOn: -1 } },
       ])
       .toArray();
+
     res.status(200).json({
       success: true,
       message: "All Posts",
@@ -135,7 +146,17 @@ export const getUserPosts = async (
             from: "circles",
             localField: "circleID",
             foreignField: "_id",
-            pipeline: [{ $project: { _id: 1, circleName: 1, category: 1 } }],
+            pipeline: [
+              {
+                $project: {
+                  _id: 1,
+                  circleName: 1,
+                  category: 1,
+                  categoryID: 1,
+                  mediaURLs: 1,
+                },
+              },
+            ],
             as: "circles",
           },
         },
